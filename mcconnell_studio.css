@@ -1,0 +1,447 @@
+/* McConnell Meshes - Studio Hub Styling */
+:root {
+  --mc-accent: #00d26a;
+  --mc-accent-glow: rgba(0, 210, 106, 0.35);
+  --mc-purple: #9b2fe0;
+  --mc-dark-bg: rgba(18, 19, 22, 0.92);
+  --mc-card-bg: rgba(28, 30, 36, 0.85);
+  --mc-card-border: rgba(255, 255, 255, 0.12);
+  --mc-text-hi: #ffffff;
+  --mc-text-mid: #c0c4cc;
+  --mc-text-dim: #7d8290;
+  --mc-gold: #ffbe26;
+  --mc-warn: #ff4757;
+  --mc-pass: #2ed573;
+}
+
+/* Quick Access Pills on Top Navigation */
+.mcconnellPillBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 10px;
+  background: linear-gradient(135deg, rgba(155, 47, 224, 0.15), rgba(0, 210, 106, 0.15));
+  border: 1px solid rgba(155, 47, 224, 0.4);
+  border-radius: 999px;
+  color: var(--ink, #212223);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  white-space: nowrap;
+}
+
+.mcconnellPillBtn:hover {
+  background: linear-gradient(135deg, rgba(155, 47, 224, 0.3), rgba(0, 210, 106, 0.3));
+  border-color: var(--mc-purple);
+  box-shadow: 0 2px 10px var(--mc-accent-glow);
+  transform: translateY(-1px);
+}
+
+.mcconnellPillBtn.active {
+  background: var(--g-purple, #9b2fe0);
+  color: #fff !important;
+  border-color: var(--mc-purple);
+  box-shadow: 0 3px 12px rgba(155, 47, 224, 0.45);
+}
+
+.mcconnellPillBtn .mcBadge {
+  display: inline-block;
+  padding: 1px 5px;
+  font-size: 9px;
+  border-radius: 6px;
+  background: rgba(0, 210, 106, 0.25);
+  color: var(--mc-accent);
+  font-weight: 700;
+}
+
+/* Main Studio Hub Panel */
+#mcconnellStudioPanel {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(880px, calc(100vw - 32px));
+  max-height: calc(100vh - 120px);
+  background: rgba(22, 23, 27, 0.94);
+  color: var(--mc-text-hi);
+  -webkit-backdrop-filter: blur(28px) saturate(2);
+  backdrop-filter: blur(28px) saturate(2);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--sans, system-ui);
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#mcconnellStudioPanel.minimized {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(40px) scale(0.96);
+}
+
+/* Studio Header */
+.mcStudioHd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: rgba(12, 13, 16, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mcStudioTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mcStudioLogo {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mcStudioLogo b {
+  color: #fff;
+}
+
+.mcStudioLogo span.mesh {
+  color: var(--yellow, #fbec1a);
+  font-weight: 800;
+}
+
+.mcStudioSubtitle {
+  font-size: 11px;
+  color: var(--mc-text-dim);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  padding-left: 10px;
+}
+
+.mcStudioActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mcCloseBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--mc-text-mid);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.14s;
+}
+
+.mcCloseBtn:hover {
+  background: rgba(255, 71, 87, 0.25);
+  border-color: var(--mc-warn);
+  color: #fff;
+}
+
+/* Tab Bar */
+.mcStudioTabs {
+  display: flex;
+  gap: 4px;
+  padding: 8px 16px;
+  background: rgba(16, 17, 21, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  overflow-x: auto;
+}
+
+.mcStudioTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--mc-text-mid);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.mcStudioTab:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.mcStudioTab.active {
+  background: linear-gradient(180deg, rgba(155, 47, 224, 0.4) 0%, rgba(132, 33, 201, 0.5) 100%);
+  border-color: rgba(155, 47, 224, 0.7);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(155, 47, 224, 0.35);
+}
+
+.mcStudioTab .icon {
+  font-size: 13px;
+}
+
+/* Studio Body */
+.mcStudioBody {
+  padding: 16px 20px;
+  overflow-y: auto;
+  max-height: calc(80vh - 120px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mcTabContent {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mcTabContent.active {
+  display: flex;
+}
+
+/* Grid & Cards inside Tabs */
+.mcGrid2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 14px;
+}
+
+.mcGrid3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.mcCard {
+  background: var(--mc-card-bg);
+  border: 1px solid var(--mc-card-border);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.mcCardTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--yellow, #fbec1a);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.mcCardDesc {
+  font-size: 11px;
+  color: var(--mc-text-dim);
+  line-height: 1.4;
+}
+
+/* Controls */
+.mcControlRow {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mcControlHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--mc-text-mid);
+}
+
+.mcControlHeader span.val {
+  font-family: var(--mono, monospace);
+  color: #fff;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.mcSlider {
+  width: 100%;
+  accent-color: var(--mc-purple);
+  height: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.mcSelect, .mcInput {
+  background: rgba(12, 13, 16, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  font-family: inherit;
+  outline: none;
+  width: 100%;
+}
+
+.mcSelect:focus, .mcInput:focus {
+  border-color: var(--mc-purple);
+  box-shadow: 0 0 0 2px rgba(155, 47, 224, 0.3);
+}
+
+/* Button Presets */
+.mcBtnRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mcPresetBtn {
+  flex: 1;
+  min-width: 90px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--mc-text-mid);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.14s ease;
+}
+
+.mcPresetBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.mcPresetBtn.active {
+  background: linear-gradient(135deg, rgba(155, 47, 224, 0.4), rgba(0, 210, 106, 0.4));
+  border-color: var(--mc-accent);
+  color: #fff;
+}
+
+.mcActionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.16s ease;
+}
+
+.mcActionBtn.primary {
+  background: linear-gradient(180deg, #b25ff0 0%, #9b2fe0 100%);
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(155, 47, 224, 0.4);
+}
+
+.mcActionBtn.primary:hover {
+  background: linear-gradient(180deg, #be74f4 0%, #a73fee 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(155, 47, 224, 0.55);
+}
+
+.mcActionBtn.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.mcActionBtn.secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.mcActionBtn.green {
+  background: linear-gradient(180deg, #00d26a 0%, #00b359 100%);
+  color: #0d1a12;
+  box-shadow: 0 3px 12px rgba(0, 210, 106, 0.35);
+}
+
+.mcActionBtn.green:hover {
+  background: linear-gradient(180deg, #1fe07e 0%, #00c463 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(0, 210, 106, 0.5);
+}
+
+/* Printability Score & Indicators */
+.mcPrintStatus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mcPrintCheckItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.mcDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.mcDot.pass {
+  background: var(--mc-pass);
+  box-shadow: 0 0 8px rgba(46, 213, 115, 0.6);
+}
+
+.mcDot.warn {
+  background: var(--mc-gold);
+  box-shadow: 0 0 8px rgba(255, 190, 38, 0.6);
+}
+
+.mcDot.fail {
+  background: var(--mc-warn);
+  box-shadow: 0 0 8px rgba(255, 71, 87, 0.6);
+}
+
+/* Metrics badge */
+.mcMetricValue {
+  font-family: var(--mono, monospace);
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.mcMetricLabel {
+  font-size: 10px;
+  color: var(--mc-text-dim);
+  text-transform: uppercase;
+}

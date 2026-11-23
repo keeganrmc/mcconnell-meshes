@@ -1,0 +1,267 @@
+{
+ "source": "MASQ's material table: price, CO2e per kg of filament at one boundary (filament at the gate; where only the resin was measured, one 1.5 kg CO2e/kg extrusion-and-spool adder, the gap Prusament measured between resin and filament), datasheet strength, wear lines, and the printers' power, bed and purge",
+ "co2eBoundary": "cradle to gate, kg CO2e per kg of filament; lo and hi are the spread of the cited figures brought to the same gate, mid is the card's number",
+ "extrusionAndSpoolAdderKgPerKg": 1.5,
+ "electricityKgCO2ePerKWh": 0.37,
+ "electricitySource": "grid average; a 3 h PLA mask on the X1C is ~0.2 kWh, ~0.07 kg CO2e, https://forum.bambulab.com/t/power-consumption-data/4180",
+ "materials": {
+  "pla": {
+   "name": "PLA",
+   "densityGcm3": 1.24,
+   "maxFlowMM3s": 21,
+   "priceUSDPerKg": 19.99,
+   "genericUSDPerKg": [
+    15,
+    30
+   ],
+   "co2eKgPerKg": {
+    "lo": 3.1,
+    "mid": 5.8,
+    "hi": 5.8,
+    "cited": "1.6 resin, 3.5 product, 5.8 Prusament",
+    "sources": [
+     "https://www.sciencedirect.com/science/article/pii/S2352550924001507",
+     "https://blog.prusa3d.com/introducing-prusament-petg-recycled-with-calculated-life-cycle-assessment_65806/"
+    ]
+   },
+   "tensileMPa": {
+    "xy": 35,
+    "z": 31
+   },
+   "hdtC": 57,
+   "floorS": 4,
+   "datasheet": "https://wiki.bambulab.com/filament-acc/abs-asa-pc/bambu_pla_basic_technical_data_sheet.pdf",
+   "wear": "PLA: stiff, the cheapest, the easiest; brittle at a thin rim and it creeps in a hot car (HDT 57 \u00b0C); sweat sits in the layer lines; sands and fills well; do not wash hot. The default."
+  },
+  "petg": {
+   "name": "PETG",
+   "densityGcm3": 1.25,
+   "maxFlowMM3s": 15,
+   "priceUSDPerKg": 17.99,
+   "genericUSDPerKg": [
+    18,
+    26
+   ],
+   "co2eKgPerKg": {
+    "lo": 5.9,
+    "mid": 5.9,
+    "hi": 6.3,
+    "cited": "5.9 Prusament, 6.3 Kimya",
+    "sources": [
+     "https://blog.prusa3d.com/introducing-prusament-petg-recycled-with-calculated-life-cycle-assessment_65806/",
+     "https://www.crea3d.com/en/blog/kimya-publishes-the-results-from-the-life-cycle-analysis-for-its-3d-filaments-b72"
+    ]
+   },
+   "tensileMPa": {
+    "xy": 51,
+    "z": 35
+   },
+   "hdtC": 71,
+   "floorS": 8,
+   "datasheet": "https://store.bblcdn.com/s1/default/cb94589bf7994fdcbfa833badefae9cd/Bambu_PETG_Basic_Technical_Data_Sheet.pdf",
+   "wear": "PETG: tougher than PLA and stands 70 \u00b0C; strings and is hard to sand; the weakest across layers of the rigid ones (Z 69%): a chin-standing PETG mask flexed on cracks along a layer."
+  },
+  "abs": {
+   "name": "ABS",
+   "densityGcm3": 1.05,
+   "maxFlowMM3s": 16,
+   "priceUSDPerKg": 19.99,
+   "genericUSDPerKg": [
+    25,
+    35
+   ],
+   "co2eKgPerKg": {
+    "lo": 4.6,
+    "mid": 4.6,
+    "hi": 4.6,
+    "cited": "3.1 virgin resin + 1.5 extrusion and spool",
+    "sources": [
+     "https://www.researchgate.net/publication/366122397"
+    ]
+   },
+   "tensileMPa": {
+    "xy": 33,
+    "z": 28
+   },
+   "hdtC": 87,
+   "floorS": 3,
+   "datasheet": "https://store.bblcdn.com/s7/default/23b4cf2b83d5470bb96d19970b5f3ae8/Bambu_ABS_Technical_Data_Sheet_V3.pdf",
+   "wear": "ABS: warps on the big flat contact a face-down print makes (a heated chamber helps, the Kobra has one, the P1S/X1C are passive); acetone-vapour smooths to a gloss; off-gasses styrene while printing and is one the wearables guide says to avoid against skin; ASA is the stronger of the two."
+  },
+  "asa": {
+   "name": "ASA",
+   "densityGcm3": 1.05,
+   "maxFlowMM3s": 18,
+   "priceUSDPerKg": 26.99,
+   "genericUSDPerKg": [
+    25,
+    35
+   ],
+   "co2eKgPerKg": {
+    "lo": 4.6,
+    "mid": 4.6,
+    "hi": 4.6,
+    "cited": "as ABS: 3.1 virgin resin + 1.5 extrusion and spool",
+    "sources": [
+     "https://www.researchgate.net/publication/366122397"
+    ]
+   },
+   "tensileMPa": {
+    "xy": 52,
+    "z": 35
+   },
+   "hdtC": 100,
+   "floorS": 3,
+   "datasheet": "https://wiki.bambulab.com/filament-acc/abs-asa-pc/6eaf4c432d1d4014a1975e55a55ed00b.pdf",
+   "wear": "ASA: warps on the big flat contact a face-down print makes (a heated chamber helps, the Kobra has one, the P1S/X1C are passive); holds up in sun; off-gasses styrene while printing and is one the wearables guide says to avoid against skin; the stronger of ABS and ASA and the one to pick of the two."
+  },
+  "tpu95a": {
+   "name": "TPU 95A",
+   "densityGcm3": 1.2,
+   "maxFlowMM3s": 3.6,
+   "priceUSDPerKg": 41.99,
+   "genericUSDPerKg": [
+    30,
+    50
+   ],
+   "co2eKgPerKg": {
+    "lo": 5.0,
+    "mid": 5.2,
+    "hi": 5.3,
+    "cited": "3.5-3.8 resin + 1.5 extrusion and spool",
+    "sources": [
+     "https://www.carbonfact.com/blog/knowledge/tpu-midsoles"
+    ]
+   },
+   "tensileMPa": {
+    "xy": 29.6,
+    "z": 23.2
+   },
+   "hdtC": null,
+   "shore": "95A",
+   "floorS": 8,
+   "datasheet": "https://solidprint3d.ie/wp-content/uploads/2023/08/Bambu-TPU-95A_Technical-Data-Sheet.pdf",
+   "wear": "TPU 95A: flexes to a face, the one material where fit follows the wearer; no supports it will not tear off; slow (43 mm/s at the cap, a night's print); Bambu's datasheet gives a 70\u00b0 overhang and 20 mm bridge; skin-safe by the datasheet and the guide; cannot be sanded; the mask's rigid-interference lesson does not apply to it."
+  },
+  "pa6cf": {
+   "name": "PA6-CF",
+   "densityGcm3": 1.09,
+   "maxFlowMM3s": 8,
+   "priceUSDPerKg": 84.99,
+   "genericUSDPerKg": [
+    30,
+    60
+   ],
+   "co2eKgPerKg": {
+    "lo": 10.5,
+    "mid": 10.5,
+    "hi": 10.5,
+    "cited": "9.0 PA6 resin + 1.5 extrusion and spool",
+    "sources": [
+     "https://apps.carboncloud.com/climatehub/product-reports/id/480206512146"
+    ]
+   },
+   "tensileMPa": {
+    "xy": 102,
+    "z": 48
+   },
+   "hdtC": 180,
+   "floorS": 2,
+   "datasheet": "https://filamentdb.app/filament/bambu-lab/pa6-cf-carbon-fiber",
+   "wear": "PA (nylon, CF): the strongest in plane and the weakest across (Z 47%); absorbs water and must be dried; abrasive to brass; expensive; a mask rarely needs it."
+  },
+  "pc": {
+   "name": "PC",
+   "densityGcm3": 1.185,
+   "maxFlowMM3s": 18,
+   "priceUSDPerKg": 36.99,
+   "genericUSDPerKg": [
+    30,
+    75
+   ],
+   "co2eKgPerKg": {
+    "lo": 6.2,
+    "mid": 6.9,
+    "hi": 6.9,
+    "cited": "4.7 median, 5.4 mean resin + 1.5 extrusion and spool",
+    "sources": [
+     "https://www.carbonfact.com/materials/polycarbonate"
+    ]
+   },
+   "tensileMPa": {
+    "xy": 62,
+    "z": 56
+   },
+   "hdtC": 112,
+   "floorS": 2,
+   "datasheet": "https://store.bblcdn.com/a52afdccddfd448583d119587122c8c5.pdf",
+   "wear": "PC: the stiffest and the hottest (HDT 112 \u00b0C); warps and needs the chamber and glue; overkill for a mask, listed because a helmet-grade shell asks for it."
+  }
+ },
+ "skinSources": [
+  "Bambu's datasheets: Skin Hazards: No hazard, every one",
+  "https://wiki.polymaker.com/polymaker-products/more-about-our-products/safety-in-3d-printing/skin-contact-safety",
+  "https://filaments.ai-driven.ai/content/filament-skin-safe-biocompatible-wearables"
+ ],
+ "printers": {
+  "x1c": {
+   "name": "Bambu Lab X1C / P1S",
+   "bedMM": [
+    256,
+    256,
+    256
+   ],
+   "nozzleMM": 0.4,
+   "maxSpeedMMs": 500,
+   "maxAccelMMs2": 20000,
+   "printingW": 70,
+   "heatingW": 400,
+   "chamber": "passive",
+   "purgeG": 1.5,
+   "sources": [
+    "https://us.store.bambulab.com/products/p1s",
+    "https://forum.bambulab.com/t/power-consumption-data/4180 (60-80 W printing, up to 400 W heating)"
+   ]
+  },
+  "kobra_s1_max": {
+   "name": "Anycubic Kobra S1 Max",
+   "bedMM": [
+    350,
+    350,
+    350
+   ],
+   "nozzleMM": 0.4,
+   "maxSpeedMMs": 600,
+   "maxAccelMMs2": 20000,
+   "printingW": 180,
+   "heatingW": 1000,
+   "chamber": "heated 65 \u00b0C",
+   "purgeG": 3,
+   "sources": [
+    "https://store.anycubic.com/products/kobra-s1-max",
+    "https://www.igorslab.de/en/anycubic-cobra-s1-combo-im-test/6/ (180 W on PLA)"
+   ],
+   "note": "slicing profile: vendor/print/printers.json kobra_s1_max"
+  },
+  "prusa_xl": {
+   "name": "Prusa XL (2 heads)",
+   "bedMM": [
+    360,
+    360,
+    360
+   ],
+   "nozzleMM": 0.4,
+   "maxSpeedMMs": 500,
+   "maxAccelMMs2": 6000,
+   "printingW": 150,
+   "heatingW": 700,
+   "chamber": "open",
+   "purgeG": 3,
+   "sources": [
+    "https://www.prusa3d.com/product/original-prusa-xl-semi-assembled-2-toolhead-3d-printer/ (360 \u00d7 360 \u00d7 360 mm, up to 5 toolheads)",
+    "https://help.prusa3d.com/article/power-consumption_2182 (XL 2-tool: ~150 W printing, ~700 W heating)"
+   ],
+   "note": "slicing profile: the default printer's (vendor/print/printers.json has no Prusa XL row); a PrusaSlicer 3mf reads the same geometry and offers its own printer. Two toolheads: the door to two-material masks."
+  }
+ }
+}

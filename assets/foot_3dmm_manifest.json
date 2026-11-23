@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "generator": "build_foot_3dmm.py",
+  "createdAt": "2026-09-25T20:22:39Z",
+  "attribution": {
+    "dataset": "Foot3D",
+    "authors": "Oliver Boyne, James Charles, Roberto Cipolla",
+    "institution": "University of Cambridge, Department of Engineering",
+    "license": "MIT",
+    "citations": [
+      "FIND: An Unsupervised Implicit 3D Model of Articulated Human Feet (Boyne, Charles, Cipolla \u2014 BMVC 2022)",
+      "FOUND: Foot Optimisation with Uncertain Normals for Surface Deformation using Synthetic Data (2024)"
+    ]
+  },
+  "topology": {
+    "vertexCount": 2707,
+    "triangleCount": 5410,
+    "isWatertight": true,
+    "eulerCharacteristic": 2,
+    "handedness": "Right",
+    "frame": {
+      "units": "mm",
+      "X": "Length (heel at X=0, toes toward +X)",
+      "Y": "Height (plantar sole at Y=0, ankle toward +Y)",
+      "Z": "Width (medial big-toe side at -Z, lateral side at +Z)"
+    }
+  },
+  "binaryPayload": {
+    "file": "foot_3dmm_v01.bin",
+    "totalBytes": 324816,
+    "blocks": {
+      "meanShape": {
+        "byteOffset": 0,
+        "byteLength": 32484,
+        "dtype": "Float32",
+        "count": 8121
+      },
+      "components": {
+        "byteOffset": 32484,
+        "byteLength": 259872,
+        "componentCount": 8,
+        "bytesPerComponent": 32484,
+        "dtype": "Float32"
+      },
+      "indices": {
+        "byteOffset": 292356,
+        "byteLength": 32460,
+        "dtype": "Uint16",
+        "count": 16230
+      }
+    }
+  },
+  "components": [
+    {
+      "id": 1,
+      "label": "Allometric Scale & Girth (Overall foot size, volume, ball girth)",
+      "varianceRatio": 0.6155797839164734,
+      "variancePercent": 61.56,
+      "stdDevMM": 742.88,
+      "byteOffset": 32484,
+      "byteLength": 32484
+    },
+    {
+      "id": 2,
+      "label": "Width / Girth Ratio (Narrow AA through Extra-Wide EEE fitting variance)",
+      "varianceRatio": 0.17895182967185974,
+      "variancePercent": 17.9,
+      "stdDevMM": 400.54,
+      "byteOffset": 64968,
+      "byteLength": 32484
+    },
+    {
+      "id": 3,
+      "label": "Medial Longitudinal Arch (High cavus arch vs. flat pes planus)",
+      "varianceRatio": 0.07883065938949585,
+      "variancePercent": 7.88,
+      "stdDevMM": 265.84,
+      "byteOffset": 97452,
+      "byteLength": 32484
+    },
+    {
+      "id": 4,
+      "label": "Digital Envelope / Toe Formula (Egyptian hallux vs. Greek Morton vs. Roman square)",
+      "varianceRatio": 0.035653527826070786,
+      "variancePercent": 3.57,
+      "stdDevMM": 178.78,
+      "byteOffset": 129936,
+      "byteLength": 32484
+    },
+    {
+      "id": 5,
+      "label": "Dorsal Instep Height (Cone thickness & entry clearance)",
+      "varianceRatio": 0.025691794231534004,
+      "variancePercent": 2.57,
+      "stdDevMM": 151.77,
+      "byteOffset": 162420,
+      "byteLength": 32484
+    },
+    {
+      "id": 6,
+      "label": "Heel Seat & Achilles Cup (Calcaneus width & cup taper)",
+      "varianceRatio": 0.01718735322356224,
+      "variancePercent": 1.72,
+      "stdDevMM": 124.13,
+      "byteOffset": 194904,
+      "byteLength": 32484
+    },
+    {
+      "id": 7,
+      "label": "Sub-Malleolar Waist Narrowing (Lateral & medial waist tuck)",
+      "varianceRatio": 0.009521516039967537,
+      "variancePercent": 0.95,
+      "stdDevMM": 92.39,
+      "byteOffset": 227388,
+      "byteLength": 32484
+    },
+    {
+      "id": 8,
+      "label": "Metatarsal Splay & Transverse Arch (Forefoot fan angle)",
+      "varianceRatio": 0.006963745690882206,
+      "variancePercent": 0.7,
+      "stdDevMM": 79.01,
+      "byteOffset": 259872,
+      "byteLength": 32484
+    }
+  ],
+  "varianceExplainedTop8": 96.84
+}

@@ -1,0 +1,152 @@
+{
+ "schema": 1,
+ "about": "MASQ's printer, process and filament table for the print estimator and the .3mf export. Our own format; values entered one by one. Each block's `basis` maps a field (dotted path, '*' = every field not listed) to the kind of value it is (see `basisKinds`).",
+ "basisKinds": {
+  "a": "a physical or manufacturer fact; the block's `sources` carry the public page",
+  "b": "a setting value of the named slicer preset, entered by hand from the preset's settings",
+  "b?": "a setting value of the named slicer preset, entered by hand, not yet checked against the slicer's settings screen",
+  "m": "measured from the slicer's own result numbers for the fixtures in _verify/fixtures/print (seconds, grams, layer counts)",
+  "c": "a coefficient fitted by tools/print/fit_time.mjs against the fixtures",
+  "ours": "MASQ's own choice",
+  "table": "copied from MASQ's own vendor/print/materials.json (which carries the datasheet URL)"
+ },
+ "defaultPrinter": "x1c",
+ "printers": {
+  "x1c": {
+   "name": "Bambu Lab X1 Carbon, 0.4 mm nozzle",
+   "sources": [
+    "https://bambulab.com/en/x1/tech-specs",
+    "https://wiki.bambulab.com/en/software/bambu-studio/preset"
+   ],
+   "bedMM": [256, 256],
+   "heightMM": 256,
+   "nozzleMM": 0.4,
+   "maxSpeedMMs": { "x": 500, "y": 500, "z": 20, "e": 30 },
+   "maxAccelMMs2": { "x": 20000, "y": 20000, "z": 500, "e": 5000, "extruding": 20000, "retracting": 5000, "travel": 20000 },
+   "corner": { "rule": "jerk", "jerkMMs": { "x": 9, "y": 9, "z": 3, "e": 2.5 } },
+   "retract": { "lengthMM": 0.8, "speedMMs": 30, "deretractSpeedMMs": 30, "minTravelMM": 1, "onLayerChange": true, "zHopMM": 0.4, "wipe": true, "wipeDistanceMM": 2, "wipeSpeedFraction": 0.8 },
+   "startEndS": 406,
+   "startFilamentMM": 118,
+   "basis": {
+    "*": "b?",
+    "bedMM": "a", "heightMM": "a", "nozzleMM": "a", "maxSpeedMMs.x": "a", "maxSpeedMMs.y": "a",
+    "maxAccelMMs2.x": "a", "maxAccelMMs2.y": "a", "maxAccelMMs2.extruding": "a", "maxAccelMMs2.travel": "a",
+    "corner.rule": "c",
+    "startEndS": "m", "startFilamentMM": "m"
+   },
+   "slicerPreset": {
+    "app": "Bambu Studio",
+    "printer": "Bambu Lab X1 Carbon 0.4 nozzle",
+    "processByLayer": {
+     "0.08": "0.08mm Extra Fine @BBL X1C",
+     "0.12": "0.12mm Fine @BBL X1C",
+     "0.16": "0.16mm Optimal @BBL X1C",
+     "0.2": "0.20mm Standard @BBL X1C",
+     "0.24": "0.24mm Draft @BBL X1C",
+     "0.28": "0.28mm Extra Draft @BBL X1C"
+    },
+    "filamentByMaterial": {
+     "pla": "Bambu PLA Basic @BBL X1C",
+     "petg": "Bambu PETG Basic @BBL X1C",
+     "abs": "Bambu ABS @BBL X1C",
+     "asa": "Bambu ASA @BBL X1C",
+     "tpu95a": "Bambu TPU 95A @BBL X1C",
+     "pa6cf": "Bambu PA6-CF @BBL X1C",
+     "pc": "Bambu PC @BBL X1C"
+    }
+   },
+   "processBase": {
+    "firstLayerHeightMM": 0.2,
+    "widthMM": { "outer": 0.42, "inner": 0.45, "sparse": 0.45, "solid": 0.42, "top": 0.42, "first": 0.5, "support": 0.42 },
+    "wallLoops": 2,
+    "topShellLayers": 5, "topShellThicknessMM": 1.0,
+    "bottomShellLayers": 3, "bottomShellThicknessMM": 0,
+    "infillDensity": 0.15, "infillPattern": "grid",
+    "infillWallOverlap": 0.15,
+    "minSparseAreaMM2": 15,
+    "infillAnchorMM": 20,
+    "onlyOneWallTop": true,
+    "speedMMs": { "outer": 200, "inner": 300, "sparse": 270, "solid": 250, "top": 200, "bridge": 50, "gap": 250, "first": 50, "firstInfill": 105, "travel": 500, "support": 150, "supportInterface": 80, "overhangTotally": 50 },
+    "overhangSpeedMMs": [0, 50, 30, 10],
+    "overhangSpeedOn": true,
+    "smallPerimeterSpeedFraction": 0.5, "smallPerimeterThresholdMM": 0,
+    "accelMMs2": { "default": 10000, "outer": 5000, "inner": 10000, "first": 500, "top": 2000, "travel": 10000, "sparse": 10000 },
+    "seamGapFraction": 0.15,
+    "resolutionMM": 0.012,
+    "support": { "thresholdDeg": 30, "baseSpacingMM": 2.5, "interfaceTopLayers": 2, "interfaceBottomLayers": 2, "topZDistanceMM": 0.2, "branchAngleDeg": 45, "branchDiameterMM": 2, "tipDiameterMM": 0.8, "branchDistanceMM": 5, "branchDiameterAngleDeg": 5, "brimWidthMM": 3 }
+   },
+   "processes": {
+    "0.08": { "layerHeightMM": 0.08, "topShellLayers": 9, "topShellThicknessMM": 0, "speedMMs": { "inner": 350 }, "basis": { "*": "b?" } },
+    "0.12": { "layerHeightMM": 0.12, "topShellThicknessMM": 0, "basis": { "*": "b?" } },
+    "0.16": { "layerHeightMM": 0.16, "topShellLayers": 7, "bottomShellLayers": 4, "basis": { "*": "b?", "topShellLayers": "m", "bottomShellLayers": "m" } },
+    "0.2": { "layerHeightMM": 0.2, "basis": { "*": "b?", "support": "b", "topShellLayers": "m", "bottomShellLayers": "m" } },
+    "0.24": { "layerHeightMM": 0.24, "basis": { "*": "b?" } },
+    "0.28": { "layerHeightMM": 0.28, "topShellLayers": 4, "speedMMs": { "inner": 200 }, "basis": { "*": "b?" } }
+   },
+   "processBasis": { "*": "b?", "support": "b", "firstLayerHeightMM": "m", "speedMMs.overhangTotally": "m" },
+   "filaments": {
+    "pla":    { "name": "PLA",     "densityGcm3": 1.26,  "diameterMM": 1.75, "costPerKg": 19.99, "flowRatio": 0.98, "maxFlowMM3s": 21,  "slowDownOn": true, "minLayerTimeS": 4, "minSpeedMMs": 20 },
+    "petg":   { "name": "PETG",    "densityGcm3": 1.25,  "diameterMM": 1.75, "costPerKg": 17.99, "flowRatio": 0.95, "maxFlowMM3s": 15,  "slowDownOn": true, "minLayerTimeS": 8, "minSpeedMMs": 20 },
+    "abs":    { "name": "ABS",     "densityGcm3": 1.05,  "diameterMM": 1.75, "costPerKg": 19.99, "flowRatio": 0.95, "maxFlowMM3s": 16,  "slowDownOn": true, "minLayerTimeS": 3, "minSpeedMMs": 20 },
+    "asa":    { "name": "ASA",     "densityGcm3": 1.05,  "diameterMM": 1.75, "costPerKg": 26.99, "flowRatio": 0.95, "maxFlowMM3s": 18,  "slowDownOn": true, "minLayerTimeS": 3, "minSpeedMMs": 20 },
+    "tpu95a": { "name": "TPU 95A", "densityGcm3": 1.2,   "diameterMM": 1.75, "costPerKg": 41.99, "flowRatio": 1.0,  "maxFlowMM3s": 3.6, "slowDownOn": true, "minLayerTimeS": 8, "minSpeedMMs": 10 },
+    "pa6cf":  { "name": "PA6-CF",  "densityGcm3": 1.09,  "diameterMM": 1.75, "costPerKg": 84.99, "flowRatio": 0.96, "maxFlowMM3s": 8,   "slowDownOn": true, "minLayerTimeS": 2, "minSpeedMMs": 20 },
+    "pc":     { "name": "PC",      "densityGcm3": 1.185, "diameterMM": 1.75, "costPerKg": 36.99, "flowRatio": 0.94, "maxFlowMM3s": 18,  "slowDownOn": true, "minLayerTimeS": 2, "minSpeedMMs": 20 }
+   },
+   "filamentBasis": { "*": "b?", "pla.densityGcm3": "b?", "densityGcm3": "table", "diameterMM": "a", "costPerKg": "table", "maxFlowMM3s": "table", "minLayerTimeS": "table" }
+  },
+  "kobra_s1_max": {
+   "name": "Anycubic Kobra S1 Max, 0.4 mm nozzle",
+   "sources": [
+    "https://store.anycubic.com/products/kobra-s1-max"
+   ],
+   "bedMM": [350, 350],
+   "heightMM": 350,
+   "nozzleMM": 0.4,
+   "maxSpeedMMs": { "x": 600, "y": 600, "z": 10, "e": 80 },
+   "maxAccelMMs2": { "x": 20000, "y": 20000, "z": 400, "e": 5000, "extruding": 20000, "retracting": 5000, "travel": 20000 },
+   "corner": { "rule": "jerk", "jerkMMs": { "x": 15, "y": 15, "z": 1, "e": 1 } },
+   "retract": { "lengthMM": 0.4, "speedMMs": 30, "deretractSpeedMMs": 30, "minTravelMM": 1, "onLayerChange": true, "zHopMM": 0.4, "wipe": true, "wipeDistanceMM": 2, "wipeSpeedFraction": 0.8 },
+   "startEndS": 0,
+   "startFilamentMM": 0,
+   "basis": { "*": "b", "bedMM": "a", "heightMM": "a", "nozzleMM": "a", "maxSpeedMMs.x": "a", "maxSpeedMMs.y": "a", "corner.rule": "c", "startEndS": "m", "startFilamentMM": "m" },
+   "valueSource": { "*": "the printer and process presets as saved in an AnycubicSlicerNext project for this printer; corner.jerkMMs x/y = the preset's machine jerk, 15 mm/s" },
+   "slicerPreset": {
+    "app": "AnycubicSlicerNext",
+    "printer": "Anycubic Kobra S1 Max 0.4 nozzle",
+    "processByLayer": { "0.16": "0.16mm High Quality @Anycubic Kobra S1 Max 0.4 nozzle" },
+    "filamentByMaterial": { "pla": "Anycubic PLA @Anycubic Kobra S1 Max 0.4 nozzle" }
+   },
+   "processBase": {
+    "firstLayerHeightMM": 0.2,
+    "widthMM": { "outer": 0.42, "inner": 0.45, "sparse": 0.45, "solid": 0.42, "top": 0.42, "first": 0.5, "support": 0.42 },
+    "wallLoops": 2,
+    "topShellLayers": 6, "topShellThicknessMM": 1.0,
+    "bottomShellLayers": 4, "bottomShellThicknessMM": 0,
+    "infillDensity": 0.15, "infillPattern": "gyroid",
+    "infillWallOverlap": 0.15,
+    "minSparseAreaMM2": 15,
+    "infillAnchorMM": 20,
+    "onlyOneWallTop": true,
+    "speedMMs": { "outer": 60, "inner": 150, "sparse": 200, "solid": 200, "top": 150, "bridge": 30, "gap": 250, "first": 50, "firstInfill": 100, "travel": 300, "support": 150, "supportInterface": 80, "overhangTotally": 10 },
+    "overhangSpeedMMs": [60, 30, 10, 10],
+    "overhangSpeedOn": true,
+    "smallPerimeterSpeedFraction": 0.5, "smallPerimeterThresholdMM": 0,
+    "accelMMs2": { "default": 4000, "outer": 2000, "inner": 4000, "first": 500, "top": 2000, "travel": 10000, "sparse": 4000 },
+    "seamGapFraction": 0.1,
+    "resolutionMM": 0.012,
+    "support": { "thresholdDeg": 25, "baseSpacingMM": 2.5, "interfaceTopLayers": 2, "interfaceBottomLayers": 2, "topZDistanceMM": 0.16, "branchAngleDeg": 45, "branchDiameterMM": 2, "tipDiameterMM": 0.8, "branchDistanceMM": 5, "branchDiameterAngleDeg": 5, "brimWidthMM": 3 }
+   },
+   "processes": {
+    "0.16": { "layerHeightMM": 0.16 }
+   },
+   "otherLayersFrom": "0.16",
+   "processBasis": { "*": "b", "speedMMs.overhangTotally": "ours" },
+   "filaments": {
+    "pla": { "name": "PLA", "densityGcm3": 1.24, "diameterMM": 1.75, "costPerKg": 20, "flowRatio": 0.98, "maxFlowMM3s": 15, "slowDownOn": true, "minLayerTimeS": 8, "minSpeedMMs": 20 }
+   },
+   "filamentBasis": { "*": "b", "diameterMM": "a" },
+   "otherFilamentsFrom": "x1c"
+  }
+ }
+}

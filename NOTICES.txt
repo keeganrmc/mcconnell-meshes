@@ -1,0 +1,54 @@
+LASTFIRST — THIRD-PARTY NOTICES
+===========================================================
+LastFirst is RESEARCH SOFTWARE by Phil Renato, written with
+Claude (Anthropic); see LICENSE.txt and DISCLAIMER.txt. This
+file lists what it ships from others. Each license text is in
+licenses/ (index: licenses/README.txt).
+
+CODE
+-----------------------------------------------------------
+three.js r160 — MIT License                    licenses/three.js-MIT.txt
+  The 3D view. Copyright 2010-2023 three.js authors.
+
+rhino3dm / openNURBS — MIT; openNURBS terms     licenses/rhino3dm-MIT.txt
+  Writes the .3dm file, loaded on demand.        licenses/openNURBS.txt
+  Draco (compiled in) — Apache-2.0               licenses/Draco-Apache-2.0.txt
+  "Rhino" and "Rhinoceros" are trademarks of Robert McNeel &
+  Associates; LastFirst is not affiliated with or endorsed by
+  McNeel.
+
+QuadriFlow — BSD-3-Clause with the LBNL rider   licenses/QuadriFlow-BSD-3-Clause.txt
+  Remeshes a piece into a quad cage (SuperB), compiled to
+  WebAssembly with:
+  Eigen — MPL-2.0                               licenses/MPL-2.0.txt
+  pcg32, Eigen BFloat16.h — Apache-2.0           licenses/Apache-2.0.txt
+  Boost.Graph max-flow replacement — MIT         licenses/Blender-maxflow-MIT.txt
+  LEMON — Boost Software License 1.0            licenses/LEMON-BSL-1.0.txt
+
+swarf tex core — MIT                            licenses/swarf-MIT.txt
+  The outsole's tread patterns (shoe/tex.mjs).
+
+FONTS
+-----------------------------------------------------------
+IBM Plex Mono — SIL Open Font License 1.1       licenses/IBM-Plex-OFL.txt
+Renato Symbols (arrows derived from IBM Plex Mono) — SIL OFL 1.1, same file.
+
+DATA
+-----------------------------------------------------------
+Foot3D — MIT                                    licenses/Foot3D-MIT.txt
+  The foot shape model (Boyne, Charles and Cipolla,
+  University of Cambridge, 2022).
+
+AWS Terrain Tiles (Tilezen/Mapzen terrarium)    licenses/Terrain-Tiles-attribution.txt
+  Elevation for the terrain places and the Anywhere floor,
+  with the attribution its sources ask for.
+
+OpenStreetMap / Nominatim — ODbL 1.0            licenses/OpenStreetMap-ODbL.txt
+  Place search and place names for Anywhere on Earth.
+  (c) OpenStreetMap contributors.
+
+TRADEMARKS
+-----------------------------------------------------------
+Zellerfeld, Bambu Lab, Anycubic and Formlabs are trademarks of
+their owners, named only to say which service or printer a file
+is for. LastFirst is not affiliated with or endorsed by them.
