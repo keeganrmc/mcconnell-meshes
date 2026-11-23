@@ -233,7 +233,7 @@
     createStudioPanel();
     bindStudioEvents();
     syncUIWithCore();
-    ensureShoeModeActive();
+    ensureShoeAndLastVisible();
 
     console.log('⚡ McConnell Meshes Studio Hub initialized & active in Light Theme.');
   }
@@ -385,7 +385,7 @@
   function selectPreset(type) {
     if (!core) core = window.__mcconnellCore;
     if (!core) return;
-    ensureShoeModeActive();
+    ensureShoeAndLastVisible();
 
     const m = core.measurements;
     const s = core.shoe;
@@ -577,6 +577,9 @@
     }
     if (typeof core.syncFitUI === 'function') {
       core.syncFitUI();
+    }
+    if (typeof core.updateShoeInfo === 'function') {
+      core.updateShoeInfo();
     }
     syncHudSizing();
     syncUIWithCore();
@@ -1092,7 +1095,7 @@
 
     if (willOpen) {
       syncUIWithCore();
-      ensureShoeModeActive();
+      ensureShoeAndLastVisible();
     }
   }
 
@@ -1106,17 +1109,29 @@
       content.classList.toggle('active', content.id === `mcTab${capitalize(tabId)}`);
     });
 
-    ensureShoeModeActive();
+    ensureShoeAndLastVisible();
   }
 
   function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  function ensureShoeModeActive() {
-    if (core && core.lfPrefs && core.lfPrefs.mode !== 'shoe') {
-      core.lfPrefs.mode = 'shoe';
-      if (typeof core.lfApplyMode === 'function') core.lfApplyMode();
+  function ensureShoeAndLastVisible() {
+    if (window.__lfShow) {
+      window.__lfShow.set('last', true);
+      window.__lfShow.set('footie', true);
+      window.__lfShow.set('sole', true);
+      window.__lfShow.set('outsole', true);
+    }
+    if (core) {
+      if (core.shoe) {
+        core.shoe.footieOn = true;
+        core.shoe.soleOn = true;
+        core.shoe.outsoleOn = true;
+      }
+      if (typeof core.lfApplyShow === 'function') core.lfApplyShow();
+      if (typeof core.rebuildShoe === 'function') core.rebuildShoe();
+      if (typeof core.updateShoeInfo === 'function') core.updateShoeInfo();
     }
   }
 
