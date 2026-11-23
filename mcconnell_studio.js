@@ -388,25 +388,26 @@
     const s = core.shoe;
 
     // Update active state on top bar preset pills
-    document.querySelectorAll('.mcPresetPill').forEach(p => {
+    document.querySelectorAll('.mcPresetBar .mcPresetPill').forEach(p => {
       p.classList.toggle('active', p.dataset.preset === type);
     });
 
     if (type === 'sneaker') {
       m.lastType = 'sneaker';
-      m.heelHeight = 33;
-      m.toeSpringHeight = 25;
-      m.toeShape = 'round';
-      m.vampLength = 0.50;
-      if (core.applyLastType) core.applyLastType(m);
-
       if (s) {
         s.upperForm = 'slipon';
+        s.openBack = false;
         s.toe = 'closed';
+        s.throat = 0.50;
+        s.back = 60;
+        s.side = 48;
         s.fWall = 2.0;
+        s.gap = 1.5;
         s.stack = 60;
         s.stackToe = 40;
+        s.band = 24;
         s.tread = 'diamond';
+        s.floorDepth = 6.0;
         s.fMat = 'tpu95';
         s.sMat = 'tpu90';
         s.oMat = 'tpu95';
@@ -420,19 +421,21 @@
 
     } else if (type === 'sandal') {
       m.lastType = 'sandal';
-      m.heelHeight = 18;
-      m.toeSpringHeight = 12;
-      m.toeShape = 'round';
-      m.vampLength = 0.45;
-      if (core.applyLastType) core.applyLastType(m);
-
       if (s) {
         s.upperForm = 'mule';
+        s.openBack = true;
         s.toe = 'open';
+        s.toeMM = 55;
+        s.throat = 0.50;
+        s.back = 20;
+        s.side = 30;
         s.fWall = 2.8;
-        s.stack = 32;
-        s.stackToe = 25;
+        s.gap = 0.5;
+        s.stack = 28;
+        s.stackToe = 22;
+        s.band = 14;
         s.tread = 'flex';
+        s.floorDepth = 4.0;
         s.fMat = 'tpu95';
         s.sMat = 'tpu85';
         s.oMat = 'tpu95';
@@ -444,20 +447,20 @@
 
     } else if (type === 'heel') {
       m.lastType = 'pump';
-      m.heelHeight = 70;
-      m.toeSpringHeight = 10;
-      m.toeShape = 'almond';
-      m.vampLength = 0.62;
-      if (core.applyLastType) core.applyLastType(m);
-
       if (s) {
         s.upperForm = 'slipon';
+        s.openBack = false;
         s.toe = 'closed';
-        s.throat = 0.65;
+        s.throat = 0.68;
+        s.back = 60;
+        s.side = 40;
         s.fWall = 1.8;
-        s.stack = 24;
-        s.stackToe = 15;
+        s.gap = 0.6;
+        s.stack = 20;
+        s.stackToe = 12;
+        s.band = 12;
         s.tread = 'plain';
+        s.floorDepth = 0;
         s.fMat = 'tpu95';
         s.sMat = 'resin_hard';
         s.oMat = 'tpu95';
@@ -469,21 +472,20 @@
 
     } else if (type === 'boot') {
       m.lastType = 'boot';
-      m.heelHeight = 35;
-      m.toeSpringHeight = 18;
-      m.toeShape = 'square';
-      m.vampLength = 0.52;
-      if (core.applyLastType) core.applyLastType(m);
-
       if (s) {
         s.upperForm = 'slipon';
-        s.back = 110;
-        s.side = 95;
+        s.openBack = false;
         s.toe = 'closed';
+        s.back = 120;
+        s.side = 105;
+        s.throat = 0.42;
         s.fWall = 3.5;
+        s.gap = 2.0;
         s.stack = 85;
         s.stackToe = 60;
+        s.band = 35;
         s.tread = 'terrain';
+        s.floorDepth = 8.0;
         s.fMat = 'tpu95';
         s.sMat = 'tpu95';
         s.oMat = 'tpu95';
@@ -495,19 +497,20 @@
 
     } else if (type === 'dress') {
       m.lastType = 'oxford';
-      m.heelHeight = 28;
-      m.toeSpringHeight = 18;
-      m.toeShape = 'almond';
-      m.vampLength = 0.55;
-      if (core.applyLastType) core.applyLastType(m);
-
       if (s) {
         s.upperForm = 'slipon';
+        s.openBack = false;
         s.toe = 'closed';
+        s.back = 65;
+        s.side = 55;
+        s.throat = 0.55;
         s.fWall = 2.2;
-        s.stack = 35;
-        s.stackToe = 22;
+        s.gap = 1.0;
+        s.stack = 32;
+        s.stackToe = 18;
+        s.band = 18;
         s.tread = 'cross';
+        s.floorDepth = 3.0;
         s.fMat = 'tpu95';
         s.sMat = 'pla';
         s.oMat = 'tpu95';
@@ -520,11 +523,51 @@
       showNotification('👞 Loaded Dress Shoe: Classic Oxford with Brogue Perforations');
     }
 
-    // Trigger complete engine rebuild
-    if (typeof core.refreshAll === 'function') core.refreshAll();
-    else if (typeof core.refreshAllKeepManual === 'function') core.refreshAllKeepManual();
-
-    if (typeof core.shoeChange === 'function') core.shoeChange();
+    // 1. Clear overrides so the chosen last type sets authentic heel, toe spring, and vamp
+    if (core.clearOverrides && core.LF_SHAPE_OVERRIDES) {
+      core.clearOverrides(core.LF_SHAPE_OVERRIDES);
+    }
+    // 2. Apply last type parameters to the last
+    if (core.applyLastType) {
+      core.applyLastType(m);
+    }
+    // 3. Rebuild the last mesh and refresh measurements
+    if (typeof core.refreshAll === 'function') {
+      core.refreshAll();
+    } else if (typeof core.refreshAllKeepManual === 'function') {
+      core.refreshAllKeepManual();
+    }
+    // 4. Adapt shoe baseline dimensions to the new last shape
+    if (typeof core.adaptShoeToLast === 'function') {
+      core.adaptShoeToLast(m);
+    }
+    // 5. Force re-laying the upper and sole coverage chips (crucial for open toe / mule / boots)
+    if (typeof core.relayFootie === 'function') {
+      core.relayFootie(true);
+    }
+    if (typeof core.relaySole === 'function') {
+      core.relaySole(true);
+    }
+    // 6. Paint field colors and rebuild the 3D meshes for Three.js
+    if (typeof core.paintFieldColors === 'function') {
+      core.paintFieldColors();
+    }
+    if (typeof core.rebuildShoe === 'function') {
+      core.rebuildShoe();
+    }
+    // 7. Sync all UI panels and readouts
+    if (typeof core.syncShoeUI === 'function') {
+      core.syncShoeUI();
+    }
+    if (typeof core.syncFitUI === 'function') {
+      core.syncFitUI();
+    }
+    if (typeof core.updateShoeInfo === 'function') {
+      core.updateShoeInfo();
+    }
+    if (typeof core.shellTile === 'function') {
+      core.shellTile();
+    }
     syncUIWithCore();
   }
 
@@ -545,13 +588,6 @@
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
-          <div class="mcPresetBar" style="background:transparent;border:none;padding:0;">
-            <button class="mcPresetPill active" data-preset="sneaker" id="pSneakerInner">👟 Sneaker</button>
-            <button class="mcPresetPill" data-preset="sandal" id="pSandalInner">👡 Sandal</button>
-            <button class="mcPresetPill" data-preset="heel" id="pHeelInner">👠 Heel</button>
-            <button class="mcPresetPill" data-preset="boot" id="pBootInner">🥾 Boot</button>
-            <button class="mcPresetPill" data-preset="dress" id="pDressInner">👞 Dress</button>
-          </div>
           <button class="mcCloseBtn" id="mcStudioCloseBtn" title="Close Studio Controls">&times;</button>
         </div>
       </div>
@@ -1007,23 +1043,7 @@
       tab.onclick = () => switchTab(tab.dataset.tab);
     });
 
-    // Inner preset pills inside the Studio Panel
-    const pMap = {
-      'pSneakerInner': 'sneaker',
-      'pSandalInner': 'sandal',
-      'pHeelInner': 'heel',
-      'pBootInner': 'boot',
-      'pDressInner': 'dress'
-    };
-    for (const [id, presetKey] of Object.entries(pMap)) {
-      const b = document.getElementById(id);
-      if (b) {
-        b.onclick = () => {
-          selectPreset(presetKey);
-          document.querySelectorAll('.mcStudioHd .mcPresetPill').forEach(p => p.classList.toggle('active', p.id === id));
-        };
-      }
-    }
+
 
     // --- TAB 1: FOOT SIZING ---
     const flSlider = document.getElementById('mcFootLengthSlider');

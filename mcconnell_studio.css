@@ -879,3 +879,145 @@ input[type=range]::-webkit-slider-thumb {
   pointer-events: none !important;
   transition: opacity 0.2s, transform 0.2s !important;
 }
+
+/* ==========================================================================
+   Clean Unified Inspector, Bottom-Right Status Card & Button Cleanups
+   ========================================================================== */
+
+/* 1. Explicitly remove obstructed blue/green buttons and step navigation buttons */
+#shoeOutputs,
+#rowStudioHub,
+#quickExportStlBtn,
+#upperNextBtn,
+#soleNextOutsoleBtn,
+#typeGrid,
+details[data-key="lastType"],
+.lastDrawer[data-mode="none"] {
+  display: none !important;
+}
+
+/* 2. Unified Shoe HUD / Inspector: all form editing tools in one place */
+#shoeHud {
+  background: rgba(255, 255, 255, 0.94) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  max-height: calc(100vh - 130px) !important;
+  overflow-y: auto !important;
+  width: 320px !important;
+  padding: 12px 14px !important;
+  scrollbar-width: thin;
+}
+
+#shoeHud::-webkit-scrollbar {
+  width: 6px;
+}
+#shoeHud::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+#shoeHud h3 {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-top: 0 !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: #0f172a !important;
+}
+
+/* Form Section Headers */
+.hudSectionHeader {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 7px 10px !important;
+  margin-top: 14px !important;
+  margin-bottom: 8px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-left: 3px solid #0284c7 !important;
+  border-radius: 8px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #0f172a !important;
+}
+
+.hudSectionHeader span {
+  font-size: 14px !important;
+}
+
+/* 3. Bottom-Right Sizing, Fit & Specs Card (#shoeTile) */
+#shoeTile {
+  position: absolute !important;
+  right: 16px !important;
+  bottom: 16px !important;
+  z-index: 40 !important;
+  min-width: 280px !important;
+  max-width: 380px !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  border-radius: 12px !important;
+  padding: 10px 14px !important;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif) !important;
+  font-size: 11.5px !important;
+  line-height: 1.5 !important;
+  color: #334155 !important;
+  pointer-events: auto !important;
+}
+
+#shoeTile .shoeTileHead {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #0f172a !important;
+  margin-bottom: 3px !important;
+  letter-spacing: -0.01em !important;
+}
+
+#shoeTile .shoeTileHead b {
+  font-weight: 700 !important;
+  color: #0f172a !important;
+}
+
+#shoeTile .shoeTileWayIn {
+  font-size: 11px !important;
+  color: #0284c7 !important;
+  font-weight: 500 !important;
+  margin-bottom: 3px !important;
+}
+
+#shoeTile .shoeTileWayIn .red {
+  color: #e11d48 !important;
+  font-weight: 600 !important;
+}
+
+#shoeTile .shoeTileSpecs {
+  font-size: 11px !important;
+  color: #475569 !important;
+  line-height: 1.4 !important;
+  margin-top: 2px !important;
+}
+
+#shoeTile .shoeTileSpecs b {
+  font-weight: 600 !important;
+  color: #0f172a !important;
+}
+
+#shoeTile .shoeTileStands {
+  font-size: 10.5px !important;
+  color: #64748b !important;
+  margin-top: 2px !important;
+}

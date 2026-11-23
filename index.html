@@ -1123,7 +1123,7 @@
             </select>
           </div>
     </div></details>
-    <details class="lastDrawer" open data-mode="both"><summary>Last type</summary><div class="drawerBody">
+    <details class="lastDrawer" style="display:none !important;" data-mode="none" hidden><summary>Last type</summary><div class="drawerBody">
       <div class="grid3" id="typeGrid"></div>
     </div></details>
     <div class="tierHd" data-tier="shape">Shape</div>
@@ -1762,15 +1762,6 @@
           </div>
         </div>
         <span class="rowGap"></span>
-        <div class="lfBar" id="shoeOutputs">
-          <button id="rowStudioHub" class="mcStudioTriggerBtn" title="Unified Studio Controls: Wall Thickness, Holes, Topography, Foot Fit, and Material Simulation all together."><span class="btnIcon">⚡</span> Studio Controls</button>
-          <span class="sep"></span>
-          <button id="rowWire" title="Draw the mesh as wireframe to inspect polygon subdivision and density."><svg class="wireIcon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M9.2 3.5V20.5M14.8 3.5V20.5M3.5 9.2H20.5M3.5 14.8H20.5"/></svg>Wire</button>
-          <button id="rowUndo" class="urBtn" title="Undo (⌘Z / Ctrl+Z)" aria-label="Undo"><svg class="urIcon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg></button>
-          <button id="rowRedo" class="urBtn" title="Redo (⇧⌘Z / Ctrl+Y)" aria-label="Redo"><svg class="urIcon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></button>
-          <span class="sep"></span>
-          <button id="quickExportStlBtn" class="mcExportQuickBtn" title="Download production-ready binary STL for slicing in Bambu Studio, PrusaSlicer, or Cura.">⬇️ Export STL</button>
-        </div>
       </div>
       <!-- Hidden legacy elements for engine backward compatibility -->
       <div id="legacyElementsBank" style="display:none !important;" aria-hidden="true">
@@ -1784,6 +1775,13 @@
         <button id="rowPrint" data-pane="print"></button>
         <button id="rowExport" data-pane="output"></button>
         <button id="rowShow"></button>
+        <button id="rowStudioHub"></button>
+        <button id="rowWire"></button>
+        <button id="rowUndo"></button>
+        <button id="rowRedo"></button>
+        <button id="quickExportStlBtn"></button>
+        <button id="upperNextBtn"></button>
+        <button id="soleNextOutsoleBtn"></button>
         <span id="verShoe"></span>
         <span id="layerArrow"></span>
         <span id="layerButtonsRow"></span>
@@ -1877,106 +1875,107 @@
       <aside id="shoeHud" hidden>
         <h3><span id="hudTitle"></span><button class="hudRemove" id="hudRemoveBtn" hidden title="Back to the paint. Undo regrows it.">Ungrow</button></h3>
         <div class="hudPane" id="paneGrow" hidden><div class="tagline" id="growInfo"></div><button class="ptog" id="growBtn" style="width:100%;margin-top:8px;" title="Build this piece from its paint.">Grow</button></div>
-        <div class="hudPane" id="footieDrawer" hidden>
-      <div class="row" style="gap:8px;align-items:center;">
-        <button class="ptog" id="footieOnBtn" style="flex:1;" title="A slip-on upper: the last above the feather line, walled.">Upper</button>
-      </div>
-      <div id="footieControls" hidden>
-        <label>Style</label>
-        <div class="segRow" id="upperStyleRow" style="margin-bottom:8px;">
-          <button class="ptog" data-form="slipon" title="Slip-on: full topline all round.">Slip-on</button>
-          <button class="ptog" data-form="clog" title="Clog: rear third drops 15 mm for step-in entry.">Clog</button>
-          <button class="ptog" data-form="mule" title="Mule: back open from the quarters forward.">Mule</button>
-        </div>
-        <div class="segRow" id="upperToeRow" style="margin-bottom:8px;">
-          <button class="ptog" data-toe="closed" title="The toes covered.">Closed toe</button>
-          <button class="ptog" data-toe="peep" title="An oval open at the toe.">Peep</button>
-          <button class="ptog" data-toe="open" title="Cut across the toes.">Open toe</button>
-          <button class="ptog" id="upperSlingBtn" title="A band round an open heel.">Sling</button>
-        </div>
-        <label>Material</label>
-        <select id="footieMat" title="What the upper prints in."></select>
-        <label>Body</label>
-        <select id="footieBody" title="How the upper is filled."><option value="solid">Solid</option><option value="hollow">Hollow — walls only</option><option value="infill" title="Walls plus the slicer’s own infill at Infill %, graded or not.">Infill — the slicer’s</option><option value="lattice">Lattice — Gyroid</option><option value="lattice_voronoi">Lattice — Voronoi</option><option value="lattice_kelvin">Lattice — Kelvin</option><option value="lattice_diamond">Lattice — Diamond</option><option value="lattice_octet">Lattice — Octet</option><option value="lattice_schwarz_p">Lattice — Schwarz P</option><option value="lattice_neovius">Lattice — Neovius</option></select>
-        <div id="footieInfillRow"></div>
-        <details class="box" open id="footieFormDetails"><summary>Form<span class="on"></span></summary><div class="boxBody">
-          <div id="footieRows"></div>
-        </div></details>
-        <div id="footieBoxes"></div>
-        <button class="ptog" id="upperNextBtn" style="width:100%;margin-top:14px;height:36px;padding:0 9px;background:var(--g-purple) var(--purple);box-shadow:var(--g-purple-shadow);color:#fff;font-weight:600;border-radius:999px;border:1px solid rgba(110,24,170,.55);" title="Move to the midsole: grow under the foot down to the floor.">Next: Midsole &#8594;</button>
-      </div>
-      <div class="tagline" style="margin:8px 0 0" id="wayInInfo"></div>
-      <div class="tagline" style="margin:4px 0 0" id="footieInfo"></div>
-        </div>
-        <div class="hudPane" id="soleDrawer" hidden>
-      <div class="row" style="gap:8px;align-items:center;">
-        <button class="ptog" id="soleOnBtn" title="A Terrainer: a range hung under the foot, summits on the ground.">Sole</button>
-      </div>
-      <div id="soleControls" hidden>
-        <label>Material</label>
-        <select id="soleMat" title="What the sole prints in."></select>
-        <label>Body</label>
-        <select id="soleBody" title="How the sole is filled."><option value="solid">Solid</option><option value="hollow">Hollow — walls only</option><option value="infill" title="Walls plus the slicer’s own infill at Infill %, graded or not.">Infill — the slicer’s</option><option value="lattice">Lattice — Gyroid</option><option value="lattice_voronoi">Lattice — Voronoi</option><option value="lattice_kelvin">Lattice — Kelvin</option><option value="lattice_diamond">Lattice — Diamond</option><option value="lattice_octet">Lattice — Octet</option><option value="lattice_schwarz_p">Lattice — Schwarz P</option><option value="lattice_neovius">Lattice — Neovius</option></select>
-        <div id="soleInfillRow"></div>
-        <details class="box" open id="soleFormDetails"><summary>Form<span class="on"></span></summary><div class="boxBody" id="soleFormBox"></div></details>
-        <details class="box" open id="soleSideDetails"><summary>Terrain<span class="on"></span></summary><div class="boxBody">
-          <label>Sidewall landscape</label>
-          <select id="soleTerrain" title="The relief on the sidewall."></select>
-          <div id="soleSideBox"></div>
-          <button class="presetbtn" id="soleTerrainReroll" style="width:100%;margin:2px 0 6px;padding:5px;" title="Reroll terrain relief variation.">Reroll terrain</button>
-          <label style="margin-top:8px;">Plan outline presets</label>
-          <div class="segRow" id="soleOutlineChips" style="margin:2px 0 6px;">
-            <button class="presetbtn" data-outline="neutral" title="Neutral: straight outline from feather line">Neutral</button>
-            <button class="presetbtn" data-outline="fishtail" title="Fishtail: flared heel diffuser, sleek waist">Fishtail</button>
-            <button class="presetbtn" data-outline="sweptToe" title="Swept toe: forward aero sweep">Swept</button>
-            <button class="presetbtn" data-outline="asymmetric" title="Asymmetric: wide lateral flare, arch tuck">Asym</button>
-            <button class="presetbtn" data-outline="wideBase" title="Wide base: wide footprint all around">Wide</button>
+        <div class="hudPane" id="footieDrawer">
+          <div class="hudSectionHeader"><span>👞</span> Upper Shell Form</div>
+          <div class="row" style="gap:8px;align-items:center;">
+            <button class="ptog" id="footieOnBtn" style="flex:1;" title="A slip-on upper: the last above the feather line, walled.">Upper</button>
           </div>
-          <button class="presetbtn" id="soleEditOutlineBtn" style="width:100%;margin:2px 0 6px;padding:6px;" title="Edit the 16 plan outline flare beads with Line.">Edit outline beads</button>
-        </div></details>
-        <details class="box" open id="soleFloorDetails"><summary>Floor<span class="on"></span></summary><div class="boxBody">
-          <label>Floor landscape</label>
-          <select id="soleTread" title="The range under the foot, summits down on the ground."></select>
-          <div id="soleFloorBox"></div>
-          <button class="presetbtn" id="soleFloorReroll" style="width:100%;margin:2px 0 6px;padding:5px;" title="Reroll mountain floor peaks and valleys.">Reroll floor</button>
-          <label style="margin-top:6px;">Presets</label>
-          <div class="segRow" id="solePresetChips" style="margin:2px 0 8px;">
-            <button class="presetbtn" data-preset="flat" title="Flat: clean architectural platform">Flat</button>
-            <button class="presetbtn" data-preset="range" title="Range: classic mountain ridge platform">Range</button>
-            <button class="presetbtn" data-preset="drips" title="Drips: stalactites stretching to the floor">Drips</button>
-            <button class="presetbtn" data-preset="spires" title="Spires: needle peaks stretching down">Spires</button>
-            <button class="presetbtn" data-preset="fin" title="Heel fin: deep heel wall, lifted toe">Fin</button>
-            <button class="presetbtn" data-preset="place" title="Dolomites: real Italian alpine relief">Dolomites</button>
+          <div id="footieControls">
+            <label>Style</label>
+            <div class="segRow" id="upperStyleRow" style="margin-bottom:8px;">
+              <button class="ptog" data-form="slipon" title="Slip-on: full topline all round.">Slip-on</button>
+              <button class="ptog" data-form="clog" title="Clog: rear third drops 15 mm for step-in entry.">Clog</button>
+              <button class="ptog" data-form="mule" title="Mule: back open from the quarters forward.">Mule</button>
+            </div>
+            <div class="segRow" id="upperToeRow" style="margin-bottom:8px;">
+              <button class="ptog" data-toe="closed" title="The toes covered.">Closed toe</button>
+              <button class="ptog" data-toe="peep" title="An oval open at the toe.">Peep</button>
+              <button class="ptog" data-toe="open" title="Cut across the toes.">Open toe</button>
+              <button class="ptog" id="upperSlingBtn" title="A band round an open heel.">Sling</button>
+            </div>
+            <label>Material</label>
+            <select id="footieMat" title="What the upper prints in."></select>
+            <label>Body</label>
+            <select id="footieBody" title="How the upper is filled."><option value="solid">Solid</option><option value="hollow">Hollow — walls only</option><option value="infill" title="Walls plus the slicer’s own infill at Infill %, graded or not.">Infill — the slicer’s</option><option value="lattice">Lattice — Gyroid</option><option value="lattice_voronoi">Lattice — Voronoi</option><option value="lattice_kelvin">Lattice — Kelvin</option><option value="lattice_diamond">Lattice — Diamond</option><option value="lattice_octet">Lattice — Octet</option><option value="lattice_schwarz_p">Lattice — Schwarz P</option><option value="lattice_neovius">Lattice — Neovius</option></select>
+            <div id="footieInfillRow"></div>
+            <details class="box" open id="footieFormDetails"><summary>Form<span class="on"></span></summary><div class="boxBody">
+              <div id="footieRows"></div>
+            </div></details>
+            <div id="footieBoxes"></div>
           </div>
-          <select id="solePreset" title="A Terrainer to start from; every dial stays yours after."><option value="">—</option><option value="flat">Flat — clean architectural platform</option><option value="range">Range — a platform of peaks</option><option value="drips">Drips — the range torn into stalactites</option><option value="spires">Spires — sharp needle peaks</option><option value="fin">Heel fin — a deep heel, a lifted toe</option><option value="place">Somewhere — the Dolomites under the foot</option></select>
-          <button class="ptog" id="soleAnywhereBtn" style="width:100%;margin-top:6px;" title="Any place on Earth: search, frame, cut.">Anywhere on Earth</button>
-          <label style="margin-top:8px;">Stance &amp; stability</label>
-          <select id="soleStance" title="Ground contact pads that stabilize the shoe."><option value="0">The range alone</option><option value="3">Three — the heel and the ball</option><option value="5">Five — heel, ball and toe</option><option value="summits">Summits — mountain peaks on ground</option></select>
-          <div id="soleStanceBadge" class="tagline" style="margin:4px 0 8px;padding:4px 8px;border-radius:4px;font-size:10px;background:rgba(255,255,255,.55);display:flex;align-items:center;gap:6px;"></div>
-          <button class="presetbtn" id="soleViewUnderBtn" style="width:100%;margin:6px 0;padding:6px;" title="View from below with raking light to inspect mountain peaks.">Inspect summits (under view)</button>
-          <label style="margin-top:8px;">Mesh subdivision</label>
-          <select id="soleSubdiv" title="Mesh subdivision: Ultra adds one level, four times the faces."><option value="standard">Standard</option><option value="ultra">Ultra (one more level)</option></select>
-          <div id="solePlacePicker" hidden></div>
-        </div></details>
-        <div id="soleBoxes"></div>
-        <button class="ptog" id="soleNextOutsoleBtn" style="width:100%;margin-top:14px;height:36px;padding:0 9px;background:var(--g-purple) var(--purple);box-shadow:var(--g-purple-shadow);color:#fff;font-weight:600;border-radius:999px;border:1px solid rgba(110,24,170,.55);" title="Next step: add an outsole tread plate under the mountain peaks.">Next: Outsole &#8594;</button>
-      </div>
-      <div class="tagline" style="margin:8px 0 0" id="shoeInfo"></div>
+          <div class="tagline" style="margin:8px 0 0" id="wayInInfo"></div>
+          <div class="tagline" style="margin:4px 0 0" id="footieInfo"></div>
         </div>
-        <div class="hudPane" id="outsoleDrawer" hidden>
-      <div class="row" style="gap:8px;align-items:center;">
-        <button class="ptog" id="outsoleOnBtn" title="A second sole on the sole’s surface, under the stop line.">Outsole</button>
-      </div>
-      <div id="outsoleControls" hidden>
-        <label>Material</label>
-        <select id="outsoleMat" title="What the outsole prints in."></select>
-        <label>Body</label>
-        <select id="outsoleBody" title="How the outsole is filled."><option value="solid">Solid</option><option value="hollow">Hollow — walls only</option><option value="infill" title="Walls plus the slicer’s own infill at Infill %, graded or not.">Infill — the slicer’s</option><option value="lattice">Lattice — Gyroid</option><option value="lattice_voronoi">Lattice — Voronoi</option><option value="lattice_kelvin">Lattice — Kelvin</option><option value="lattice_diamond">Lattice — Diamond</option><option value="lattice_octet">Lattice — Octet</option><option value="lattice_schwarz_p">Lattice — Schwarz P</option><option value="lattice_neovius">Lattice — Neovius</option></select>
-        <div id="outsoleInfillRow"></div>
-        <div id="outsoleRows"></div>
-        <div id="outsoleBoxes"></div>
-      </div>
-      <div class="tagline" style="margin:8px 0 0" id="outsoleInfo"></div>
+        <div class="hudPane" id="soleDrawer">
+          <div class="hudSectionHeader"><span>⛰️</span> Midsole &amp; Terrain Form</div>
+          <div class="row" style="gap:8px;align-items:center;">
+            <button class="ptog" id="soleOnBtn" title="A Terrainer: a range hung under the foot, summits on the ground.">Sole</button>
+          </div>
+          <div id="soleControls">
+            <label>Material</label>
+            <select id="soleMat" title="What the sole prints in."></select>
+            <label>Body</label>
+            <select id="soleBody" title="How the sole is filled."><option value="solid">Solid</option><option value="hollow">Hollow — walls only</option><option value="infill" title="Walls plus the slicer’s own infill at Infill %, graded or not.">Infill — the slicer’s</option><option value="lattice">Lattice — Gyroid</option><option value="lattice_voronoi">Lattice — Voronoi</option><option value="lattice_kelvin">Lattice — Kelvin</option><option value="lattice_diamond">Lattice — Diamond</option><option value="lattice_octet">Lattice — Octet</option><option value="lattice_schwarz_p">Lattice — Schwarz P</option><option value="lattice_neovius">Lattice — Neovius</option></select>
+            <div id="soleInfillRow"></div>
+            <details class="box" open id="soleFormDetails"><summary>Form<span class="on"></span></summary><div class="boxBody" id="soleFormBox"></div></details>
+            <details class="box" open id="soleSideDetails"><summary>Terrain<span class="on"></span></summary><div class="boxBody">
+              <label>Sidewall landscape</label>
+              <select id="soleTerrain" title="The relief on the sidewall."></select>
+              <div id="soleSideBox"></div>
+              <button class="presetbtn" id="soleTerrainReroll" style="width:100%;margin:2px 0 6px;padding:5px;" title="Reroll terrain relief variation.">Reroll terrain</button>
+              <label style="margin-top:8px;">Plan outline presets</label>
+              <div class="segRow" id="soleOutlineChips" style="margin:2px 0 6px;">
+                <button class="presetbtn" data-outline="neutral" title="Neutral: straight outline from feather line">Neutral</button>
+                <button class="presetbtn" data-outline="fishtail" title="Fishtail: flared heel diffuser, sleek waist">Fishtail</button>
+                <button class="presetbtn" data-outline="sweptToe" title="Swept toe: forward aero sweep">Swept</button>
+                <button class="presetbtn" data-outline="asymmetric" title="Asymmetric: wide lateral flare, arch tuck">Asym</button>
+                <button class="presetbtn" data-outline="wideBase" title="Wide base: wide footprint all around">Wide</button>
+              </div>
+              <button class="presetbtn" id="soleEditOutlineBtn" style="width:100%;margin:2px 0 6px;padding:6px;" title="Edit the 16 plan outline flare beads with Line.">Edit outline beads</button>
+            </div></details>
+            <details class="box" open id="soleFloorDetails"><summary>Floor<span class="on"></span></summary><div class="boxBody">
+              <label>Floor landscape</label>
+              <select id="soleTread" title="The range under the foot, summits down on the ground."></select>
+              <div id="soleFloorBox"></div>
+              <button class="presetbtn" id="soleFloorReroll" style="width:100%;margin:2px 0 6px;padding:5px;" title="Reroll mountain floor peaks and valleys.">Reroll floor</button>
+              <label style="margin-top:6px;">Presets</label>
+              <div class="segRow" id="solePresetChips" style="margin:2px 0 8px;">
+                <button class="presetbtn" data-preset="flat" title="Flat: clean architectural platform">Flat</button>
+                <button class="presetbtn" data-preset="range" title="Range: classic mountain ridge platform">Range</button>
+                <button class="presetbtn" data-preset="drips" title="Drips: stalactites stretching to the floor">Drips</button>
+                <button class="presetbtn" data-preset="spires" title="Spires: needle peaks stretching down">Spires</button>
+                <button class="presetbtn" data-preset="fin" title="Heel fin: deep heel wall, lifted toe">Fin</button>
+                <button class="presetbtn" data-preset="place" title="Dolomites: real Italian alpine relief">Dolomites</button>
+              </div>
+              <select id="solePreset" title="A Terrainer to start from; every dial stays yours after."><option value="">—</option><option value="flat">Flat — clean architectural platform</option><option value="range">Range — a platform of peaks</option><option value="drips">Drips — the range torn into stalactites</option><option value="spires">Spires — sharp needle peaks</option><option value="fin">Heel fin — a deep heel, a lifted toe</option><option value="place">Somewhere — the Dolomites under the foot</option></select>
+              <button class="ptog" id="soleAnywhereBtn" style="width:100%;margin-top:6px;" title="Any place on Earth: search, frame, cut.">Anywhere on Earth</button>
+              <label style="margin-top:8px;">Stance &amp; stability</label>
+              <select id="soleStance" title="Ground contact pads that stabilize the shoe."><option value="0">The range alone</option><option value="3">Three — the heel and the ball</option><option value="5">Five — heel, ball and toe</option><option value="summits">Summits — mountain peaks on ground</option></select>
+              <div id="soleStanceBadge" class="tagline" style="margin:4px 0 8px;padding:4px 8px;border-radius:4px;font-size:10px;background:rgba(255,255,255,.55);display:flex;align-items:center;gap:6px;"></div>
+              <button class="presetbtn" id="soleViewUnderBtn" style="width:100%;margin:6px 0;padding:6px;" title="View from below with raking light to inspect mountain peaks.">Inspect summits (under view)</button>
+              <label style="margin-top:8px;">Mesh subdivision</label>
+              <select id="soleSubdiv" title="Mesh subdivision: Ultra adds one level, four times the faces."><option value="standard">Standard</option><option value="ultra">Ultra (one more level)</option></select>
+              <div id="solePlacePicker" hidden></div>
+            </div></details>
+            <div id="soleBoxes"></div>
+          </div>
+          <div class="tagline" style="margin:8px 0 0" id="shoeInfo"></div>
+        </div>
+        <div class="hudPane" id="outsoleDrawer">
+          <div class="hudSectionHeader"><span>🏁</span> Outsole Tread Form</div>
+          <div class="row" style="gap:8px;align-items:center;">
+            <button class="ptog" id="outsoleOnBtn" title="A second sole on the sole’s surface, under the stop line.">Outsole</button>
+          </div>
+          <div id="outsoleControls">
+            <label>Material</label>
+            <select id="outsoleMat" title="What the outsole prints in."></select>
+            <label>Body</label>
+            <select id="outsoleBody" title="How the outsole is filled."><option value="solid">Solid</option><option value="hollow">Hollow — walls only</option><option value="infill" title="Walls plus the slicer’s own infill at Infill %, graded or not.">Infill — the slicer’s</option><option value="lattice">Lattice — Gyroid</option><option value="lattice_voronoi">Lattice — Voronoi</option><option value="lattice_kelvin">Lattice — Kelvin</option><option value="lattice_diamond">Lattice — Diamond</option><option value="lattice_octet">Lattice — Octet</option><option value="lattice_schwarz_p">Lattice — Schwarz P</option><option value="lattice_neovius">Lattice — Neovius</option></select>
+            <div id="outsoleInfillRow"></div>
+            <div id="outsoleRows"></div>
+            <div id="outsoleBoxes"></div>
+          </div>
+          <div class="tagline" style="margin:8px 0 0" id="outsoleInfo"></div>
         </div>
         <div class="hudPane" id="layerDrawer" hidden>
           <div class="row" style="gap:8px;align-items:center;margin-bottom:8px;">
@@ -15236,22 +15235,27 @@ function shellSync(){
   const curLayer = isLayer ? (shoe.layers || []).find((l) => l.id === curLayerId) : null;
 
   document.getElementById('rowMake').classList.toggle('selected', shellPane === 'make');
-  // the HUD: the pane in hand
+  // the HUD: keep all form editing tools together in the same place
   const hud = document.getElementById('shoeHud');
-  const paneEl = { footie: 'footieDrawer', sole: 'soleDrawer', outsole: 'outsoleDrawer', make: 'paneMake' };
-  for (const [k, id] of Object.entries(paneEl)){
-    const el = document.getElementById(id);
-    if (el) el.hidden = shellPane !== k;
-  }
+  const footieEl = document.getElementById('footieDrawer');
+  const soleEl = document.getElementById('soleDrawer');
+  const outsoleEl = document.getElementById('outsoleDrawer');
+  const makeEl = document.getElementById('paneMake');
+  if (makeEl) makeEl.hidden = shellPane !== 'make';
+  if (footieEl) footieEl.hidden = shellPane === 'make';
+  if (soleEl) soleEl.hidden = shellPane === 'make';
+  if (outsoleEl) outsoleEl.hidden = shellPane === 'make';
+  const fc = document.getElementById('footieControls'); if (fc) fc.hidden = false;
+  const sc = document.getElementById('soleControls'); if (sc) sc.hidden = false;
+  const oc = document.getElementById('outsoleControls'); if (oc) oc.hidden = false;
   const layerDrawer = document.getElementById('layerDrawer');
   if (layerDrawer) layerDrawer.hidden = !isLayer;
 
   const piece = SHELL_PIECES[shellPane];
   hud.hidden = false;
-  // a piece not yet grown: the right side offers Grow, and only that — its dials are the grown piece's
   shellGrowPane();
-  document.getElementById('hudTitle').textContent = piece ? piece.title : curLayer ? curLayer.name : 'Make';
-  document.getElementById('hudRemoveBtn').hidden = isLayer || !(piece && exists(shellPane));
+  document.getElementById('hudTitle').textContent = 'Shoe Form Tools';
+  document.getElementById('hudRemoveBtn').hidden = true;
   if (isLayer && curLayer) syncLayerDrawer(curLayer);
   // the on-buttons inside the panes are the row's now
   for (const d of Object.values(SHELL_PIECES)){ const b = document.getElementById(d.onBtn); if (b) b.hidden = true; }
@@ -15338,15 +15342,52 @@ function shellTile(){
   const n = ['footie', 'sole', 'outsole'].filter((k) => shoe[SHELL_PIECES[k].onKey]).length + (shoe.layers || []).filter((l) => l.on).length;
   const paintedOnly = !n && (shellPainted('footie') || shellPainted('sole'));
   const sz = `${measurements.shoeSizeSystem} ${measurements.shoeSize} · ${LastType[measurements.lastType] ? LastType[measurements.lastType].label : measurements.lastType}`;
-  let mass = 0; for (const k of ['footie', 'sole', 'outsole']){ const p = lfShoe[k]; if (p && p.ok) mass += (typeof estimatedGrams === 'function' && estimatedGrams(k)) || 0; }
-  const est = typeof lfPrintEstimate !== 'undefined' && lfPrintEstimate ? lfPrintEstimate : null;
-  const line1 = `<b>${sz}</b> · ${n ? n + ' piece' + (n === 1 ? '' : 's') + ' grown' : paintedOnly ? 'painted, nothing grown yet' : 'nothing yet — press Upper'}${est ? ` · ${est.total.grams >= 1000 ? (est.total.grams / 1000).toFixed(2) + ' kg' : Math.round(est.total.grams) + ' g'}${est.total.hours == null ? '' : ' · ' + est.total.hours.toFixed(0) + ' h'}` : ''}`;
+
+  const head = `<b>${sz}</b> · ${n ? n + ' piece' + (n === 1 ? '' : 's') + ' grown' : paintedOnly ? 'painted, nothing grown yet' : 'nothing yet'}`;
+
+  // Way in entry status (stretches over, clearance, stretch %)
+  let wayInText = '';
+  if (shoe.footieOn){
+    const e = lfShoe.entry;
+    if (shoe.upperForm === 'mule') {
+      wayInText = 'Way in: steps in — a mule holds by the instep.';
+    } else if (e && e.mode === 'clog') {
+      const sweepClearance = (e.sweep && e.sweep.clearanceMM) || e.clearanceMM || 6;
+      wayInText = `Way in: slides in from behind, clears by ${sweepClearance.toFixed(0)} mm`;
+    } else if (e && e.ok) {
+      const clr = (e.opening - e.needed).toFixed(0);
+      const str = e.stretch ? ` (${Math.round(e.stretch * 100)}% stretch)` : '';
+      wayInText = `Way in: stretches over, clears by ${clr} mm${str}.`;
+    } else if (e && e.shortMM) {
+      wayInText = `<span class="red">Way in: ${e.shortMM.toFixed(0)} mm short</span>`;
+    }
+  }
+
+  // Piece specs breakdown (volume, mass, material, solid/infill)
+  const pieceSpecs = [];
+  try {
+    if (shoe.footieOn && lfShoe.footie && lfShoe.footie.ok && typeof pieceLine === 'function') {
+      pieceSpecs.push(pieceLine('Upper', lfShoe.footie, shoe.fMat, shoe.fBody, shoe.fInfill));
+    }
+    if (shoe.soleOn && lfShoe.sole && lfShoe.sole.ok && typeof pieceLine === 'function') {
+      pieceSpecs.push(pieceLine('Midsole', lfShoe.sole, shoe.sMat, shoe.sBody, shoe.sInfill));
+    }
+    if (shoe.outsoleOn && lfShoe.outsole && lfShoe.outsole.ok && typeof pieceLine === 'function') {
+      pieceSpecs.push(pieceLine('Outsole', lfShoe.outsole, shoe.oMat, shoe.oBody, shoe.oInfill));
+    }
+  } catch (err) {}
+
   const so = lfShoe.sole && lfShoe.sole.ok && lfShoe.sole.stats.standsOn;
-  const stands = so ? (shoe.tread === 'none' || shoe.floorDepth === 0 ? 'Flat platform' : so.pads >= 3 ? `Stands on ${so.pads} pads, ${so.spreadX.toFixed(0)} × ${so.spreadZ.toFixed(0)} mm` : `<span class="red">Stands on ${so.pads} pad${so.pads === 1 ? '' : 's'} — it rocks</span>`) : '';
-  const e = lfShoe.entry;
-  const way = shoe.footieOn && e ? (e.mode === 'clog' ? 'Way in: slides in from behind' : e.ok ? `Way in: clears by ${(e.opening - e.needed).toFixed(0)} mm` : `<span class="red">Way in: ${e.shortMM.toFixed(0)} mm short</span>`) : '';
-  const line2 = [stands, way].filter(Boolean).join(' · ');
-  t.innerHTML = line1 + (line2 ? '<br>' + line2 : '');
+  const stands = so ? (shoe.tread === 'none' || shoe.floorDepth === 0 ? '' : so.pads >= 3 ? `Stands on ${so.pads} pads` : `<span class="red">Stands on ${so.pads} pad${so.pads === 1 ? '' : 's'} — rocks</span>`) : '';
+
+  const parts = [
+    `<div class="shoeTileHead">${head}</div>`,
+    wayInText ? `<div class="shoeTileWayIn">${wayInText}</div>` : '',
+    pieceSpecs.length ? `<div class="shoeTileSpecs">${pieceSpecs.join('<br>')}</div>` : '',
+    stands ? `<div class="shoeTileStands">${stands}</div>` : ''
+  ].filter(Boolean);
+
+  t.innerHTML = parts.join('');
 }
 function lfApplyMode(){
   const mode = lfPrefs.mode === 'shoe' ? 'shoe' : 'last';
@@ -16611,9 +16652,15 @@ window.__mcconnellCore = {
   LastType,
   applyLastType,
   relayFootie,
+  relaySole,
+  rebuildShoe,
   scheduleShoeRebuild,
   syncShoeUI,
+  syncFitUI,
   adaptShoeToLast,
+  updateShoeInfo,
+  shellTile,
+  paintFieldColors,
 };
 </script>
 <script src="mcconnell_studio.js"></script>
