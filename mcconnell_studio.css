@@ -1,166 +1,479 @@
-/* McConnell Meshes - Studio Hub Styling */
+/* ==========================================================================
+   McConnell Meshes — Precision Industrial Design Theme
+   Inspired by Keegan McConnell's Monogram Architecture (@keeganrmc)
+   Color Palette: Deep Midnight Navy (#080c14, #0e1626) & Precision Electric Cyan (#00d2ff)
+   ========================================================================== */
+
 :root {
-  --mc-accent: #00d26a;
-  --mc-accent-glow: rgba(0, 210, 106, 0.35);
-  --mc-purple: #9b2fe0;
-  --mc-dark-bg: rgba(18, 19, 22, 0.92);
-  --mc-card-bg: rgba(28, 30, 36, 0.85);
-  --mc-card-border: rgba(255, 255, 255, 0.12);
-  --mc-text-hi: #ffffff;
-  --mc-text-mid: #c0c4cc;
-  --mc-text-dim: #7d8290;
-  --mc-gold: #ffbe26;
-  --mc-warn: #ff4757;
-  --mc-pass: #2ed573;
+  /* Architectural Dark Palette */
+  --bg: #080c14;
+  --void: #080c14;
+  --ink: #f8fafc;
+  --ink-dim: #94a3b8;
+  --cream: #ffffff;
+  --dim: #8e9bb0;
+  
+  /* Brand Accents */
+  --accent: #00d2ff;
+  --on-accent: #050c18;
+  --purple: #00d2ff;
+  --purple-dim: #7dd3fc;
+  --purple-txt: #38bdf8;
+  --yellow: #00f0ff;
+  --yellow-deep: #0284c7;
+  --warn: #ff4757;
+  
+  /* Surfaces & Glassmorphism */
+  --panel: rgba(14, 22, 38, 0.88);
+  --panel2: rgba(19, 31, 51, 0.94);
+  --glass: rgba(12, 19, 33, 0.85);
+  --glass-hi: rgba(16, 26, 44, 0.94);
+  --line: rgba(255, 255, 255, 0.11);
+  --hair: rgba(255, 255, 255, 0.07);
+  --blur: blur(24px) saturate(1.8);
+  
+  /* Precision Radiuses & Controls */
+  --r-in: 7px;
+  --r-bar: 12px;
+  --r-panel: 14px;
+  --ctl-s: 26px;
+  --ctl: 30px;
+  
+  /* Shading & High-Tech Glows */
+  --g-rim: inset 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --g-drop: 0 18px 48px rgba(0, 0, 0, 0.7), 0 4px 14px rgba(0, 0, 0, 0.4);
+  --g-jelly: rgba(255, 255, 255, 0.07);
+  --g-jelly-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 8px rgba(0, 0, 0, 0.4);
+  --g-purple: linear-gradient(180deg, #00d2ff 0%, #009acc 100%);
+  --g-purple-shadow: 0 4px 16px rgba(0, 210, 255, 0.45);
+  --g-yellow: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+  --g-yellow-shadow: 0 4px 16px rgba(56, 189, 248, 0.4);
+  --g-well: inset 0 2px 4px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  /* McConnell Meshes Specifics */
+  --mc-navy: #0e1726;
+  --mc-navy-light: #152238;
+  --mc-cyan: #00d2ff;
+  --mc-cyan-glow: rgba(0, 210, 255, 0.35);
+  --mc-border: rgba(255, 255, 255, 0.12);
+  --mc-card-bg: rgba(16, 25, 42, 0.88);
 }
 
-/* Quick Access Pills on Top Navigation */
-.mcconnellPillBtn {
+/* Base Body & Viewport Blueprint Backdrop */
+html, body {
+  background: var(--bg) !important;
+  color: var(--ink) !important;
+}
+
+#viewport {
+  background: #090e17 !important;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(14, 25, 45, 0.5) 0%, transparent 80%),
+    linear-gradient(rgba(0, 210, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 210, 255, 0.03) 1px, transparent 1px) !important;
+  background-size: 100% 100%, 40px 40px, 40px 40px !important;
+}
+
+/* ==========================================================================
+   Brand Logo & Header Integration
+   ========================================================================== */
+.mcconnellBrandBadge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 3px 12px 3px 4px !important;
+  border-radius: 9px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  cursor: pointer !important;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.mcconnellBrandBadge:hover {
+  background: rgba(0, 210, 255, 0.12) !important;
+  border-color: var(--mc-cyan) !important;
+  box-shadow: 0 0 14px var(--mc-cyan-glow) !important;
+}
+
+.kmLogoImg {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+}
+
+.kmBrandText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.kmBrandName {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+}
+
+.kmBrandSub {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--mc-cyan);
+}
+
+/* Navigation Bars Overhaul */
+.lfBar {
+  background: var(--glass) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--r-bar) !important;
+  box-shadow: var(--g-drop), var(--g-rim) !important;
+  -webkit-backdrop-filter: var(--blur) !important;
+  backdrop-filter: var(--blur) !important;
+}
+
+.lfBar button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
+  color: #cbd5e1;
+  border-radius: 7px;
+  font-weight: 600;
+  transition: all 0.14s ease;
+}
+
+.lfBar button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.lfBar button.active, .lfBar button.on, .lfBar button.selected {
+  background: var(--g-purple) !important;
+  color: #050c18 !important;
+  font-weight: 700 !important;
+  border-color: var(--mc-cyan) !important;
+  box-shadow: 0 0 12px var(--mc-cyan-glow) !important;
+}
+
+.lfBar .btnIcon {
+  margin-right: 3px;
+  font-size: 12px;
+}
+
+/* Step Arrows in Top Navigation */
+.stepArrow {
+  color: var(--mc-cyan) !important;
+  font-weight: 700 !important;
+  opacity: 0.8 !important;
+}
+
+/* Left Vertical CAD Rail */
+#shoeRail {
+  background: rgba(12, 18, 30, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 12px !important;
+  padding: 6px 4px !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55) !important;
+}
+
+#shoeRail button {
+  width: 54px !important;
+  height: 36px !important;
+  margin: 3px 0 !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  border-radius: 8px !important;
+}
+
+#shoeRail .railPiece {
+  color: var(--mc-cyan) !important;
+  font-weight: 700 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  margin-bottom: 4px !important;
+  padding-bottom: 4px !important;
+}
+
+/* Right Shoe Inspector HUD */
+#shoeHud, #sidebar {
+  background: rgba(13, 20, 33, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  -webkit-backdrop-filter: blur(28px) !important;
+  backdrop-filter: blur(28px) !important;
+}
+
+#shoeHud h3, #sidebar h3, .tierHd {
+  color: var(--mc-cyan) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* Drawers & Boxes */
+details.box, details.lastDrawer {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 10px !important;
+  margin-bottom: 8px !important;
+}
+
+details.box summary, details.lastDrawer summary {
+  color: #e2e8f0 !important;
+  font-weight: 600 !important;
+  padding: 8px 12px !important;
+}
+
+details.box[open], details.lastDrawer[open] {
+  border-color: rgba(0, 210, 255, 0.3) !important;
+}
+
+/* Segmented Buttons */
+.segRow {
+  background: rgba(8, 12, 20, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  padding: 2px !important;
+}
+
+.segRow button, .presetbtn {
+  background: transparent !important;
+  color: #94a3b8 !important;
+  border-radius: 6px !important;
+  border: none !important;
+  font-weight: 600 !important;
+  transition: all 0.15s ease !important;
+}
+
+.segRow button:hover, .presetbtn:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.segRow button.active, .presetbtn.active, .ptog.on {
+  background: var(--mc-cyan) !important;
+  color: #050c18 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 10px var(--mc-cyan-glow) !important;
+}
+
+/* Custom Precision Sliders */
+input[type=range] {
+  accent-color: var(--mc-cyan) !important;
+  height: 5px !important;
+  border-radius: 999px !important;
+}
+
+/* Inputs & Selects */
+input:not([type=range]):not([type=checkbox]), select, textarea {
+  background: rgba(8, 12, 20, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 7px !important;
+  color: #ffffff !important;
+  font-family: inherit !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--mc-cyan) !important;
+  box-shadow: 0 0 0 2px rgba(0, 210, 255, 0.25) !important;
+}
+
+/* ==========================================================================
+   High-Precision Floating Tooltip Engine
+   Fast, Informative, Industrial Design Tooltips on Every Hover
+   ========================================================================== */
+#mcconnellTooltip {
+  position: fixed;
+  z-index: 10000;
+  max-width: 320px;
+  background: rgba(10, 16, 26, 0.96);
+  color: #f8fafc;
+  border: 1px solid rgba(0, 210, 255, 0.45);
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 16px rgba(0, 210, 255, 0.25);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(6px) scale(0.98);
+  transition: opacity 0.12s ease-out, transform 0.12s ease-out;
+  font-family: var(--sans, system-ui);
+}
+
+#mcconnellTooltip.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.mcTooltipTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mcTooltipTitle {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+}
+
+.mcTooltipShortcut {
+  font-family: var(--mono, monospace);
+  font-size: 9px;
+  background: rgba(0, 210, 255, 0.15);
+  color: var(--mc-cyan);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 210, 255, 0.3);
+}
+
+.mcTooltipDesc {
+  font-size: 11px;
+  line-height: 1.45;
+  color: #cbd5e1;
+  margin-bottom: 5px;
+}
+
+.mcTooltipTip {
+  font-size: 10px;
+  line-height: 1.35;
+  color: #38bdf8;
+  background: rgba(0, 210, 255, 0.08);
+  border-left: 2px solid var(--mc-cyan);
+  padding: 3px 6px;
+  border-radius: 0 4px 4px 0;
+}
+
+/* ==========================================================================
+   Shoe Quick Studio Floating Bar & Modal
+   ========================================================================== */
+.mcStudioPill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  height: 26px;
-  padding: 0 10px;
-  background: linear-gradient(135deg, rgba(155, 47, 224, 0.15), rgba(0, 210, 106, 0.15));
-  border: 1px solid rgba(155, 47, 224, 0.4);
-  border-radius: 999px;
-  color: var(--ink, #212223);
-  font-family: inherit;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.15), rgba(15, 23, 42, 0.8));
+  border: 1px solid rgba(0, 210, 255, 0.4);
+  border-radius: 8px;
+  color: #ffffff;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.16s ease;
   white-space: nowrap;
 }
 
-.mcconnellPillBtn:hover {
-  background: linear-gradient(135deg, rgba(155, 47, 224, 0.3), rgba(0, 210, 106, 0.3));
-  border-color: var(--mc-purple);
-  box-shadow: 0 2px 10px var(--mc-accent-glow);
+.mcStudioPill:hover {
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.3), rgba(15, 23, 42, 0.95));
+  border-color: var(--mc-cyan);
+  box-shadow: 0 0 12px var(--mc-cyan-glow);
   transform: translateY(-1px);
 }
 
-.mcconnellPillBtn.active {
-  background: var(--g-purple, #9b2fe0);
-  color: #fff !important;
-  border-color: var(--mc-purple);
-  box-shadow: 0 3px 12px rgba(155, 47, 224, 0.45);
+.mcStudioPill.active {
+  background: var(--mc-cyan);
+  color: #050c18 !important;
+  box-shadow: 0 0 16px var(--mc-cyan-glow);
 }
 
-.mcconnellPillBtn .mcBadge {
-  display: inline-block;
+.mcStudioPill .mcBadge {
+  background: rgba(0, 210, 255, 0.25);
+  color: var(--mc-cyan);
   padding: 1px 5px;
+  border-radius: 4px;
   font-size: 9px;
-  border-radius: 6px;
-  background: rgba(0, 210, 106, 0.25);
-  color: var(--mc-accent);
-  font-weight: 700;
+  font-weight: 800;
 }
 
-/* Main Studio Hub Panel */
+.mcStudioPill.active .mcBadge {
+  background: rgba(5, 12, 24, 0.35);
+  color: #050c18;
+}
+
+/* Studio Modal Overhaul */
 #mcconnellStudioPanel {
   position: fixed;
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(880px, calc(100vw - 32px));
-  max-height: calc(100vh - 120px);
-  background: rgba(22, 23, 27, 0.94);
-  color: var(--mc-text-hi);
-  -webkit-backdrop-filter: blur(28px) saturate(2);
-  backdrop-filter: blur(28px) saturate(2);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  width: min(920px, calc(100vw - 32px));
+  max-height: calc(100vh - 100px);
+  background: rgba(11, 17, 28, 0.96) !important;
+  border: 1px solid rgba(0, 210, 255, 0.35) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.8), 0 0 24px rgba(0, 210, 255, 0.2) !important;
+  -webkit-backdrop-filter: blur(32px) !important;
+  backdrop-filter: blur(32px) !important;
   z-index: 1000;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  font-family: var(--sans, system-ui);
   transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 #mcconnellStudioPanel.minimized {
   opacity: 0;
   pointer-events: none;
-  transform: translateX(-50%) translateY(40px) scale(0.96);
+  transform: translateX(-50%) translateY(40px) scale(0.97);
 }
 
-/* Studio Header */
 .mcStudioHd {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 18px;
-  background: rgba(12, 13, 16, 0.6);
+  padding: 12px 20px;
+  background: rgba(8, 13, 22, 0.85);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.mcStudioTitleGroup {
+.mcStudioLogoGroup {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.mcStudioLogo {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #fff;
+.mcStudioLogoGroup img {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mcStudioLogoText {
   display: flex;
-  align-items: center;
-  gap: 6px;
+  flex-direction: column;
 }
 
-.mcStudioLogo b {
-  color: #fff;
-}
-
-.mcStudioLogo span.mesh {
-  color: var(--yellow, #fbec1a);
+.mcStudioLogoText b {
+  font-size: 13px;
   font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #ffffff;
 }
 
-.mcStudioSubtitle {
-  font-size: 11px;
-  color: var(--mc-text-dim);
-  border-left: 1px solid rgba(255, 255, 255, 0.15);
-  padding-left: 10px;
+.mcStudioLogoText span {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--mc-cyan);
 }
 
-.mcStudioActions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.mcCloseBtn {
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--mc-text-mid);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  transition: all 0.14s;
-}
-
-.mcCloseBtn:hover {
-  background: rgba(255, 71, 87, 0.25);
-  border-color: var(--mc-warn);
-  color: #fff;
-}
-
-/* Tab Bar */
 .mcStudioTabs {
   display: flex;
   gap: 4px;
-  padding: 8px 16px;
-  background: rgba(16, 17, 21, 0.7);
+  padding: 8px 18px;
+  background: rgba(10, 15, 26, 0.7);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   overflow-x: auto;
 }
@@ -169,11 +482,11 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 6px 14px;
-  border-radius: 10px;
+  padding: 7px 14px;
+  border-radius: 8px;
   border: 1px solid transparent;
   background: transparent;
-  color: var(--mc-text-mid);
+  color: #94a3b8;
   font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
@@ -182,26 +495,21 @@
 }
 
 .mcStudioTab:hover {
+  color: #ffffff;
   background: rgba(255, 255, 255, 0.06);
-  color: #fff;
 }
 
 .mcStudioTab.active {
-  background: linear-gradient(180deg, rgba(155, 47, 224, 0.4) 0%, rgba(132, 33, 201, 0.5) 100%);
-  border-color: rgba(155, 47, 224, 0.7);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(155, 47, 224, 0.35);
+  background: rgba(0, 210, 255, 0.14) !important;
+  border-color: var(--mc-cyan) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.25) !important;
 }
 
-.mcStudioTab .icon {
-  font-size: 13px;
-}
-
-/* Studio Body */
 .mcStudioBody {
-  padding: 16px 20px;
+  padding: 18px 22px;
   overflow-y: auto;
-  max-height: calc(80vh - 120px);
+  max-height: calc(82vh - 120px);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -217,231 +525,117 @@
   display: flex;
 }
 
-/* Grid & Cards inside Tabs */
-.mcGrid2 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 14px;
-}
-
-.mcGrid3 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 12px;
-}
-
 .mcCard {
   background: var(--mc-card-bg);
-  border: 1px solid var(--mc-card-border);
-  border-radius: 14px;
-  padding: 14px;
+  border: 1px solid var(--mc-border);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
   gap: 10px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
 .mcCardTitle {
   font-size: 12px;
   font-weight: 700;
-  color: var(--yellow, #fbec1a);
-  text-transform: uppercase;
   letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mc-cyan);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2px;
 }
 
 .mcCardDesc {
   font-size: 11px;
-  color: var(--mc-text-dim);
-  line-height: 1.4;
-}
-
-/* Controls */
-.mcControlRow {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.mcControlHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
-  color: var(--mc-text-mid);
-}
-
-.mcControlHeader span.val {
-  font-family: var(--mono, monospace);
-  color: #fff;
-  font-weight: 600;
-  background: rgba(255, 255, 255, 0.08);
-  padding: 1px 6px;
-  border-radius: 4px;
-}
-
-.mcSlider {
-  width: 100%;
-  accent-color: var(--mc-purple);
-  height: 6px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  cursor: pointer;
-}
-
-.mcSelect, .mcInput {
-  background: rgba(12, 13, 16, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 8px;
-  color: #fff;
-  padding: 6px 10px;
-  font-size: 11.5px;
-  font-family: inherit;
-  outline: none;
-  width: 100%;
-}
-
-.mcSelect:focus, .mcInput:focus {
-  border-color: var(--mc-purple);
-  box-shadow: 0 0 0 2px rgba(155, 47, 224, 0.3);
-}
-
-/* Button Presets */
-.mcBtnRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.mcPresetBtn {
-  flex: 1;
-  min-width: 90px;
-  padding: 6px 8px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--mc-text-mid);
-  font-size: 10.5px;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.14s ease;
-}
-
-.mcPresetBtn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
-.mcPresetBtn.active {
-  background: linear-gradient(135deg, rgba(155, 47, 224, 0.4), rgba(0, 210, 106, 0.4));
-  border-color: var(--mc-accent);
-  color: #fff;
+  line-height: 1.45;
+  color: #94a3b8;
 }
 
 .mcActionBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
   padding: 9px 16px;
-  border-radius: 10px;
-  font-size: 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
   font-weight: 700;
   cursor: pointer;
   border: none;
-  transition: all 0.16s ease;
+  transition: all 0.15s ease;
 }
 
 .mcActionBtn.primary {
-  background: linear-gradient(180deg, #b25ff0 0%, #9b2fe0 100%);
-  color: #fff;
-  box-shadow: 0 3px 12px rgba(155, 47, 224, 0.4);
+  background: linear-gradient(180deg, #00d2ff 0%, #009acc 100%);
+  color: #050c18;
+  box-shadow: 0 4px 14px rgba(0, 210, 255, 0.4);
 }
 
 .mcActionBtn.primary:hover {
-  background: linear-gradient(180deg, #be74f4 0%, #a73fee 100%);
+  background: linear-gradient(180deg, #22e6ff 0%, #00b4ee 100%);
+  box-shadow: 0 6px 18px rgba(0, 210, 255, 0.55);
   transform: translateY(-1px);
-  box-shadow: 0 5px 16px rgba(155, 47, 224, 0.55);
 }
 
 .mcActionBtn.secondary {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
 }
 
 .mcActionBtn.secondary:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .mcActionBtn.green {
-  background: linear-gradient(180deg, #00d26a 0%, #00b359 100%);
-  color: #0d1a12;
-  box-shadow: 0 3px 12px rgba(0, 210, 106, 0.35);
+  background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
 }
 
 .mcActionBtn.green:hover {
-  background: linear-gradient(180deg, #1fe07e 0%, #00c463 100%);
+  background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
   transform: translateY(-1px);
-  box-shadow: 0 5px 16px rgba(0, 210, 106, 0.5);
 }
 
-/* Printability Score & Indicators */
-.mcPrintStatus {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Metric Display Readout */
+.mcMetricValue {
+  font-family: var(--mono, monospace);
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.mcPrintCheckItem {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
+.mcMetricLabel {
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
 }
 
 .mcDot {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   display: inline-block;
 }
 
 .mcDot.pass {
-  background: var(--mc-pass);
-  box-shadow: 0 0 8px rgba(46, 213, 115, 0.6);
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
 }
 
 .mcDot.warn {
-  background: var(--mc-gold);
-  box-shadow: 0 0 8px rgba(255, 190, 38, 0.6);
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
 }
 
 .mcDot.fail {
-  background: var(--mc-warn);
-  box-shadow: 0 0 8px rgba(255, 71, 87, 0.6);
-}
-
-/* Metrics badge */
-.mcMetricValue {
-  font-family: var(--mono, monospace);
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-}
-
-.mcMetricLabel {
-  font-size: 10px;
-  color: var(--mc-text-dim);
-  text-transform: uppercase;
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
 }

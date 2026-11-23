@@ -1748,22 +1748,30 @@
     <div id="shoeShell" hidden>
       <div id="shoeRow">
         <div class="lfBar" id="shoePieces">
-        <span class="barMark lfAboutOpen" role="button" tabindex="0" aria-label="About LastFirst" title="About LastFirst"><i>⟨</i><b>LAST</b><span class="flip">FIRST</span><i>⟩</i></span><span id="verShoe" role="button" tabindex="0" title="Update to the latest build; clears the cache and reloads."></span><span class="sep"></span>
-        <button id="rowLast" title="The last alone: size, type, shape; the shoe steps aside.">Last</button>
+        <span class="barMark lfAboutOpen mcconnellBrandBadge" role="button" tabindex="0" aria-label="About McConnell Meshes" title="About McConnell Meshes: Generative 3D Footwear Studio by Keegan McConnell (@keeganrmc)">
+          <img src="assets/logo.jpg" alt="KM" class="kmLogoImg">
+          <div class="kmBrandText">
+            <span class="kmBrandName">McCONNELL</span>
+            <span class="kmBrandSub">MESHES</span>
+          </div>
+        </span>
+        <span id="verShoe" role="button" tabindex="0" title="McConnell Meshes v1.0"></span>
         <span class="sep"></span>
         <span id="shoeSteps" role="group" aria-label="The shoe, in steps">
-        <button id="rowUpper" data-step="1" data-piece="footie" title="Upper on the last: press to add or select.">Upper</button>
+        <button id="rowUpper" data-step="1" data-piece="footie" title="Upper Shell: Shape and sculpt the upper shoe body around the last. Adjust wall thickness, perforations, and collar style."><span class="btnIcon">👟</span> Upper</button>
         <span class="stepArrow" aria-hidden="true">›</span>
-        <button id="rowMidsole" data-step="2" data-piece="sole" title="Midsole under upper: press to add or select.">Midsole</button>
+        <button id="rowMidsole" data-step="2" data-piece="sole" title="Midsole Cushion: Shock-absorbing intermediate structure. Supports cushioning thickness, graded infill, and lattice cores."><span class="btnIcon">👣</span> Midsole</button>
         <span class="stepArrow" aria-hidden="true">›</span>
-        <button id="rowOutsole" data-step="3" data-piece="outsole" title="Outsole on midsole: press to add or select.">Outsole</button>
+        <button id="rowOutsole" data-step="3" data-piece="outsole" title="Outsole &amp; Tread: Ground contact layer. Carve or raise topographic contours, traction lugs, and flex sipes."><span class="btnIcon">⚡</span> Outsole</button>
         <span class="stepArrow" id="layerArrow" aria-hidden="true" hidden>›</span>
         <span id="layerButtonsRow" style="display:inline-flex;gap:4px;"></span>
         <span class="stepArrow" aria-hidden="true">›</span>
-        <span class="rowKeep"><button id="rowLayer" disabled title="Grow a piece first: a layer sits on one.">+ Layer</button>
+        <span class="rowKeep"><button id="rowLayer" disabled title="Add Layer: Stack a structural strap, heel counter, mudguard, or tongue reinforcement onto the shoe."><span class="btnIcon">➕</span> Layer</button>
         <span class="stepArrow" aria-hidden="true">›</span>
-        <button id="rowMake" data-pane="make" title="Print, files, the size run and Zellerfeld: everything that leaves the app.">Make</button></span>
+        <button id="rowMake" data-pane="make" title="3D Print Lab &amp; Exports: Slicer-ready 3MF, binary STL, material simulation (TPU/Resin), overhang validation, and production estimates."><span class="btnIcon">🖨️</span> 3D Print Lab</button></span>
         </span>
+        <span class="sep"></span>
+        <button id="rowLast" title="Foot &amp; Last Fitting: Calibrate foot length, width, girth, arch height, and toe spring. The shoe adapts dynamically to your foot shape."><span class="btnIcon">🦶</span> Foot / Last Fit</button>
         </div>
         <span class="rowGap"></span>
         <div class="lfBar" id="shoeOutputs">
@@ -5608,7 +5616,7 @@ renderer.toneMappingExposure = 0.95;
 viewportEl.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-const LF_BG = new THREE.Color(0xeeeef0);   // the wet-plastic sky behind the 3D (#viewport is the same)
+const LF_BG = new THREE.Color(0x0a0f18);   // McConnell Meshes dark architectural CAD studio environment
 scene.background = LF_BG;
 /* BACKDROP (Pgon's): a picture behind the last, to trace a photo of a last or a shoe. It is the
    viewport's own background, the picture fitted whole over the void and dimmed by Show through.
@@ -6263,16 +6271,16 @@ const shoe = {
   stackShare: 76 / 281.8, stackToeShare: 76 / 281.8, stepShare: 0,
   bandShare: 24 / 281.8, toeSpringShare: 12 / 281.8, heelSpringShare: 6 / 281.8,
   flareShare: 1 / 98.5, reachShare: 20 / 98.5, backShare: 65 / 281.8, sideShare: 60 / 281.8,
-  footieOn: false, back: 65, side: 60, throat: 0.55, fWall: 1.8, fMat: 'tpu95', fitLock: true, openBack: false,
+  footieOn: true, back: 65, side: 60, throat: 0.55, fWall: 2.0, fMat: 'tpu95', fitLock: true, openBack: false,
   upperForm: 'slipon',   // slipon | clog (the rear third open) | mule (the upper ends at the quarters)
   toe: 'closed', toeMM: 50, sling: false, slingMM: 32,   // the toe: closed | peep | open; a sling round an open back
-  soleOn: false, stack: 76, stackToe: 76, step: 0, skirt: 0.25, edge: 6, draft: 'straight', band: 24, sWall: 2,
+  soleOn: true, stack: 76, stackToe: 76, step: 0, skirt: 0.25, edge: 6, draft: 'straight', band: 24, sWall: 2,
   outline: 'neutral', preset: '',
   relief: 8, reliefTop: 0, terrain: 'ridges', scale: 8, seed: 1, turn: 0, sMat: 'tpu95',
   tread: 'peaks', treadScale: 6, summits: 0.1, cutAt: 3.0, floorCurve: 1.6, stretch: 1, flare: 1, tear: 0, wear: 0, stance: 3, roof: 4, floorDetail: 0, soleSubdiv: 'standard',
   printer: PRINTER_DEFAULT, orientation: 'soleDown', pair: false, layerMM: 0.2, support: 'tree',
   fBody: 'solid', fInfill: 20, fCell: 12, fSkin: 1.5, fSkinWhere: 'all', fMelt: 0, fRes: 'standard', fGraded: false, fGradeMode: 'uniform', fGradePreset: 'Soft heel, firm arch', fGradePoints: [], fGradeNew: 40, sBody: 'lattice', sInfill: 20, sCell: 14, sSkin: 1.5, sSkinWhere: 'all', sMelt: 0, sRes: 'standard', sGraded: false, sGradeMode: 'uniform', sGradePreset: 'Soft heel, firm arch', sGradePoints: [], sGradeNew: 40,
-  outsoleOn: false, stop: 20, oMat: 'tpu95', oBody: 'solid', oInfill: 20, oCell: 10, oSkin: 1.5, oSkinWhere: 'all', oMelt: 0, oRes: 'standard', oGraded: false, oGradeMode: 'uniform', oGradePreset: 'Soft heel, firm arch', oGradePoints: [], oGradeNew: 40, oWall: 3,
+  outsoleOn: true, stop: 20, oMat: 'tpu95', oBody: 'solid', oInfill: 20, oCell: 10, oSkin: 1.5, oSkinWhere: 'all', oMelt: 0, oRes: 'standard', oGraded: false, oGradeMode: 'uniform', oGradePreset: 'Soft heel, firm arch', oGradePoints: [], oGradeNew: 40, oWall: 3,
   toeSpring: 12, heelSpring: 6, rocker: 0, floorDepth: 60, depthShare: 60 / 76,
   superbDetail: 0, rimSoft: 0, holeSoft: 0,
   floorPlace: null,   // { lat, lon, wKm, bearingDeg, cutOn, cutM, name } — Anywhere's frame, refetched on restore
@@ -14894,7 +14902,7 @@ window.__lfHistoryForceCommit = () => { if (_lfHistoryTimer){ clearTimeout(_lfHi
    read was a TDZ ReferenceError (typeof does not guard one) and every boot
    with a shoe autosaved died blank. */
 const LF_PREFS_KEY = 'lastfirst.prefs';
-const LF_PREF_DEFAULTS = { tooltips: true, grid: true, wireframe: false, mode: 'last', ortho: false };
+const LF_PREF_DEFAULTS = { tooltips: true, grid: true, wireframe: false, mode: 'shoe', ortho: false };
 const lfPrefs = { ...LF_PREF_DEFAULTS };
 let lfPrefsWritable = true;
 try {
