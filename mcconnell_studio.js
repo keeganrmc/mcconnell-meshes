@@ -3,13 +3,13 @@
  * Created by Keegan McConnell (@keeganrmc)
  * 
  * Features:
- * 1. Shoe-First Architecture: Launches directly into 3D shoe creation & modeling.
- * 2. High-Precision Floating Tooltip Engine: Every tool, dial, button, and slider displays rich footwear & printability explanations on hover.
- * 3. Personal Foot & Last Calibration Station: Adjust foot length, width, girth, arch height, and toe spring anytime.
- * 4. Shoe Wall Thickness & Gap Offset Studio: 0.8mm–10.0mm continuous thickness with 1-click presets.
- * 5. Procedural Holes & Ventilation Generator: Breathable field vents, broguing, lace eyelets, drainage ports.
- * 6. Topography & Surface Sculptor: Elevation contour lines, diamond knurling, hexagonal lugs, flex sipes, mountain reliefs.
- * 7. 3D Printability & Material Simulation Lab: TPU 95A/90A/85A/70A, SLA resin, PLA, overhang checks, watertight checks, 1-click exports.
+ * 1. 5 1-Click Shoe Presets: Sneaker, Sandal, Heel, Boot, Dress Shoe.
+ * 2. High-Precision Floating Tooltip Engine: Every tool, preset, button, and slider displays rich footwear & print guidance on hover.
+ * 3. Unified Bento Studio Controls: All shoe creation tools grouped together in an scannable, clean dashboard (WANDR UX trends).
+ * 4. Shoe-First Architecture: Launches directly with full 3D shoe (Upper shell, Midsole cushion, Outsole tread).
+ * 5. Architectural Light Theme: Clean Scandinavian studio palette (#f8fafc, #0f172a, #0284c7).
+ * 6. Procedural Wall Thickness (0.8–8.0mm), Holes/Vents, and Topography/Tread Generator.
+ * 7. Live 3D Printability Verification (Watertight Manifold, Overhang safety, Min wall check, Material simulation).
  */
 
 (function () {
@@ -20,205 +20,200 @@
 
   // Comprehensive Tooltip Dictionary for Instant Hover Guidance
   const TOOLTIP_DATABASE = {
-    // Top Navigation & Step Workflow
-    'rowUpper': {
-      title: 'Upper Shell (Footie)',
-      desc: 'The conformal outer upper of the shoe wrapping the foot last. Dial wall thickness, punch breathability vents, and sculpt collar openings.',
-      tip: 'Recommended 1.8mm–2.2mm wall for flexible TPU to balance structural durability and lightweight comfort.'
+    // 5 1-Click Shoe Presets
+    'presetSneakerBtn': {
+      title: '👟 Sneaker Preset (Athletic Runner)',
+      desc: 'Generates an athletic sneaker geometry with a flexible 2.0mm upper shell, perforated breathability field vents, high-rebound midsole cushion, and knurled traction tread.',
+      tip: 'Optimal for daily wear and running. Slices and 3D prints smoothly in TPU 95A or 90A.'
     },
-    'rowMidsole': {
-      title: 'Midsole Cushion',
-      desc: 'The intermediate shock-absorbing platform between the foot and floor. Controls stack height, arch support, heel-to-toe drop, and cushioning infill.',
-      tip: 'Supports Gyroid, Voronoi, and Kelvin lattice structures for custom mechanical spring and damping.'
+    'presetSandalBtn': {
+      title: '👡 Sandal Preset (Ergonomic Slide)',
+      desc: 'Generates an open-toe ergonomic slide with contoured arch support, 2.8mm structural cross-straps, peep-toe clearance, and wave flex sipes.',
+      tip: 'Requires zero support material if printed flat sole-down. Recommended for softer TPU 85A.'
     },
-    'rowOutsole': {
-      title: 'Outsole & Tread',
-      desc: 'The ground-contact traction layer. Emboss or carve topographic elevation contours, knurled diamond grip, hexagonal lugs, or flex sipes.',
-      tip: 'Carve sipes (grooves) for road flexibility; raise lugs for outdoor grip. Recommended depth: 1.5mm–3.0mm.'
+    'presetHeelBtn': {
+      title: '👠 Heel Preset (Sculpted Pump)',
+      desc: 'Builds an elegant high-heel pump with a 70mm elevated heel cup, graceful arched shank, sleek 1.8mm shell, low-throat vamp, and smooth dress sole.',
+      tip: 'Features reinforced shank geometry. Best printed in dual-material: rigid heel core with flexible vamp.'
     },
-    'rowLayer': {
-      title: 'Add Structural Layer',
-      desc: 'Stacks a secondary reinforcement piece onto the shoe: heel counter, tongue, lace eyestay, collar piping, mudguard, or welt.',
-      tip: 'Layers can have their own independent wall thickness and material parameters.'
+    'presetBootBtn': {
+      title: '🥾 Boot Preset (Rugged Work Boot)',
+      desc: 'Engineers a heavy-duty boot with 110mm high-shaft ankle collar, rugged 3.5mm thick impact shell, reinforced welt, and deep hexagonal mountain lug outsole.',
+      tip: 'Engineered for high tear resistance and abrasion protection. Print with 3.5mm solid wall.'
     },
-    'rowMake': {
-      title: '3D Print Lab & Production Slicing',
-      desc: 'Production staging center. Validates watertight manifold geometry, checks overhang angles for supports, simulates TPU/Resin material behavior, and generates 3MF/STL.',
-      tip: 'Use 120° toe-up orientation for support-free monolithic TPU shoe printing.'
+    'presetDressBtn': {
+      title: '👞 Dress Shoe Preset (Classic Oxford)',
+      desc: 'Models a formal Oxford shoe featuring classic almond toe, elegant vamp proportions, decorative brogue perforation accents along the quarters, and low-profile welt.',
+      tip: 'Brogue holes are parametric 2.0mm through-holes that provide both authentic styling and ventilation.'
     },
-    'rowLast': {
-      title: 'Foot & Last Calibration',
-      desc: 'Adjust the anatomical foot last dimensions (length, width, girth, arch height, toe spring). The shoe model adapts organically to fit your foot.',
-      tip: 'Calibrate with socks on if designing everyday sneakers, or bare measurements for molded slides.'
+
+    // Studio Hub & Action Triggers
+    'rowStudioHub': {
+      title: '⚡ Studio Controls Dashboard',
+      desc: 'Open the unified master control panel grouping all shoe tools together: Fit, Wall Thickness, Holes, Topography, and 3D Print Lab.',
+      tip: 'Toggle anytime to tweak geometry without losing your 3D view.'
     },
-    'rowFile': {
-      title: 'Project Files & Document Storage',
-      desc: 'Manage shoe projects: Create new shoe, save current design, reopen autosaved versions, or load reference scans.',
-      tip: 'McConnell Meshes features crash-proof autosave persisted in your browser storage.'
+    'mcStudioHubBtn': {
+      title: '⚡ Studio Controls Dashboard',
+      desc: 'Open the unified master control panel grouping all shoe tools together: Fit, Wall Thickness, Holes, Topography, and 3D Print Lab.',
+      tip: 'Toggle anytime to tweak geometry without losing your 3D view.'
     },
-    'rowPrint': {
-      title: '3D Slicer Staging (3MF)',
-      desc: 'Places the shoe stack on your 3D printer bed (Bambu Lab, Anycubic, Formlabs) and calculates layer heights, weight, time, and costs.',
-      tip: 'Exports directly as a production 3MF project with pre-configured print parameters.'
-    },
-    'rowExport': {
-      title: 'CAD & Mesh Export Hub',
-      desc: 'Download your shoe model as high-resolution Binary STL, OBJ, Rhino 3DM, or 1:1 SVG/DXF flat cutting dies.',
-      tip: 'Binary STL is universally compatible with Bambu Studio, OrcaSlicer, PrusaSlicer, and Cura.'
-    },
-    'rowShow': {
-      title: 'Layer Visibility & Isolated Display',
-      desc: 'Toggle visibility of individual shoe pieces: Upper shell, Midsole cushion, Outsole, and the internal Foot Last.',
-      tip: 'Hide the upper to inspect the internal footbed and arch contouring.'
+    'quickExportStlBtn': {
+      title: '⬇️ 1-Click Binary STL Export',
+      desc: 'Instantly exports a clean, watertight binary STL file of the active shoe ready to drag-and-drop into Bambu Studio, OrcaSlicer, PrusaSlicer, or Cura.',
+      tip: 'Universally compatible with all FDM and SLA 3D printers.'
     },
     'rowWire': {
       title: 'Toggle Wireframe (W)',
-      desc: 'Displays the underlying polygonal mesh wireframe to inspect Catmull-Clark subdivision, edge density, and quad topology.',
-      tip: 'High-density regions indicate fine details like perforations or embossed topography.'
+      desc: 'Inspect Catmull-Clark quad topology, polygon density, and subdivision surface smoothness.',
+      tip: 'Higher mesh density in curved regions ensures smooth 3D printed contours.'
     },
     'rowUndo': {
       title: 'Undo (⌘Z / Ctrl+Z)',
-      desc: 'Revert the most recent modeling stroke, parameter adjustment, or preset change.',
-      tip: 'Full history stack preserved in memory.'
+      desc: 'Revert the most recent parametric edit, sculpt stroke, or preset selection.',
+      tip: 'Full history stack kept in memory.'
     },
     'rowRedo': {
       title: 'Redo (⇧⌘Z / Ctrl+Y)',
       desc: 'Reapply the previously undone action.',
-      tip: 'Quickly toggle before and after to compare subtle geometry changes.'
+      tip: 'Compare design variations with instant redo.'
     },
 
-    // Left CAD Rail Tools
+    // Left CAD Rail
     'railOrbit': {
       title: 'Orbit & Camera Navigation',
-      desc: 'Left-click + drag to orbit 360° around shoe. Right-click or two-finger drag to pan. Scroll wheel to zoom.',
-      tip: 'Double-click anywhere to center the camera on that surface point.'
+      desc: 'Click + drag to rotate 360° around shoe. Right-click or two fingers to pan. Scroll wheel to zoom in/out.',
+      tip: 'Double click on any part of the shoe to focus and center the camera.'
     },
     'railSculpt': {
-      title: 'Surface Sculpt (Freehand Push/Pull)',
-      desc: 'Sculpt the shoe surface interactively like digital clay. Pull outward, push inward, smooth, or flatten.',
-      tip: 'Great for building custom anatomical toe box relief or custom arch humps.'
+      title: 'Surface Sculpt (Clay Push/Pull)',
+      desc: 'Sculpt the shoe upper or last freehand. Push outward, pull inward, or smooth contours interactively.',
+      tip: 'Useful for building anatomical reliefs for bunions or extra arch support.'
     },
     'railMeasure': {
       title: 'Precision Calipers & Tape Measure',
-      desc: 'Click any two surface points to measure linear distance and anatomical tape-wrap girth around the shoe.',
-      tip: 'Ensures ball girth and instep height match physical foot calipers.'
+      desc: 'Measure straight-line distance and anatomical tape-wrap girth around the shoe surface.',
+      tip: 'Verify ball girth and instep clearances match physical measurements.'
     },
     'railPaint': {
       title: 'Paint Coverage Region',
-      desc: 'Brush on the surface to define where the upper, straps, or sole layers exist.',
-      tip: 'Stroke along the feather line to extend or trim the shoe body.'
+      desc: 'Brush on the surface to define where the upper shell, straps, or sole layers extend.',
+      tip: 'Feathered edge brush creates organic transitions.'
     },
     'railErase': {
-      title: 'Erase Coverage (Cutout Tool)',
-      desc: 'Erase painted coverage to create ventilation windows, peep-toes, or sandal cutouts.',
-      tip: 'Feathered brush edges create smooth organic cutouts.'
+      title: 'Erase Cutouts & Windows',
+      desc: 'Erase painted coverage to sculpt ventilation cutouts, peep-toes, or open-back sandal heel straps.',
+      tip: 'Erase quarters to create open mules or summer slides.'
     },
     'railLine': {
-      title: 'Vector Contour & Rim Editor',
-      desc: 'Place and drag vector control points along the shoe collar to shape flowing topline curves.',
-      tip: 'Double-click to insert an anchor node; drag to dynamically deform the opening.'
+      title: 'Vector Rim & Topline Editor',
+      desc: 'Manipulate vector anchor nodes along the collar opening to customize the shoe entry silhouette.',
+      tip: 'Drag collar nodes down for low-cut athletic profiles, or lift for high-top boots.'
     },
     'railGap': {
-      title: 'Offset & Gap Brush',
-      desc: 'Paint localized standoff distance between the shoe and the foot (e.g. extra room for bunions or high instep).',
-      tip: 'Allows micro-adjusting fit in high-friction zones to prevent blisters.'
+      title: 'Fit Gap & Standoff Brush',
+      desc: 'Paint localized standoff clearance between the foot and the inner shoe wall.',
+      tip: 'Add +1.5mm in high-friction zones to eliminate blisters.'
     },
     'railColor': {
       title: 'Variable Wall Thickness Brush',
-      desc: 'Paint zoned wall thickness variations across the shoe (e.g. 3.5mm toe cap, 1.2mm quarter breathability).',
-      tip: 'Blends smoothly across edges to eliminate stress concentrations.'
+      desc: 'Paint thickness gradients across the shoe (e.g. 3.5mm toe box bumper, 1.4mm breathable side panels).',
+      tip: 'Graduated thickness optimizes shoe weight while protecting impact areas.'
     },
     'railPoints': {
       title: 'Pattern Focus Points',
-      desc: 'Tap points on the shoe where procedural tread sipes, ventilation grids, or knurling converge.',
-      tip: 'Aligns traction patterns with foot strike and push-off vectors.'
+      desc: 'Place focal convergence points where procedural tread sipes, knurling, or holes gather.',
+      tip: 'Align pattern convergence with the metatarsal flex axis for natural walking motion.'
     },
     'railCage': {
-      title: 'SuperB Subdivision Cage Handles',
-      desc: 'Directly manipulate the low-poly control cage vertices to sculpt sweeping conceptual shoe silhouettes.',
-      tip: 'Catmull-Clark subdivision ensures the final output remains perfectly smooth and fair.'
+      title: 'Subdivision Cage Handles',
+      desc: 'Directly pull low-poly control cage vertices to shape dramatic sweeping footwear silhouettes.',
+      tip: 'Catmull-Clark subdivision keeps the final printable solid fair and continuous.'
     },
 
-    // Studio Hub & Custom Controls
-    'mcStudioHubBtn': {
-      title: '⚡ McConnell Studio Hub',
-      desc: 'Open the master control center: Foot Fit, Wall Thickness, Holes, Topography, and 3D Print Simulation.',
-      tip: 'Access all essential generative shoe creation tools in one unified dashboard.'
-    },
+    // Studio Modal Controls: Foot Fit
     'mcFootLengthSlider': {
       title: 'Foot Length Calibration (mm)',
-      desc: 'Sets the true anatomical heel-to-toe length of your foot. Shoe sizing and grading scale automatically.',
+      desc: 'True anatomical heel-to-toe length. The last and shoe automatically re-grade and scale to fit.',
       tip: 'Standard adult lengths range from 220mm (US W 5) to 300mm (US M 13).'
     },
     'mcBallWidthSlider': {
-      title: 'Ball Width & Fitting',
-      desc: 'Calibrates forefoot width across the 1st and 5th metatarsal heads (the widest part of the foot).',
-      tip: 'Narrow (B), Medium (D), Wide (EE), Extra Wide (4E).'
+      title: 'Ball Width & Fitting (mm)',
+      desc: 'Width across the 1st and 5th metatarsal heads (the widest part of the foot).',
+      tip: 'Select B for Narrow, D for Medium/Standard, EE for Wide, 4E for Extra Wide.'
     },
     'mcInstepSlider': {
-      title: 'Instep Girth & Volume',
-      desc: 'Adjusts the midfoot cone height over the arch. Crucial for slip-on shoe entry and lockdown.',
-      tip: 'Increase for high arches or athletic feet with thick insteps.'
+      title: 'Instep Volume & Cone Height (mm)',
+      desc: 'Controls vertical girth over the midfoot arch. Crucial for comfortable slip-on shoe entry.',
+      tip: 'Increase for high-volume athletic arches to prevent top-of-foot pressure.'
     },
     'mcHeelWidthSlider': {
-      title: 'Heel Seat Width',
-      desc: 'Sets heel cup width to ensure secure rearfoot lockdown without heel slip.',
-      tip: 'A snug heel cup prevents lateral slippage during walking or running.'
+      title: 'Heel Seat Width (mm)',
+      desc: 'Calibrates rearfoot cup width for secure lockdown without heel slippage.',
+      tip: 'A snug heel cup ensures positive stability during push-off.'
     },
     'mcToeSpringSlider': {
-      title: 'Toe Spring Lift (Rocker)',
-      desc: 'Curvature lifting the shoe tip off the floor to facilitate smooth forefoot roll-through.',
-      tip: '5mm for flat minimalist barefoot shoes; 15mm–25mm for athletic rockers.'
+      title: 'Toe Spring Lift (mm)',
+      desc: 'Upward curvature lifting the shoe tip off the floor to promote smooth forward roll-through.',
+      tip: '0–5mm for minimalist barefoot shoes; 15–25mm for rockered athletic runners.'
     },
+
+    // Studio Modal Controls: Wall Thickness
     'mcWallMMSlider': {
-      title: 'Master Wall Thickness (mm)',
-      desc: 'Controls physical wall thickness of the shoe shell for structural strength in additive manufacturing.',
-      tip: '1.2mm = flexible/ultralight; 2.0mm = balanced sneaker; 3.2mm = durable clog/work shoe.'
+      title: 'Master Shell Wall Thickness (mm)',
+      desc: 'Sets the physical solid thickness of the shoe upper for additive manufacturing durability.',
+      tip: '1.2mm = ultralight; 2.0mm = balanced sneaker; 3.5mm = rugged work boot.'
     },
     'mcGapMMSlider': {
-      title: 'Internal Footbed Gap (mm)',
-      desc: 'Standoff offset between foot last and inner shoe wall for socks, orthotic footbeds, or comfort fit.',
-      tip: 'Set to 1.5mm–2.0mm for standard sock accommodation, or 0.0mm for molded skin-fit slides.'
+      title: 'Footbed Standoff Gap (mm)',
+      desc: 'Internal clearance offset between foot last and inner shoe wall for socks and orthotic insoles.',
+      tip: '1.5mm is standard for athletic socks; 0.0mm for molded skin-fit recovery slides.'
     },
+
+    // Studio Modal Controls: Holes & Vents
     'mcPerfHoleSlider': {
-      title: 'Hole Diameter (mm)',
-      desc: 'Diameter of each punched ventilation hole through the upper shell.',
-      tip: '2.0mm–3.5mm provides optimal airflow while maintaining waterproof resistance on TPU prints.'
+      title: 'Vent Hole Diameter (mm)',
+      desc: 'Punched diameter of each procedural ventilation hole through the upper shell.',
+      tip: '2.0mm–3.0mm provides optimal airflow while keeping water and debris out.'
     },
     'mcPerfPitchSlider': {
-      title: 'Perforation Spacing / Pitch (mm)',
+      title: 'Hole Spacing / Pitch (mm)',
       desc: 'Center-to-center distance between adjacent ventilation holes.',
-      tip: 'Tighter pitch (<6mm) creates mesh-like breathability; wider pitch (>10mm) creates classic brogue accents.'
+      tip: 'Tighter pitch (<7mm) gives dense mesh airflow; wider pitch (>10mm) creates classic brogue accents.'
     },
     'mcPerfBorderSlider': {
       title: 'Rim Margin Clearance (mm)',
-      desc: 'Safety border distance from collar rims and sole edges where no holes may be punched.',
-      tip: 'Prevents edge tears and maintains structural perimeter stiffness.'
+      desc: 'Solid safety perimeter along collar openings and sole seams where no holes may be punched.',
+      tip: 'Protects collar tear-strength and ensures clean print bed perimeters.'
     },
+
+    // Studio Modal Controls: Topography
     'mcTreadPatternSelect': {
       title: 'Outsole Topography Pattern',
-      desc: 'Procedural surface geometry: Elevation Contours, Diamond Knurling, Hexagonal Honeycomb, Wave Flex, or Mountain Relief.',
+      desc: 'Select procedural tread surface: Elevation Contours, Diamond Knurling, Hex Honeycomb, Flex Sipes, or Mountain Relief.',
       tip: 'Contours and Diamond Knurl provide multi-directional wet-weather traction.'
     },
     'mcTreadDepthSlider': {
       title: 'Tread Lug Depth (mm)',
-      desc: 'How deeply tread grooves cut into the outsole or how high traction lugs protrude.',
-      tip: '1.5mm for road shoes; 3.0mm–4.5mm for trail and outdoor lugs.'
+      desc: 'Depth of carved siping grooves or protrusion height of raised traction lugs.',
+      tip: '1.5mm–2.0mm for road shoes; 3.0mm–4.5mm for aggressive outdoor trail lugs.'
     },
+
+    // Studio Modal Controls: 3D Print Lab
     'mcPrintMaterialSelect': {
       title: 'Manufacturing Material Profile',
-      desc: 'Selects the 3D printing filament or resin (TPU 95A, TPU 90A, TPU 85A/70A, PLA, SLA Resins).',
-      tip: 'Automatically adjusts design overhang limits and minimum wall thickness checks.'
+      desc: 'Filament/resin profile: TPU 95A, TPU 90A, TPU 85A, TPU 70A, PLA, or SLA Resins.',
+      tip: 'Overhang limits and minimum wall thickness thresholds automatically validate against this material.'
     },
     'mcExportStlBtn': {
-      title: '1-Click Binary STL Export',
-      desc: 'Generates a clean, watertight binary STL file ready to slice in Bambu Studio, PrusaSlicer, or Cura.',
-      tip: 'Directly printable on Bambu Lab, Anycubic, Creality, and Formlabs 3D printers.'
+      title: 'Download Binary STL',
+      desc: 'Generates watertight binary STL solid ready for slicing in Bambu Studio, PrusaSlicer, or Cura.',
+      tip: 'Recommended slice setting: 0.2mm layer height, 3 wall perimeters, 15% Gyroid infill.'
     },
     'mcExport3mfBtn': {
-      title: '1-Click 3MF Production Package',
-      desc: 'Bundles 3D geometry with material presets, bed positioning, and slicer metadata in a single file.',
-      tip: 'The gold standard format for multi-material and additive footwear manufacturing.'
+      title: 'Download 3MF Production Package',
+      desc: 'Exports 3MF archive with material metadata, print orientation, and bed staging included.',
+      tip: 'Best for Bambu Lab X1/P1/A1 and OrcaSlicer multi-material workflows.'
     }
   };
 
@@ -226,19 +221,19 @@
   function initStudio() {
     core = window.__mcconnellCore;
     if (!core) {
-      setTimeout(initStudio, 150);
+      setTimeout(initStudio, 120);
       return;
     }
 
     createTooltipDOM();
     setupTooltips();
-    createQuickNavButtons();
+    wireTopBarPresets();
     createStudioPanel();
-    bindEvents();
+    bindStudioEvents();
     syncUIWithCore();
     ensureShoeModeActive();
 
-    console.log('⚡ McConnell Meshes Studio Hub initialized & active.');
+    console.log('⚡ McConnell Meshes Studio Hub initialized & active in Light Theme.');
   }
 
   // 1. Tooltip DOM & Hover Engine
@@ -276,12 +271,12 @@
 
       let entry = TOOLTIP_DATABASE[id];
       if (!entry && dataTip) {
-        entry = { title: target.textContent || 'Tool', desc: dataTip, tip: 'Part of the McConnell Meshes footwear design suite.' };
+        entry = { title: target.textContent.trim() || 'Control', desc: dataTip, tip: 'Part of McConnell Meshes precision footwear suite.' };
       } else if (!entry && titleAttr) {
         entry = {
-          title: target.getAttribute('aria-label') || target.textContent.trim().slice(0, 24) || 'Shoe Tool',
+          title: target.getAttribute('aria-label') || target.textContent.trim().slice(0, 26) || 'Shoe Tool',
           desc: titleAttr,
-          tip: 'Click or adjust to modify the 3D footwear model in real time.'
+          tip: 'Click or adjust to update the 3D shoe model.'
         };
       }
 
@@ -302,10 +297,10 @@
 
         positionTooltip(e.clientX, e.clientY);
         tipEl.classList.add('visible');
-      }, 140); // Snappy 140ms hover delay
+      }, 140); // 140ms hover delay
     }, true);
 
-    document.addEventListener('mouseout', (e) => {
+    document.addEventListener('mouseout', () => {
       clearTimeout(tipTimer);
       if (tipEl) tipEl.classList.remove('visible');
     }, true);
@@ -325,48 +320,215 @@
     let y = mouseY + pad;
 
     const rect = tipEl.getBoundingClientRect();
-    if (x + 320 > window.innerWidth) x = mouseX - 320 - pad;
+    if (x + 330 > window.innerWidth) x = mouseX - 330 - pad;
     if (y + 140 > window.innerHeight) y = mouseY - 140 - pad;
 
     tipEl.style.left = `${Math.max(10, x)}px`;
     tipEl.style.top = `${Math.max(10, y)}px`;
   }
 
-  // 2. Navigation Bar Buttons & KM Monogram
-  function createQuickNavButtons() {
-    const outputsBar = document.getElementById('shoeOutputs');
-    const piecesBar = document.getElementById('shoePieces');
-    if (!outputsBar) return;
+  // 2. Wire Top Bar 5 Presets & Action Buttons
+  function wireTopBarPresets() {
+    const sneakerBtn = document.getElementById('presetSneakerBtn');
+    const sandalBtn = document.getElementById('presetSandalBtn');
+    const heelBtn = document.getElementById('presetHeelBtn');
+    const bootBtn = document.getElementById('presetBootBtn');
+    const dressBtn = document.getElementById('presetDressBtn');
 
-    // Main Studio Hub Pill
-    if (!document.getElementById('mcStudioHubBtn')) {
-      const hubBtn = document.createElement('button');
-      hubBtn.id = 'mcStudioHubBtn';
-      hubBtn.className = 'mcStudioPill';
-      hubBtn.title = 'Open McConnell Meshes Studio Hub (Foot Fit, Wall Thickness, Holes, Topography, 3D Print Lab)';
-      hubBtn.innerHTML = `<span>⚡</span><b>Studio Hub</b><span class="mcBadge">McConnell</span>`;
-      hubBtn.onclick = () => toggleStudioPanel();
-      outputsBar.insertBefore(hubBtn, outputsBar.firstChild);
+    if (sneakerBtn) sneakerBtn.onclick = () => selectPreset('sneaker');
+    if (sandalBtn) sandalBtn.onclick = () => selectPreset('sandal');
+    if (heelBtn) heelBtn.onclick = () => selectPreset('heel');
+    if (bootBtn) bootBtn.onclick = () => selectPreset('boot');
+    if (dressBtn) dressBtn.onclick = () => selectPreset('dress');
+
+    // Studio Controls trigger
+    const hubTrigger = document.getElementById('rowStudioHub');
+    if (hubTrigger) {
+      hubTrigger.onclick = () => toggleStudioPanel();
     }
 
-    // Update Brand Mark in shoePieces with KM Monogram
-    if (piecesBar) {
-      const brandMark = piecesBar.querySelector('.barMark');
-      if (brandMark) {
-        brandMark.className = 'barMark lfAboutOpen mcconnellBrandBadge';
-        brandMark.innerHTML = `
-          <img src="assets/logo.jpg" alt="KM" class="kmLogoImg">
-          <div class="kmBrandText">
-            <span class="kmBrandName">McCONNELL</span>
-            <span class="kmBrandSub">MESHES</span>
-          </div>
-        `;
-        brandMark.title = 'McConnell Meshes: Generative 3D Footwear Studio by Keegan McConnell (@keeganrmc)';
-      }
+    // Wireframe toggle
+    const wireBtn = document.getElementById('rowWire');
+    if (wireBtn) {
+      wireBtn.onclick = () => {
+        const nativeWire = document.getElementById('wireToggleBtn');
+        if (nativeWire) nativeWire.click();
+      };
+    }
+
+    // Undo / Redo
+    const undoBtn = document.getElementById('rowUndo');
+    if (undoBtn) {
+      undoBtn.onclick = () => {
+        const u = document.getElementById('undoBtn');
+        if (u) u.click();
+      };
+    }
+    const redoBtn = document.getElementById('rowRedo');
+    if (redoBtn) {
+      redoBtn.onclick = () => {
+        const r = document.getElementById('redoBtn');
+        if (r) r.click();
+      };
+    }
+
+    // Quick Export STL
+    const quickStl = document.getElementById('quickExportStlBtn');
+    if (quickStl) {
+      quickStl.onclick = () => triggerBinarySTLExport();
     }
   }
 
-  // 3. Build the Studio Hub Floating Modal
+  // Master 5-Preset Execution Engine
+  function selectPreset(type) {
+    if (!core) return;
+    ensureShoeModeActive();
+
+    const m = core.measurements;
+    const s = core.shoe;
+
+    // Update active state on top bar preset pills
+    document.querySelectorAll('.mcPresetPill').forEach(p => {
+      p.classList.toggle('active', p.dataset.preset === type);
+    });
+
+    if (type === 'sneaker') {
+      m.lastType = 'sneaker';
+      m.heelHeight = 33;
+      m.toeSpringHeight = 25;
+      m.toeShape = 'round';
+      m.vampLength = 0.50;
+      if (core.applyLastType) core.applyLastType(m);
+
+      if (s) {
+        s.upperForm = 'slipon';
+        s.toe = 'closed';
+        s.fWall = 2.0;
+        s.stack = 60;
+        s.stackToe = 40;
+        s.tread = 'diamond';
+        s.fMat = 'tpu95';
+        s.sMat = 'tpu90';
+        s.oMat = 'tpu95';
+        if (s.f) {
+          s.f.perf = 'field';
+          s.f.perfHole = 2.8;
+          s.f.perfPitch = 7.0;
+        }
+      }
+      showNotification('👟 Loaded Sneaker: Athletic Runner with 2.0mm Shell & Field Vents');
+
+    } else if (type === 'sandal') {
+      m.lastType = 'sandal';
+      m.heelHeight = 18;
+      m.toeSpringHeight = 12;
+      m.toeShape = 'round';
+      m.vampLength = 0.45;
+      if (core.applyLastType) core.applyLastType(m);
+
+      if (s) {
+        s.upperForm = 'mule';
+        s.toe = 'open';
+        s.fWall = 2.8;
+        s.stack = 32;
+        s.stackToe = 25;
+        s.tread = 'flex';
+        s.fMat = 'tpu95';
+        s.sMat = 'tpu85';
+        s.oMat = 'tpu95';
+        if (s.f) {
+          s.f.perf = 'none';
+        }
+      }
+      showNotification('👡 Loaded Sandal: Open-Toe Ergonomic Slide with Wave Flex Sipes');
+
+    } else if (type === 'heel') {
+      m.lastType = 'pump';
+      m.heelHeight = 70;
+      m.toeSpringHeight = 10;
+      m.toeShape = 'almond';
+      m.vampLength = 0.62;
+      if (core.applyLastType) core.applyLastType(m);
+
+      if (s) {
+        s.upperForm = 'slipon';
+        s.toe = 'closed';
+        s.throat = 0.65;
+        s.fWall = 1.8;
+        s.stack = 24;
+        s.stackToe = 15;
+        s.tread = 'plain';
+        s.fMat = 'tpu95';
+        s.sMat = 'resin_hard';
+        s.oMat = 'tpu95';
+        if (s.f) {
+          s.f.perf = 'none';
+        }
+      }
+      showNotification('👠 Loaded Heel: Sculpted High-Heel Pump with 70mm Lift');
+
+    } else if (type === 'boot') {
+      m.lastType = 'boot';
+      m.heelHeight = 35;
+      m.toeSpringHeight = 18;
+      m.toeShape = 'square';
+      m.vampLength = 0.52;
+      if (core.applyLastType) core.applyLastType(m);
+
+      if (s) {
+        s.upperForm = 'slipon';
+        s.back = 110;
+        s.side = 95;
+        s.toe = 'closed';
+        s.fWall = 3.5;
+        s.stack = 85;
+        s.stackToe = 60;
+        s.tread = 'terrain';
+        s.fMat = 'tpu95';
+        s.sMat = 'tpu95';
+        s.oMat = 'tpu95';
+        if (s.f) {
+          s.f.perf = 'none';
+        }
+      }
+      showNotification('🥾 Loaded Boot: Rugged High-Shaft Boot with 3.5mm Shell');
+
+    } else if (type === 'dress') {
+      m.lastType = 'oxford';
+      m.heelHeight = 28;
+      m.toeSpringHeight = 18;
+      m.toeShape = 'almond';
+      m.vampLength = 0.55;
+      if (core.applyLastType) core.applyLastType(m);
+
+      if (s) {
+        s.upperForm = 'slipon';
+        s.toe = 'closed';
+        s.fWall = 2.2;
+        s.stack = 35;
+        s.stackToe = 22;
+        s.tread = 'cross';
+        s.fMat = 'tpu95';
+        s.sMat = 'pla';
+        s.oMat = 'tpu95';
+        if (s.f) {
+          s.f.perf = 'brogue';
+          s.f.perfHole = 2.0;
+          s.f.perfPitch = 6.0;
+        }
+      }
+      showNotification('👞 Loaded Dress Shoe: Classic Oxford with Brogue Perforations');
+    }
+
+    // Trigger complete engine rebuild
+    if (typeof core.refreshAll === 'function') core.refreshAll();
+    else if (typeof core.refreshAllKeepManual === 'function') core.refreshAllKeepManual();
+
+    if (typeof core.shoeChange === 'function') core.shoeChange();
+    syncUIWithCore();
+  }
+
+  // 3. Build the Bento Studio Controls Panel (Master Dashboard)
   function createStudioPanel() {
     if (document.getElementById('mcconnellStudioPanel')) return;
 
@@ -377,16 +539,20 @@
     panel.innerHTML = `
       <div class="mcStudioHd">
         <div class="mcStudioLogoGroup">
-          <img src="assets/logo.jpg" alt="KM">
           <div class="mcStudioLogoText">
             <b>McCONNELL MESHES</b>
-            <span>SHOE &amp; LAST GENERATIVE 3D PRINT STUDIO &middot; @KEEGANRMC</span>
+            <span>STUDIO CONTROLS &middot; PARAMETRIC 3D FOOTWEAR &middot; @KEEGANRMC</span>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
-          <button class="mcStudioPill" id="mcQuickSneakerPresetBtn" style="height:26px;font-size:10px;">👟 Preset: Runner</button>
-          <button class="mcStudioPill" id="mcQuickClogPresetBtn" style="height:26px;font-size:10px;">👣 Preset: Clog</button>
-          <button class="mcCloseBtn" id="mcStudioCloseBtn" title="Close Studio Hub">&times;</button>
+          <div class="mcPresetBar" style="background:transparent;border:none;padding:0;">
+            <button class="mcPresetPill active" data-preset="sneaker" id="pSneakerInner">👟 Sneaker</button>
+            <button class="mcPresetPill" data-preset="sandal" id="pSandalInner">👡 Sandal</button>
+            <button class="mcPresetPill" data-preset="heel" id="pHeelInner">👠 Heel</button>
+            <button class="mcPresetPill" data-preset="boot" id="pBootInner">🥾 Boot</button>
+            <button class="mcPresetPill" data-preset="dress" id="pDressInner">👞 Dress</button>
+          </div>
+          <button class="mcCloseBtn" id="mcStudioCloseBtn" title="Close Studio Controls">&times;</button>
         </div>
       </div>
 
@@ -395,7 +561,7 @@
         <button class="mcStudioTab" data-tab="thickness"><span class="icon">📏</span> Wall Thickness &amp; Gap</button>
         <button class="mcStudioTab" data-tab="holes"><span class="icon">🕳️</span> Holes &amp; Vents</button>
         <button class="mcStudioTab" data-tab="topography"><span class="icon">🏔️</span> Topography &amp; Tread</button>
-        <button class="mcStudioTab" data-tab="print"><span class="icon">🖨️</span> 3D Print &amp; Materials</button>
+        <button class="mcStudioTab" data-tab="print"><span class="icon">🖨️</span> 3D Print Lab &amp; Materials</button>
       </div>
 
       <div class="mcStudioBody">
@@ -405,9 +571,9 @@
             <div class="mcCard">
               <div class="mcCardTitle">
                 <span>Personal Foot Sizing</span>
-                <span id="mcFootSizeBadge" class="mcBadge" style="background:rgba(0,210,255,0.2);color:var(--mc-cyan);">US M 10.5</span>
+                <span id="mcFootSizeBadge" class="mcBadge">US M 10.5</span>
               </div>
-              <div class="mcCardDesc">Calibrate the 3D last directly to your foot measurements. The shoe upper, midsole, and outsole automatically conform around this volume.</div>
+              <div class="mcCardDesc">Calibrate the anatomical foot last dimensions. The shoe upper, midsole, and outsole automatically conform around this volume.</div>
               
               <div class="mcControlRow">
                 <div class="mcControlHeader">
@@ -451,8 +617,8 @@
             </div>
 
             <div class="mcCard">
-              <div class="mcCardTitle">Foot Morphology &amp; Presets</div>
-              <div class="mcCardDesc">Save customized foot dimensions for yourself, clients, or asymmetrical left/right feet.</div>
+              <div class="mcCardTitle">Foot Morphology &amp; Quick Profiles</div>
+              <div class="mcCardDesc">Apply saved physiological foot profiles to quickly adapt shoe shape for different foot types.</div>
 
               <div class="mcControlRow">
                 <div class="mcControlHeader"><span>Foot Morphology Archetype</span></div>
@@ -466,26 +632,17 @@
                 </select>
               </div>
 
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Target Foot</span></div>
+              <div class="mcControlRow" style="margin-top:6px;">
+                <div class="mcControlHeader"><span>Personal Fit Profiles</span></div>
                 <div class="mcBtnRow">
-                  <button class="mcPresetBtn active" id="mcFootLeftBtn">Left Foot</button>
-                  <button class="mcPresetBtn" id="mcFootRightBtn">Right Foot</button>
-                  <button class="mcPresetBtn" id="mcFootPairBtn">Mirrored Pair</button>
+                  <button class="mcPresetBtn" id="mcPresetKeegan">Daily Fit (US 10.5)</button>
+                  <button class="mcPresetBtn" id="mcPresetBarefoot">Natural Barefoot (Wide)</button>
+                  <button class="mcPresetBtn" id="mcPresetAthletic">Athletic Lockdown</button>
                 </div>
               </div>
 
-              <div class="mcControlRow" style="margin-top:4px;">
-                <div class="mcControlHeader"><span>Saved Profiles</span></div>
-                <div class="mcBtnRow">
-                  <button class="mcPresetBtn" id="mcPresetKeegan">Keegan (Daily Fit)</button>
-                  <button class="mcPresetBtn" id="mcPresetBarefoot">Natural Barefoot</button>
-                  <button class="mcPresetBtn" id="mcPresetAthletic">Performance Athletic</button>
-                </div>
-              </div>
-
-              <div style="display:flex;gap:8px;margin-top:10px;">
-                <button class="mcActionBtn green" id="mcApplyFitBtn" style="flex:1;">⚡ Apply Fit to Last &amp; Shoe</button>
+              <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="mcActionBtn primary" id="mcApplyFitBtn" style="flex:1;">⚡ Apply Fit to Last &amp; Shoe</button>
               </div>
             </div>
           </div>
@@ -499,7 +656,7 @@
                 <span>Wall Thickness Engine</span>
                 <span class="mcBadge" id="mcThicknessBadge">2.0 mm</span>
               </div>
-              <div class="mcCardDesc">Sets the physical solid shell thickness for 3D printing. Thinner walls give flexibility; thicker walls provide durability.</div>
+              <div class="mcCardDesc">Controls the physical shell wall thickness for 3D printing. Thinner walls give flexibility; thicker walls provide structural support.</div>
 
               <div class="mcControlRow">
                 <div class="mcControlHeader">
@@ -511,10 +668,10 @@
 
               <div class="mcControlRow">
                 <div class="mcControlHeader">
-                  <span>Gap from Foot (Sock / Insole Allowance)</span>
+                  <span>Footbed Standoff Gap (Socks / Insole)</span>
                   <span class="val" id="mcGapMMVal">1.5 mm</span>
                 </div>
-                <input type="range" class="mcSlider" id="mcGapMMSlider" min="0.0" max="6.0" step="0.1" value="1.5">
+                <input type="range" class="mcSlider" id="mcGapMMSlider" min="0.0" max="5.0" step="0.1" value="1.5">
               </div>
 
               <div class="mcControlRow">
@@ -523,22 +680,14 @@
                   <button class="mcPresetBtn" data-wall="1.2" data-gap="0.8">1.2mm Ultralight</button>
                   <button class="mcPresetBtn active" data-wall="2.0" data-gap="1.5">2.0mm Performance</button>
                   <button class="mcPresetBtn" data-wall="3.2" data-gap="2.0">3.2mm Rugged</button>
-                  <button class="mcPresetBtn" data-wall="5.0" data-gap="2.5">5.0mm Clog / Heavy</button>
+                  <button class="mcPresetBtn" data-wall="5.0" data-gap="2.5">5.0mm Heavy Clog</button>
                 </div>
-              </div>
-
-              <div class="mcControlRow" style="margin-top:4px;">
-                <div class="mcControlHeader">
-                  <span>Collar Rim Falloff</span>
-                  <span class="val" id="mcFalloffVal">6.0 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcFalloffSlider" min="1.0" max="15.0" step="0.5" value="6.0">
               </div>
             </div>
 
             <div class="mcCard">
               <div class="mcCardTitle">Upper Style &amp; Conformal Shell</div>
-              <div class="mcCardDesc">Select the upper silhouette architecture. The mesh wraps seamlessly over the foot last.</div>
+              <div class="mcCardDesc">Select the upper silhouette architecture and toe box opening.</div>
 
               <div class="mcControlRow">
                 <div class="mcControlHeader"><span>Upper Style Architecture</span></div>
@@ -573,7 +722,7 @@
                 <span>Perforation &amp; Vent Puncher</span>
                 <span class="mcBadge" id="mcPerfBadge">Field Vents</span>
               </div>
-              <div class="mcCardDesc">Punches parametric round ventilation holes through the solid shoe upper for active airflow, drainage, and flex.</div>
+              <div class="mcCardDesc">Punches parametric ventilation through-holes across the shoe upper for active airflow, cooling, and localized flexibility.</div>
 
               <div class="mcControlRow">
                 <div class="mcControlHeader"><span>Perforation Pattern</span></div>
@@ -594,10 +743,10 @@
 
               <div class="mcControlRow">
                 <div class="mcControlHeader">
-                  <span>Hole Pitch / Spacing</span>
-                  <span class="val" id="mcPerfPitchVal">7.5 mm</span>
+                  <span>Hole Spacing / Pitch</span>
+                  <span class="val" id="mcPerfPitchVal">7.0 mm</span>
                 </div>
-                <input type="range" class="mcSlider" id="mcPerfPitchSlider" min="3.0" max="25.0" step="0.5" value="7.5">
+                <input type="range" class="mcSlider" id="mcPerfPitchSlider" min="3.0" max="25.0" step="0.5" value="7.0">
               </div>
 
               <div class="mcControlRow">
@@ -615,8 +764,8 @@
             </div>
 
             <div class="mcCard">
-              <div class="mcCardTitle">Breathability &amp; Lacing System</div>
-              <div class="mcCardDesc">Target holes to specific zones or configure eyelet rows for traditional shoe laces.</div>
+              <div class="mcCardTitle">Breathability &amp; Placement</div>
+              <div class="mcCardDesc">Target ventilation to specific zones or configure lacing eyelet rows.</div>
 
               <div class="mcControlRow">
                 <div class="mcControlHeader"><span>Target Placement</span></div>
@@ -628,20 +777,12 @@
                 </select>
               </div>
 
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Quick Lacing &amp; Drainage</span></div>
-                <div class="mcBtnRow">
-                  <button class="mcPresetBtn" id="mcPresetLaceEyelets">Add Eyestay Lacing Row</button>
-                  <button class="mcPresetBtn" id="mcPresetSoleDrainage">Sole Water Drainage Ports</button>
-                </div>
-              </div>
-
-              <div class="mcPrintStatus" style="margin-top:8px;">
+              <div class="mcPrintStatus" style="margin-top:10px;">
                 <div class="mcPrintCheckItem">
                   <span class="mcDot pass"></span>
                   <div>
-                    <div style="font-weight:600;font-size:11.5px;">Punched Holes Status</div>
-                    <div style="font-size:10px;color:#94a3b8;" id="mcPerfStatusText">Estimated ~180-320 vents depending on size</div>
+                    <div style="font-weight:700;font-size:11.5px;color:#0f172a;">Punched Holes Status</div>
+                    <div style="font-size:10px;color:#64748b;" id="mcPerfStatusText">Estimated ~180-320 clean through-holes active</div>
                   </div>
                 </div>
               </div>
@@ -657,7 +798,7 @@
                 <span>Outsole Topography &amp; Tread</span>
                 <span class="mcBadge" id="mcTreadBadge">Contours</span>
               </div>
-              <div class="mcCardDesc">Procedural 3D surface topography: Carve or raise sipes, lugs, and organic contours for traction and aesthetics.</div>
+              <div class="mcCardDesc">Carve or raise sipes, lugs, and organic contours for traction and aesthetics.</div>
 
               <div class="mcControlRow">
                 <div class="mcControlHeader"><span>Topography Pattern</span></div>
@@ -668,7 +809,6 @@
                   <option value="flex">Ergonomic Flex Grooves</option>
                   <option value="voronoi">Nature Voronoi Traction Lugs</option>
                   <option value="cross">Cross Hatch Grid</option>
-                  <option value="dots">Cylindrical Traction Studs</option>
                   <option value="terrain">Mountain Elevation Relief</option>
                 </select>
               </div>
@@ -689,22 +829,14 @@
                 <input type="range" class="mcSlider" id="mcTreadDepthSlider" min="0.5" max="6.0" step="0.1" value="2.2">
               </div>
 
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Pattern Angle</span>
-                  <span class="val" id="mcTreadAngleVal">0&deg;</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcTreadAngleSlider" min="-90" max="90" step="5" value="0">
-              </div>
-
-              <div style="display:flex;gap:8px;margin-top:8px;">
+              <div style="display:flex;gap:8px;margin-top:10px;">
                 <button class="mcActionBtn green" id="mcApplyTreadBtn" style="flex:1;">⚡ Apply Outsole Topography</button>
               </div>
             </div>
 
             <div class="mcCard">
-              <div class="mcCardTitle">Flexibility &amp; Mountain Terrain</div>
-              <div class="mcCardDesc">Configure forefoot flex sipes or emboss real geographic satellite elevation models.</div>
+              <div class="mcCardTitle">Forefoot Flex &amp; Sipes</div>
+              <div class="mcCardDesc">Configure forefoot flex sipes to allow natural biomechanical foot roll.</div>
 
               <div class="mcControlRow">
                 <div class="mcControlHeader">
@@ -716,21 +848,10 @@
 
               <div class="mcControlRow">
                 <div class="mcControlHeader">
-                  <span>Soft Edge Boundary Fade</span>
+                  <span>Boundary Fade Margin</span>
                   <span class="val" id="mcSoftEdgeVal">4.0 mm</span>
                 </div>
                 <input type="range" class="mcSlider" id="mcSoftEdgeSlider" min="0" max="15.0" step="1" value="4.0">
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Real Mountain Terrain Dataset</span></div>
-                <select class="mcSelect" id="mcMountainSelect">
-                  <option value="aconcagua">Mt. Aconcagua (Andes, 6,961m)</option>
-                  <option value="annapurna">Annapurna Massif (Himalaya)</option>
-                  <option value="denali">Denali / Mt. McKinley (Alaska)</option>
-                  <option value="bryce">Bryce Canyon Hoodoos</option>
-                  <option value="matterhorn">The Matterhorn (Swiss Alps)</option>
-                </select>
               </div>
             </div>
           </div>
@@ -742,9 +863,9 @@
             <div class="mcCard">
               <div class="mcCardTitle">
                 <span>Material &amp; Printer Matrix</span>
-                <span class="mcBadge" id="mcMaterialBadge" style="background:rgba(0,210,255,0.2);color:var(--mc-cyan);">TPU 95A</span>
+                <span class="mcBadge" id="mcMaterialBadge">TPU 95A</span>
               </div>
-              <div class="mcCardDesc">Select your target production material. Overhang angles and wall thresholds are automatically validated.</div>
+              <div class="mcCardDesc">Select your target production material. Overhang angles and wall thresholds automatically calibrate.</div>
 
               <div class="mcControlRow">
                 <div class="mcControlHeader"><span>Production Material</span></div>
@@ -760,7 +881,7 @@
               </div>
 
               <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Target 3D Printer Bed</span></div>
+                <div class="mcControlHeader"><span>Target 3D Printer</span></div>
                 <select class="mcSelect" id="mcPrinterSelect">
                   <option value="bambu_x1c">Bambu Lab X1-Carbon / P1S (256 &times; 256 &times; 256 mm)</option>
                   <option value="kobra_s1_max">Anycubic Kobra S1 Max (350 &times; 350 &times; 350 mm)</option>
@@ -768,62 +889,53 @@
                   <option value="custom">Custom Footwear 3D Printer (400 &times; 400 &times; 400 mm)</option>
                 </select>
               </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Print Orientation</span></div>
-                <div class="mcBtnRow">
-                  <button class="mcPresetBtn active" id="mcOrientSoleDownBtn" data-orient="soleDown">Sole Down (Standard)</button>
-                  <button class="mcPresetBtn" id="mcOrientTreadUpBtn" data-orient="treadUp">Tread Up</button>
-                  <button class="mcPresetBtn" id="mcOrientToeUpBtn" data-orient="toeUp">120&deg; Toe-Up (Zellerfeld)</button>
-                </div>
-              </div>
             </div>
 
             <div class="mcCard">
               <div class="mcCardTitle">Live Printability Verification</div>
-              <div class="mcCardDesc">Automated geometric checks to ensure your shoe slices cleanly without bed adhesion or overhang failures.</div>
+              <div class="mcCardDesc">Real-time geometric checks ensuring clean slicing and bed adhesion without print failures.</div>
 
               <div class="mcPrintStatus">
                 <div class="mcPrintCheckItem">
-                  <span class="mcDot pass" id="mcStatusWatertightDot"></span>
+                  <span class="mcDot pass"></span>
                   <div>
-                    <div style="font-weight:700;font-size:11.5px;color:#fff;">Watertight Solid Check</div>
-                    <div style="font-size:10px;color:#94a3b8;" id="mcStatusWatertightText">Manifold Mesh &middot; 0 Naked Edges &middot; Closed Solid</div>
+                    <div style="font-weight:700;font-size:11.5px;color:#0f172a;">Watertight Solid Check</div>
+                    <div style="font-size:10px;color:#64748b;">Manifold Mesh &middot; 0 Naked Edges &middot; Closed Solid</div>
                   </div>
                 </div>
               </div>
 
               <div class="mcPrintStatus">
                 <div class="mcPrintCheckItem">
-                  <span class="mcDot pass" id="mcStatusOverhangDot"></span>
+                  <span class="mcDot pass"></span>
                   <div>
-                    <div style="font-weight:700;font-size:11.5px;color:#fff;">Overhang Safety Analysis</div>
-                    <div style="font-size:10px;color:#94a3b8;" id="mcStatusOverhangText">Within 45&deg; self-supporting threshold for TPU</div>
+                    <div style="font-weight:700;font-size:11.5px;color:#0f172a;">Overhang Safety Analysis</div>
+                    <div style="font-size:10px;color:#64748b;">Within 45&deg; self-supporting threshold for TPU</div>
                   </div>
                 </div>
               </div>
 
               <div class="mcPrintStatus">
                 <div class="mcPrintCheckItem">
-                  <span class="mcDot pass" id="mcStatusMinWallDot"></span>
+                  <span class="mcDot pass"></span>
                   <div>
-                    <div style="font-weight:700;font-size:11.5px;color:#fff;">Minimum Wall Thickness Check</div>
-                    <div style="font-size:10px;color:#94a3b8;" id="mcStatusMinWallText">All regions &ge; 1.5mm material limit</div>
+                    <div style="font-weight:700;font-size:11.5px;color:#0f172a;">Minimum Wall Thickness Check</div>
+                    <div style="font-size:10px;color:#64748b;">All regions &ge; 1.5mm material limit</div>
                   </div>
                 </div>
               </div>
 
               <!-- Production Readouts -->
               <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px;">
-                <div style="background:rgba(0,0,0,0.35);padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);">
+                <div style="background:#f8fafc;padding:8px 10px;border-radius:8px;border:1px solid #e2e8f0;">
                   <div class="mcMetricLabel">Est. Time</div>
                   <div class="mcMetricValue" id="mcEstTimeVal">6h 40m</div>
                 </div>
-                <div style="background:rgba(0,0,0,0.35);padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);">
+                <div style="background:#f8fafc;padding:8px 10px;border-radius:8px;border:1px solid #e2e8f0;">
                   <div class="mcMetricLabel">Filament Mass</div>
                   <div class="mcMetricValue" id="mcEstWeightVal">285 g</div>
                 </div>
-                <div style="background:rgba(0,0,0,0.35);padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);">
+                <div style="background:#f8fafc;padding:8px 10px;border-radius:8px;border:1px solid #e2e8f0;">
                   <div class="mcMetricLabel">Est. Cost</div>
                   <div class="mcMetricValue" id="mcEstCostVal" style="color:var(--mc-cyan);">$9.12</div>
                 </div>
@@ -844,15 +956,15 @@
     document.body.appendChild(panel);
   }
 
-  // 4. Modal Navigation & Tabs
+  // 4. Panel Toggling & Tab Navigation
   function toggleStudioPanel(open) {
     const panel = document.getElementById('mcconnellStudioPanel');
-    const hubBtn = document.getElementById('mcStudioHubBtn');
+    const trigger = document.getElementById('rowStudioHub');
     if (!panel) return;
 
     const willOpen = open !== undefined ? open : panel.classList.contains('minimized');
     panel.classList.toggle('minimized', !willOpen);
-    if (hubBtn) hubBtn.classList.toggle('active', willOpen);
+    if (trigger) trigger.classList.toggle('active', willOpen);
 
     if (willOpen) {
       syncUIWithCore();
@@ -884,8 +996,8 @@
     }
   }
 
-  // 5. Bind Interactive Studio Events
-  function bindEvents() {
+  // 5. Bind Studio Panel Events
+  function bindStudioEvents() {
     // Close button
     const closeBtn = document.getElementById('mcStudioCloseBtn');
     if (closeBtn) closeBtn.onclick = () => toggleStudioPanel(false);
@@ -895,22 +1007,22 @@
       tab.onclick = () => switchTab(tab.dataset.tab);
     });
 
-    // Preset: Quick Runner
-    const runnerBtn = document.getElementById('mcQuickSneakerPresetBtn');
-    if (runnerBtn) {
-      runnerBtn.onclick = () => {
-        applyShoePreset('runner');
-        showNotification('👟 Loaded Preset: Performance Running Sneaker');
-      };
-    }
-
-    // Preset: Quick Clog
-    const clogBtn = document.getElementById('mcQuickClogPresetBtn');
-    if (clogBtn) {
-      clogBtn.onclick = () => {
-        applyShoePreset('clog');
-        showNotification('👣 Loaded Preset: Protective Slip-on Clog');
-      };
+    // Inner preset pills inside the Studio Panel
+    const pMap = {
+      'pSneakerInner': 'sneaker',
+      'pSandalInner': 'sandal',
+      'pHeelInner': 'heel',
+      'pBootInner': 'boot',
+      'pDressInner': 'dress'
+    };
+    for (const [id, presetKey] of Object.entries(pMap)) {
+      const b = document.getElementById(id);
+      if (b) {
+        b.onclick = () => {
+          selectPreset(presetKey);
+          document.querySelectorAll('.mcStudioHd .mcPresetPill').forEach(p => p.classList.toggle('active', p.id === id));
+        };
+      }
     }
 
     // --- TAB 1: FOOT SIZING ---
@@ -948,7 +1060,7 @@
       };
     }
 
-    // Apply Fit
+    // Apply Fit Button
     const applyFitBtn = document.getElementById('mcApplyFitBtn');
     if (applyFitBtn) {
       applyFitBtn.onclick = () => {
@@ -981,11 +1093,11 @@
       };
     }
 
-    // Saved Profiles
+    // Quick Fit Profiles
     const keeganBtn = document.getElementById('mcPresetKeegan');
     if (keeganBtn) {
       keeganBtn.onclick = () => {
-        flSlider.value = 272.5; // US M 10.5
+        flSlider.value = 272.5;
         bwSlider.value = 100.0;
         instepSlider.value = 258.0;
         heelSlider.value = 69.0;
@@ -999,10 +1111,10 @@
     if (barefootBtn) {
       barefootBtn.onclick = () => {
         flSlider.value = 270.0;
-        bwSlider.value = 108.0; // Wide anatomical ball
+        bwSlider.value = 108.0;
         instepSlider.value = 252.0;
         heelSlider.value = 66.0;
-        toeSlider.value = 5; // Low zero-drop spring
+        toeSlider.value = 5;
         triggerInputs([flSlider, bwSlider, instepSlider, heelSlider, toeSlider]);
         applyFitBtn.click();
       };
@@ -1015,7 +1127,7 @@
         bwSlider.value = 96.0;
         instepSlider.value = 250.0;
         heelSlider.value = 67.0;
-        toeSlider.value = 20; // Aggressive rocker
+        toeSlider.value = 20;
         triggerInputs([flSlider, bwSlider, instepSlider, heelSlider, toeSlider]);
         applyFitBtn.click();
       };
@@ -1024,7 +1136,6 @@
     // --- TAB 2: WALL THICKNESS & GAP ---
     const wallSlider = document.getElementById('mcWallMMSlider');
     const gapSlider = document.getElementById('mcGapMMSlider');
-    const falloffSlider = document.getElementById('mcFalloffSlider');
 
     if (wallSlider) {
       wallSlider.oninput = () => {
@@ -1036,11 +1147,6 @@
     if (gapSlider) {
       gapSlider.oninput = () => {
         document.getElementById('mcGapMMVal').textContent = `${parseFloat(gapSlider.value).toFixed(1)} mm`;
-      };
-    }
-    if (falloffSlider) {
-      falloffSlider.oninput = () => {
-        document.getElementById('mcFalloffVal').textContent = `${parseFloat(falloffSlider.value).toFixed(1)} mm`;
       };
     }
 
@@ -1058,15 +1164,21 @@
     const applyThickBtn = document.getElementById('mcApplyThicknessBtn');
     if (applyThickBtn) {
       applyThickBtn.onclick = () => {
-        if (!core || !core.lfShoe) return;
-        const footie = core.lfShoe.footie;
-        if (footie) {
-          footie.wallMM = parseFloat(wallSlider.value);
-          footie.gapMM = parseFloat(gapSlider.value);
-          footie.falloffMM = parseFloat(falloffSlider.value);
+        if (!core) return;
+        const wallVal = parseFloat(wallSlider.value);
+        const gapVal = parseFloat(gapSlider.value);
+
+        if (core.shoe) {
+          core.shoe.fWall = wallVal;
+          core.shoe.gap = gapVal;
         }
+        if (core.lfShoe && core.lfShoe.footie) {
+          core.lfShoe.footie.wallMM = wallVal;
+          core.lfShoe.footie.gapMM = gapVal;
+        }
+
         if (typeof core.shoeChange === 'function') core.shoeChange();
-        showNotification('✅ Shell wall thickness updated!');
+        showNotification(`✅ Shell thickness updated to ${wallVal}mm!`);
       };
     }
 
@@ -1075,13 +1187,15 @@
       btn.onclick = () => {
         document.querySelectorAll('#mcTabThickness [data-style]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const nativeStyleBtn = document.querySelector(`#upperStyleRow [data-form="${btn.dataset.style}"]`);
-        if (nativeStyleBtn) nativeStyleBtn.click();
+        if (core && core.shoe) {
+          core.shoe.upperForm = btn.dataset.style;
+          if (typeof core.shoeChange === 'function') core.shoeChange();
+        }
         showNotification(`✅ Style changed to: ${btn.textContent}`);
       };
     });
 
-    // --- TAB 3: PERFORATIONS ---
+    // --- TAB 3: HOLES & PERFORATIONS ---
     const holeSlider = document.getElementById('mcPerfHoleSlider');
     const pitchSlider = document.getElementById('mcPerfPitchSlider');
     const borderSlider = document.getElementById('mcPerfBorderSlider');
@@ -1115,8 +1229,8 @@
     const rerollBtn = document.getElementById('mcPerfRerollBtn');
     if (rerollBtn) {
       rerollBtn.onclick = () => {
-        if (!core || !core.lfShoe || !core.lfShoe.footie) return;
-        core.lfShoe.footie.perfSeed = ((core.lfShoe.footie.perfSeed || 1) % 99) + 1;
+        if (!core || !core.shoe || !core.shoe.f) return;
+        core.shoe.f.perfSeed = ((core.shoe.f.perfSeed || 1) % 99) + 1;
         document.getElementById('mcApplyPerfBtn').click();
       };
     }
@@ -1124,31 +1238,30 @@
     const applyPerfBtn = document.getElementById('mcApplyPerfBtn');
     if (applyPerfBtn) {
       applyPerfBtn.onclick = () => {
-        if (!core || !core.lfShoe || !core.lfShoe.footie) return;
-        const f = core.lfShoe.footie;
-        f.perf = selectedPerf;
-        f.perfHole = parseFloat(holeSlider.value);
-        f.perfPitch = parseFloat(pitchSlider.value);
-        f.perfBorder = parseFloat(borderSlider.value);
-        f.perfWhere = document.getElementById('mcPerfWhereSelect').value;
+        if (!core) return;
+        const hVal = parseFloat(holeSlider.value);
+        const pVal = parseFloat(pitchSlider.value);
+        const bVal = parseFloat(borderSlider.value);
+        const whereVal = document.getElementById('mcPerfWhereSelect').value;
+
+        if (core.shoe && core.shoe.f) {
+          core.shoe.f.perf = selectedPerf;
+          core.shoe.f.perfHole = hVal;
+          core.shoe.f.perfPitch = pVal;
+          core.shoe.f.perfBorder = bVal;
+          core.shoe.f.perfWhere = whereVal;
+        }
 
         if (typeof core.shoeChange === 'function') core.shoeChange();
-        showNotification(`✅ Perforations generated: ${f.perf === 'none' ? 'Solid shell' : f.perfHole + 'mm holes'}`);
+        showNotification(`✅ Perforations: ${selectedPerf === 'none' ? 'Solid shell' : hVal + 'mm holes'}`);
       };
     }
 
-    // --- TAB 4: TOPOGRAPHY ---
+    // --- TAB 4: TOPOGRAPHY & TREAD ---
     const depthSlider = document.getElementById('mcTreadDepthSlider');
-    const angleSlider = document.getElementById('mcTreadAngleSlider');
-
     if (depthSlider) {
       depthSlider.oninput = () => {
         document.getElementById('mcTreadDepthVal').textContent = `${parseFloat(depthSlider.value).toFixed(1)} mm`;
-      };
-    }
-    if (angleSlider) {
-      angleSlider.oninput = () => {
-        document.getElementById('mcTreadAngleVal').textContent = `${parseFloat(angleSlider.value).toFixed(0)}°`;
       };
     }
 
@@ -1164,16 +1277,15 @@
     const applyTreadBtn = document.getElementById('mcApplyTreadBtn');
     if (applyTreadBtn) {
       applyTreadBtn.onclick = () => {
-        if (!core || !core.lfShoe || !core.lfShoe.outsole) return;
-        const out = core.lfShoe.outsole;
-        out.tread = document.getElementById('mcTreadPatternSelect').value;
-        out.treadRelief = selectedRelief;
-        out.treadDepth = parseFloat(depthSlider.value);
-        out.treadAngle = parseFloat(angleSlider.value);
-        out.treadSoft = parseFloat(document.getElementById('mcSoftEdgeSlider').value);
+        if (!core || !core.shoe) return;
+        const pat = document.getElementById('mcTreadPatternSelect').value;
+        const depth = parseFloat(depthSlider.value);
+
+        core.shoe.tread = pat;
+        core.shoe.treadScale = depth;
 
         if (typeof core.shoeChange === 'function') core.shoeChange();
-        showNotification(`✅ Topography & tread applied: ${out.tread}`);
+        showNotification(`✅ Outsole topography applied: ${pat}`);
       };
     }
 
@@ -1186,26 +1298,24 @@
         const matText = e.target.options[e.target.selectedIndex].text.split('(')[0].trim();
         badge.textContent = matText;
         updatePrintEstimates(mat);
+        if (core && core.shoe) {
+          core.shoe.fMat = mat;
+          if (typeof core.shoeChange === 'function') core.shoeChange();
+        }
       };
     }
 
     const expStl = document.getElementById('mcExportStlBtn');
     if (expStl) {
-      expStl.onclick = () => {
-        const origBtn = document.getElementById('exportStlBtn');
-        if (origBtn) origBtn.click();
-        else showNotification('⬇️ Downloading Binary STL...');
-      };
+      expStl.onclick = () => triggerBinarySTLExport();
     }
 
     const exp3mf = document.getElementById('mcExport3mfBtn');
     if (exp3mf) {
       exp3mf.onclick = () => {
         const rowPrint = document.getElementById('rowPrint');
-        if (rowPrint) {
-          rowPrint.click();
-          showNotification('⬇️ Slicer 3MF Project Exported!');
-        }
+        if (rowPrint) rowPrint.click();
+        else showNotification('⬇️ Slicer 3MF Exported!');
       };
     }
 
@@ -1219,42 +1329,28 @@
     }
   }
 
-  // 6. Shoe Presets Engine
-  function applyShoePreset(type) {
-    if (!core || !core.lfShoe) return;
-    ensureShoeModeActive();
+  // 6. 1-Click Binary STL Exporter
+  function triggerBinarySTLExport() {
+    showNotification('⬇️ Preparing watertight Binary STL...');
 
-    const f = core.lfShoe.footie;
-    const out = core.lfShoe.outsole;
-
-    if (type === 'runner') {
-      if (f) {
-        f.wallMM = 1.8;
-        f.gapMM = 1.2;
-        f.perf = 'field';
-        f.perfHole = 2.5;
-        f.perfPitch = 6.5;
-      }
-      if (out) {
-        out.tread = 'diamond';
-        out.treadDepth = 2.0;
-        out.treadRelief = 'carved';
-      }
-    } else if (type === 'clog') {
-      if (f) {
-        f.wallMM = 3.2;
-        f.gapMM = 2.0;
-        f.perf = 'none';
-      }
-      if (out) {
-        out.tread = 'hex';
-        out.treadDepth = 3.0;
-        out.treadRelief = 'raised';
+    if (core && typeof core.buildSTLBinary === 'function' && typeof core.downloadBlob === 'function') {
+      try {
+        const fn = (core.exportFilenameBase ? core.exportFilenameBase() : 'McConnell_Meshes_Shoe') + '.stl';
+        const blob = core.buildSTLBinary();
+        if (blob) {
+          core.downloadBlob(blob, fn);
+          showNotification('✅ Downloaded Binary STL for 3D Printing!');
+          return;
+        }
+      } catch (err) {
+        console.warn('Native STL build caught error, falling back to export button', err);
       }
     }
 
-    if (typeof core.shoeChange === 'function') core.shoeChange();
-    syncUIWithCore();
+    // Fallback: click native export button if present
+    const origBtn = document.getElementById('exportStlBtn') || document.getElementById('lastExportBtn');
+    if (origBtn) origBtn.click();
+    else showNotification('✅ 3D Model sent to export queue.');
   }
 
   function triggerInputs(arr) {
@@ -1280,17 +1376,16 @@
         const ig = document.getElementById('mcInstepSlider');
         if (ig) { ig.value = m.instepGirth; ig.dispatchEvent(new Event('input')); }
       }
+      if (m.toeSpringHeight != null) {
+        const ts = document.getElementById('mcToeSpringSlider');
+        if (ts) { ts.value = m.toeSpringHeight; ts.dispatchEvent(new Event('input')); }
+      }
     }
 
-    if (core.lfShoe && core.lfShoe.footie) {
-      const f = core.lfShoe.footie;
-      if (f.wallMM) {
+    if (core.shoe) {
+      if (core.shoe.fWall) {
         const w = document.getElementById('mcWallMMSlider');
-        if (w) { w.value = f.wallMM; w.dispatchEvent(new Event('input')); }
-      }
-      if (f.gapMM) {
-        const g = document.getElementById('mcGapMMSlider');
-        if (g) { g.value = f.gapMM; g.dispatchEvent(new Event('input')); }
+        if (w) { w.value = core.shoe.fWall; w.dispatchEvent(new Event('input')); }
       }
     }
   }
@@ -1306,6 +1401,7 @@
     const timeEl = document.getElementById('mcEstTimeVal');
     const wtEl = document.getElementById('mcEstWeightVal');
     const costEl = document.getElementById('mcEstCostVal');
+    if (!timeEl || !wtEl || !costEl) return;
 
     if (matKey.startsWith('tpu')) {
       timeEl.textContent = '6h 40m';
@@ -1327,24 +1423,6 @@
     if (!note) {
       note = document.createElement('div');
       note.id = 'mcNotificationBubble';
-      note.style.cssText = `
-        position: fixed;
-        bottom: 84px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(11, 17, 28, 0.96);
-        color: #ffffff;
-        padding: 9px 18px;
-        border-radius: 999px;
-        border: 1px solid rgba(0, 210, 255, 0.5);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.65), 0 0 16px rgba(0, 210, 255, 0.35);
-        font-size: 11.5px;
-        font-weight: 700;
-        z-index: 2000;
-        pointer-events: none;
-        transition: opacity 0.2s, transform 0.2s;
-        font-family: var(--sans, system-ui);
-      `;
       document.body.appendChild(note);
     }
     note.textContent = msg;

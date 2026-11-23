@@ -101,7 +101,7 @@ Open **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)** in Google Chrome, Micr
 McConnell Meshes/
 ├── index.html              # Core application entrypoint & viewport
 ├── mcconnell_studio.js     # McConnell Meshes Studio Hub logic & interactive engine
-├── mcconnell_studio.css    # Modern industrial design dark UI theme
+├── mcconnell_studio.css    # Scandinavian architectural light UI theme (WANDR Bento grid)
 ├── server.js               # Zero-dependency local Node.js server
 ├── start.bat               # Windows 1-click batch launcher
 ├── run.ps1                 # PowerShell script launcher

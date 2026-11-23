@@ -1,420 +1,451 @@
 /* ==========================================================================
-   McConnell Meshes — Precision Industrial Design Theme
-   Inspired by Keegan McConnell's Monogram Architecture (@keeganrmc)
-   Color Palette: Deep Midnight Navy (#080c14, #0e1626) & Precision Electric Cyan (#00d2ff)
+   McConnell Meshes — Precision Parametric Footwear Design & 3D Print Studio
+   Author: Keegan McConnell (@keeganrmc)
+   Design System: Scandinavian Architectural Light Theme (Clean, Elevated, High-Contrast)
+   Inspiration: Modern UI/UX Bento Grids, Precision Industrial CAD, WANDR Design Trends
    ========================================================================== */
 
 :root {
-  /* Architectural Dark Palette */
-  --bg: #080c14;
-  --void: #080c14;
-  --ink: #f8fafc;
-  --ink-dim: #94a3b8;
-  --cream: #ffffff;
-  --dim: #8e9bb0;
+  /* Architectural Light Theme Palette */
+  --bg: #f8fafc;
+  --void: #f8fafc;
+  --viewport-bg: #f1f5f9;
+  --ink: #0f172a;        /* Deep slate navy for maximum legibility */
+  --ink-dim: #64748b;    /* Refined muted slate */
+  --cream: #0f172a;      /* Overrides legacy white text with deep slate */
+  --dim: #64748b;
   
-  /* Brand Accents */
-  --accent: #00d2ff;
-  --on-accent: #050c18;
-  --purple: #00d2ff;
-  --purple-dim: #7dd3fc;
-  --purple-txt: #38bdf8;
-  --yellow: #00f0ff;
-  --yellow-deep: #0284c7;
-  --warn: #ff4757;
+  /* Precision Accent Tones */
+  --accent: #0284c7;     /* High-precision cerulean / electric cyan */
+  --on-accent: #ffffff;
+  --purple: #0284c7;     /* Overrides legacy purple */
+  --purple-dim: #bae6fd;
+  --purple-txt: #0369a1;
+  --yellow: #0284c7;     /* Overrides legacy yellow highlighter */
+  --yellow-deep: #0369a1;
+  --warn: #ef4444;
+  --success: #10b981;
   
-  /* Surfaces & Glassmorphism */
-  --panel: rgba(14, 22, 38, 0.88);
-  --panel2: rgba(19, 31, 51, 0.94);
-  --glass: rgba(12, 19, 33, 0.85);
-  --glass-hi: rgba(16, 26, 44, 0.94);
-  --line: rgba(255, 255, 255, 0.11);
-  --hair: rgba(255, 255, 255, 0.07);
-  --blur: blur(24px) saturate(1.8);
+  /* Light Frosted Glass & Surface Architecture */
+  --panel: rgba(255, 255, 255, 0.94);
+  --panel2: #ffffff;
+  --glass: rgba(255, 255, 255, 0.92);
+  --glass-hi: rgba(255, 255, 255, 0.98);
+  --line: #e2e8f0;
+  --hair: #f1f5f9;
+  --blur: blur(20px) saturate(1.8);
   
-  /* Precision Radiuses & Controls */
-  --r-in: 7px;
-  --r-bar: 12px;
-  --r-panel: 14px;
-  --ctl-s: 26px;
-  --ctl: 30px;
+  /* Engineered Radiuses & Elevation */
+  --r-in: 8px;
+  --r-bar: 999px;
+  --r-panel: 16px;
+  --ctl-s: 28px;
+  --ctl: 32px;
   
-  /* Shading & High-Tech Glows */
-  --g-rim: inset 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  --g-drop: 0 18px 48px rgba(0, 0, 0, 0.7), 0 4px 14px rgba(0, 0, 0, 0.4);
-  --g-jelly: rgba(255, 255, 255, 0.07);
-  --g-jelly-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 8px rgba(0, 0, 0, 0.4);
-  --g-purple: linear-gradient(180deg, #00d2ff 0%, #009acc 100%);
-  --g-purple-shadow: 0 4px 16px rgba(0, 210, 255, 0.45);
-  --g-yellow: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
-  --g-yellow-shadow: 0 4px 16px rgba(56, 189, 248, 0.4);
-  --g-well: inset 0 2px 4px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.08);
+  /* Soft Architectural Shading */
+  --g-rim: inset 0 1px 0 rgba(255, 255, 255, 1), 0 0 0 1px rgba(15, 23, 42, 0.08);
+  --g-drop: 0 10px 28px -4px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+  --g-jelly: #f1f5f9;
+  --g-jelly-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --g-purple: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+  --g-purple-shadow: 0 3px 10px rgba(2, 132, 199, 0.3);
+  --g-yellow: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+  --g-yellow-shadow: 0 3px 10px rgba(2, 132, 199, 0.25);
+  --g-well: inset 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 0 #ffffff;
 
-  /* McConnell Meshes Specifics */
-  --mc-navy: #0e1726;
-  --mc-navy-light: #152238;
-  --mc-cyan: #00d2ff;
-  --mc-cyan-glow: rgba(0, 210, 255, 0.35);
-  --mc-border: rgba(255, 255, 255, 0.12);
-  --mc-card-bg: rgba(16, 25, 42, 0.88);
-}
-
-/* Base Body & Viewport Blueprint Backdrop */
-html, body {
-  background: var(--bg) !important;
-  color: var(--ink) !important;
-}
-
-#viewport {
-  background: #090e17 !important;
-  background-image: 
-    radial-gradient(circle at 50% 50%, rgba(14, 25, 45, 0.5) 0%, transparent 80%),
-    linear-gradient(rgba(0, 210, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 210, 255, 0.03) 1px, transparent 1px) !important;
-  background-size: 100% 100%, 40px 40px, 40px 40px !important;
+  /* McConnell Brand Tokens */
+  --mc-navy: #0f172a;
+  --mc-navy-light: #1e293b;
+  --mc-cyan: #0284c7;
+  --mc-cyan-glow: rgba(2, 132, 199, 0.25);
+  --mc-border: #e2e8f0;
+  --mc-card-bg: #ffffff;
+  --mc-card-alt: #f8fafc;
 }
 
 /* ==========================================================================
-   Brand Logo & Header Integration
+   Base Canvas & 3D Viewport
    ========================================================================== */
-.mcconnellBrandBadge {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  padding: 3px 12px 3px 4px !important;
-  border-radius: 9px !important;
-  background: rgba(255, 255, 255, 0.04) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  cursor: pointer !important;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+html, body {
+  background: var(--bg) !important;
+  color: var(--ink) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
 }
 
-.mcconnellBrandBadge:hover {
-  background: rgba(0, 210, 255, 0.12) !important;
-  border-color: var(--mc-cyan) !important;
-  box-shadow: 0 0 14px var(--mc-cyan-glow) !important;
+#viewport {
+  background: #f1f5f9 !important;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.9) 0%, rgba(241, 245, 249, 0.7) 100%),
+    linear-gradient(rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.035) 1px, transparent 1px) !important;
+  background-size: 100% 100%, 36px 36px, 36px 36px !important;
 }
 
-.kmLogoImg {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  object-fit: cover;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: #ffffff;
-}
-
-.kmBrandText {
+/* ==========================================================================
+   Top Unified Header Bar
+   ========================================================================== */
+#shoeRow {
+  position: absolute;
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  left: 14px;
+  right: 14px;
+  z-index: 100;
   display: flex;
-  flex-direction: column;
-  line-height: 1.1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
 }
 
-.kmBrandName {
-  font-size: 11.5px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: #ffffff;
-}
-
-.kmBrandSub {
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  color: var(--mc-cyan);
-}
-
-/* Navigation Bars Overhaul */
-.lfBar {
+#shoePieces, #shoeOutputs, .lfBar {
+  pointer-events: auto;
   background: var(--glass) !important;
-  border: 1px solid var(--line) !important;
+  border: 1px solid var(--mc-border) !important;
   border-radius: var(--r-bar) !important;
   box-shadow: var(--g-drop), var(--g-rim) !important;
   -webkit-backdrop-filter: var(--blur) !important;
   backdrop-filter: var(--blur) !important;
+  padding: 4px 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
 }
 
-.lfBar button {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid transparent;
-  color: #cbd5e1;
-  border-radius: 7px;
-  font-weight: 600;
-  transition: all 0.14s ease;
+.mcconnellWordmark {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 0 10px 0 8px !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  color: var(--mc-navy) !important;
+  cursor: pointer !important;
+  user-select: none !important;
 }
 
-.lfBar button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.2);
+.mcconnellWordmark b {
+  color: var(--mc-navy) !important;
+  font-weight: 800 !important;
 }
 
-.lfBar button.active, .lfBar button.on, .lfBar button.selected {
-  background: var(--g-purple) !important;
-  color: #050c18 !important;
+.mcconnellWordmark .sub {
+  color: var(--mc-cyan) !important;
   font-weight: 700 !important;
-  border-color: var(--mc-cyan) !important;
-  box-shadow: 0 0 12px var(--mc-cyan-glow) !important;
+  letter-spacing: 0.12em !important;
+  font-size: 11px !important;
 }
 
-.lfBar .btnIcon {
-  margin-right: 3px;
+.lfBar .sep {
+  width: 1px !important;
+  height: 18px !important;
+  background: var(--mc-border) !important;
+  margin: 0 4px !important;
+}
+
+/* ==========================================================================
+   5 1-Click Shoe Presets Bar
+   ========================================================================== */
+.mcPresetBar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mcPresetPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.mcPresetPill:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.mcPresetPill.active {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border-color: #0f172a !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.25) !important;
+}
+
+.mcPresetPill .btnIcon {
   font-size: 12px;
 }
 
-/* Step Arrows in Top Navigation */
-.stepArrow {
-  color: var(--mc-cyan) !important;
+/* ==========================================================================
+   Studio Hub Trigger & Top Action Buttons
+   ========================================================================== */
+.mcStudioTriggerBtn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 28px !important;
+  padding: 0 14px !important;
+  border-radius: 999px !important;
+  background: #0284c7 !important;
+  border: 1px solid #0284c7 !important;
+  color: #ffffff !important;
+  font-size: 11.5px !important;
   font-weight: 700 !important;
-  opacity: 0.8 !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35) !important;
+  transition: all 0.16s ease !important;
+  white-space: nowrap !important;
 }
 
-/* Left Vertical CAD Rail */
+.mcStudioTriggerBtn:hover {
+  background: #0369a1 !important;
+  border-color: #0369a1 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.45) !important;
+}
+
+.mcStudioTriggerBtn.active {
+  background: #0f172a !important;
+  border-color: #0f172a !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.3) !important;
+}
+
+.mcExportQuickBtn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  height: 28px !important;
+  padding: 0 13px !important;
+  border-radius: 999px !important;
+  background: #10b981 !important;
+  border: 1px solid #10b981 !important;
+  color: #ffffff !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+  transition: all 0.16s ease !important;
+}
+
+.mcExportQuickBtn:hover {
+  background: #059669 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+}
+
+#shoeOutputs button {
+  height: 28px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #475569;
+  border-radius: 7px;
+  padding: 0 9px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.14s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#shoeOutputs button:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+#shoeOutputs button.active, #shoeOutputs button.on {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border-color: #0f172a !important;
+}
+
+/* ==========================================================================
+   Left CAD Rail & Tools
+   ========================================================================== */
 #shoeRail {
-  background: rgba(12, 18, 30, 0.9) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  position: absolute !important;
+  left: 14px !important;
+  top: calc(64px + env(safe-area-inset-top, 0px)) !important;
+  background: var(--glass) !important;
+  border: 1px solid var(--mc-border) !important;
   border-radius: 12px !important;
+  box-shadow: var(--g-drop) !important;
   padding: 6px 4px !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+  z-index: 90 !important;
 }
 
 #shoeRail button {
   width: 54px !important;
-  height: 36px !important;
-  margin: 3px 0 !important;
-  font-size: 10px !important;
+  height: 32px !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 7px !important;
+  color: #475569 !important;
+  font-size: 11px !important;
   font-weight: 600 !important;
-  letter-spacing: 0.02em !important;
-  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.14s ease !important;
+}
+
+#shoeRail button:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+#shoeRail button.on, #shoeRail button.active {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border-color: #0f172a !important;
+  font-weight: 700 !important;
 }
 
 #shoeRail .railPiece {
+  width: 54px !important;
   color: var(--mc-cyan) !important;
   font-weight: 700 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-  margin-bottom: 4px !important;
+  font-size: 9.5px !important;
+  text-align: center !important;
+  border-bottom: 1px solid var(--mc-border) !important;
   padding-bottom: 4px !important;
+  margin-bottom: 2px !important;
 }
 
-/* Right Shoe Inspector HUD */
+/* Standard Views Bar (Bottom Center) */
+#stdViews {
+  position: absolute !important;
+  bottom: 14px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 80 !important;
+}
+
+#stdViews button {
+  height: 26px !important;
+  padding: 0 10px !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  color: #475569 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.14s ease !important;
+}
+
+#stdViews button:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+#stdViews button.on, #stdViews button[aria-pressed="true"] {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* ==========================================================================
+   Shoe HUD & Right Sidebar
+   ========================================================================== */
 #shoeHud, #sidebar {
-  background: rgba(13, 20, 33, 0.92) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background: var(--glass) !important;
+  border: 1px solid var(--mc-border) !important;
   border-radius: 16px !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
-  -webkit-backdrop-filter: blur(28px) !important;
-  backdrop-filter: blur(28px) !important;
+  box-shadow: var(--g-drop), var(--g-rim) !important;
+  color: var(--ink) !important;
+  -webkit-backdrop-filter: var(--blur) !important;
+  backdrop-filter: var(--blur) !important;
 }
 
 #shoeHud h3, #sidebar h3, .tierHd {
-  color: var(--mc-cyan) !important;
-  font-size: 11px !important;
+  color: var(--mc-navy) !important;
+  font-size: 11.5px !important;
   font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.08em !important;
 }
 
-/* Drawers & Boxes */
 details.box, details.lastDrawer {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
   border-radius: 10px !important;
   margin-bottom: 8px !important;
 }
 
 details.box summary, details.lastDrawer summary {
-  color: #e2e8f0 !important;
+  color: #1e293b !important;
   font-weight: 600 !important;
   padding: 8px 12px !important;
 }
 
-details.box[open], details.lastDrawer[open] {
-  border-color: rgba(0, 210, 255, 0.3) !important;
+/* Form Controls & Inputs */
+input:not([type=range]):not([type=checkbox]), select, textarea {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 7px !important;
+  color: #0f172a !important;
+  padding: 0 8px !important;
+  font-size: 12px !important;
 }
 
-/* Segmented Buttons */
-.segRow {
-  background: rgba(8, 12, 20, 0.8) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 8px !important;
-  padding: 2px !important;
-}
-
-.segRow button, .presetbtn {
-  background: transparent !important;
-  color: #94a3b8 !important;
-  border-radius: 6px !important;
-  border: none !important;
-  font-weight: 600 !important;
-  transition: all 0.15s ease !important;
-}
-
-.segRow button:hover, .presetbtn:hover {
-  color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-}
-
-.segRow button.active, .presetbtn.active, .ptog.on {
-  background: var(--mc-cyan) !important;
-  color: #050c18 !important;
-  font-weight: 700 !important;
-  box-shadow: 0 0 10px var(--mc-cyan-glow) !important;
+input:focus, select:focus, textarea:focus {
+  outline: none !important;
+  border-color: var(--mc-cyan) !important;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
 }
 
 /* Custom Precision Sliders */
 input[type=range] {
   accent-color: var(--mc-cyan) !important;
   height: 5px !important;
+  background: #e2e8f0 !important;
   border-radius: 999px !important;
 }
 
-/* Inputs & Selects */
-input:not([type=range]):not([type=checkbox]), select, textarea {
-  background: rgba(8, 12, 20, 0.9) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  border-radius: 7px !important;
-  color: #ffffff !important;
-  font-family: inherit !important;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: var(--mc-cyan) !important;
-  box-shadow: 0 0 0 2px rgba(0, 210, 255, 0.25) !important;
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  width: 15px !important;
+  height: 15px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  border: 2px solid var(--mc-cyan) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2) !important;
+  cursor: pointer !important;
 }
 
 /* ==========================================================================
-   High-Precision Floating Tooltip Engine
-   Fast, Informative, Industrial Design Tooltips on Every Hover
+   Unified Bento Studio Panel (Master Control Dashboard)
+   All Tools Together: Fit, Shell, Thickness, Holes, Topography, Print Lab
    ========================================================================== */
-#mcconnellTooltip {
-  position: fixed;
-  z-index: 10000;
-  max-width: 320px;
-  background: rgba(10, 16, 26, 0.96);
-  color: #f8fafc;
-  border: 1px solid rgba(0, 210, 255, 0.45);
-  border-radius: 10px;
-  padding: 10px 14px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 16px rgba(0, 210, 255, 0.25);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(6px) scale(0.98);
-  transition: opacity 0.12s ease-out, transform 0.12s ease-out;
-  font-family: var(--sans, system-ui);
-}
-
-#mcconnellTooltip.visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.mcTooltipTitleRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 4px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.mcTooltipTitle {
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.03em;
-}
-
-.mcTooltipShortcut {
-  font-family: var(--mono, monospace);
-  font-size: 9px;
-  background: rgba(0, 210, 255, 0.15);
-  color: var(--mc-cyan);
-  padding: 1px 5px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 210, 255, 0.3);
-}
-
-.mcTooltipDesc {
-  font-size: 11px;
-  line-height: 1.45;
-  color: #cbd5e1;
-  margin-bottom: 5px;
-}
-
-.mcTooltipTip {
-  font-size: 10px;
-  line-height: 1.35;
-  color: #38bdf8;
-  background: rgba(0, 210, 255, 0.08);
-  border-left: 2px solid var(--mc-cyan);
-  padding: 3px 6px;
-  border-radius: 0 4px 4px 0;
-}
-
-/* ==========================================================================
-   Shoe Quick Studio Floating Bar & Modal
-   ========================================================================== */
-.mcStudioPill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 28px;
-  padding: 0 12px;
-  background: linear-gradient(135deg, rgba(0, 210, 255, 0.15), rgba(15, 23, 42, 0.8));
-  border: 1px solid rgba(0, 210, 255, 0.4);
-  border-radius: 8px;
-  color: #ffffff;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.16s ease;
-  white-space: nowrap;
-}
-
-.mcStudioPill:hover {
-  background: linear-gradient(135deg, rgba(0, 210, 255, 0.3), rgba(15, 23, 42, 0.95));
-  border-color: var(--mc-cyan);
-  box-shadow: 0 0 12px var(--mc-cyan-glow);
-  transform: translateY(-1px);
-}
-
-.mcStudioPill.active {
-  background: var(--mc-cyan);
-  color: #050c18 !important;
-  box-shadow: 0 0 16px var(--mc-cyan-glow);
-}
-
-.mcStudioPill .mcBadge {
-  background: rgba(0, 210, 255, 0.25);
-  color: var(--mc-cyan);
-  padding: 1px 5px;
-  border-radius: 4px;
-  font-size: 9px;
-  font-weight: 800;
-}
-
-.mcStudioPill.active .mcBadge {
-  background: rgba(5, 12, 24, 0.35);
-  color: #050c18;
-}
-
-/* Studio Modal Overhaul */
 #mcconnellStudioPanel {
   position: fixed;
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(920px, calc(100vw - 32px));
-  max-height: calc(100vh - 100px);
-  background: rgba(11, 17, 28, 0.96) !important;
-  border: 1px solid rgba(0, 210, 255, 0.35) !important;
+  width: min(940px, calc(100vw - 32px));
+  max-height: calc(100vh - 90px);
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid #cbd5e1 !important;
   border-radius: 18px !important;
-  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.8), 0 0 24px rgba(0, 210, 255, 0.2) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
-  backdrop-filter: blur(32px) !important;
+  box-shadow: 0 24px 60px -12px rgba(15, 23, 42, 0.2), 0 0 0 1px rgba(15, 23, 42, 0.05) !important;
+  -webkit-backdrop-filter: blur(28px) !important;
+  backdrop-filter: blur(28px) !important;
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -433,48 +464,63 @@ input:focus, select:focus, textarea:focus {
   align-items: center;
   justify-content: space-between;
   padding: 12px 20px;
-  background: rgba(8, 13, 22, 0.85);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .mcStudioLogoGroup {
   display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.mcStudioLogoGroup img {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  gap: 8px;
 }
 
 .mcStudioLogoText {
   display: flex;
   flex-direction: column;
+  line-height: 1.15;
 }
 
 .mcStudioLogoText b {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 800;
-  letter-spacing: 0.08em;
-  color: #ffffff;
+  letter-spacing: 0.06em;
+  color: #0f172a;
 }
 
 .mcStudioLogoText span {
   font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: var(--mc-cyan);
 }
 
+.mcCloseBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.14s ease;
+}
+
+.mcCloseBtn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Studio Tabs */
 .mcStudioTabs {
   display: flex;
   gap: 4px;
   padding: 8px 18px;
-  background: rgba(10, 15, 26, 0.7);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
   overflow-x: auto;
 }
 
@@ -486,8 +532,8 @@ input:focus, select:focus, textarea:focus {
   border-radius: 8px;
   border: 1px solid transparent;
   background: transparent;
-  color: #94a3b8;
-  font-size: 11.5px;
+  color: #475569;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -495,21 +541,22 @@ input:focus, select:focus, textarea:focus {
 }
 
 .mcStudioTab:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .mcStudioTab.active {
-  background: rgba(0, 210, 255, 0.14) !important;
-  border-color: var(--mc-cyan) !important;
-  color: #ffffff !important;
-  box-shadow: 0 0 12px rgba(0, 210, 255, 0.25) !important;
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: var(--mc-cyan) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
 }
 
 .mcStudioBody {
   padding: 18px 22px;
   overflow-y: auto;
-  max-height: calc(82vh - 120px);
+  max-height: calc(80vh - 120px);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -525,12 +572,24 @@ input:focus, select:focus, textarea:focus {
   display: flex;
 }
 
+.mcGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .mcGrid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
 .mcCard {
-  background: var(--mc-card-bg);
-  border: 1px solid var(--mc-border);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 15px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -539,9 +598,9 @@ input:focus, select:focus, textarea:focus {
 .mcCardTitle {
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--mc-cyan);
+  color: #0f172a;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -550,7 +609,73 @@ input:focus, select:focus, textarea:focus {
 .mcCardDesc {
   font-size: 11px;
   line-height: 1.45;
-  color: #94a3b8;
+  color: #64748b;
+}
+
+.mcControlRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mcControlHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.mcControlHeader .val {
+  font-family: var(--mono, monospace);
+  font-weight: 700;
+  color: var(--mc-cyan);
+}
+
+.mcSlider {
+  width: 100%;
+}
+
+.mcSelect {
+  width: 100%;
+  height: 30px;
+  padding: 0 8px;
+  font-size: 11.5px;
+}
+
+.mcBtnRow {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mcPresetBtn {
+  flex: 1;
+  min-width: 80px;
+  height: 28px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.14s ease;
+  white-space: nowrap;
+}
+
+.mcPresetBtn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+.mcPresetBtn.active {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border-color: #0f172a !important;
+  font-weight: 700 !important;
 }
 
 .mcActionBtn {
@@ -568,38 +693,47 @@ input:focus, select:focus, textarea:focus {
 }
 
 .mcActionBtn.primary {
-  background: linear-gradient(180deg, #00d2ff 0%, #009acc 100%);
-  color: #050c18;
-  box-shadow: 0 4px 14px rgba(0, 210, 255, 0.4);
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3);
 }
 
 .mcActionBtn.primary:hover {
-  background: linear-gradient(180deg, #22e6ff 0%, #00b4ee 100%);
-  box-shadow: 0 6px 18px rgba(0, 210, 255, 0.55);
+  background: linear-gradient(180deg, #0369a1 0%, #075985 100%);
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.45);
 }
 
 .mcActionBtn.secondary {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
 }
 
 .mcActionBtn.secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: #e2e8f0;
+  color: #0f172a;
 }
 
 .mcActionBtn.green {
   background: linear-gradient(180deg, #10b981 0%, #059669 100%);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
 }
 
 .mcActionBtn.green:hover {
-  background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
-  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+  background: linear-gradient(180deg, #059669 0%, #047857 100%);
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45);
+}
+
+.mcBadge {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
 }
 
 /* Metric Display Readout */
@@ -607,15 +741,29 @@ input:focus, select:focus, textarea:focus {
   font-family: var(--mono, monospace);
   font-size: 15px;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .mcMetricLabel {
   font-size: 9.5px;
   font-weight: 600;
   text-transform: uppercase;
-  color: #94a3b8;
+  color: #64748b;
   letter-spacing: 0.05em;
+}
+
+.mcPrintStatus {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+}
+
+.mcPrintCheckItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .mcDot {
@@ -623,19 +771,111 @@ input:focus, select:focus, textarea:focus {
   height: 8px;
   border-radius: 50%;
   display: inline-block;
+  flex: none;
 }
 
 .mcDot.pass {
   background: #10b981;
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
 }
 
 .mcDot.warn {
   background: #f59e0b;
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
 }
 
 .mcDot.fail {
   background: #ef4444;
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+}
+
+/* ==========================================================================
+   High-Precision Floating Tooltip Engine
+   Crisp Light Aesthetic, Fast 140ms Hover
+   ========================================================================== */
+#mcconnellTooltip {
+  position: fixed;
+  z-index: 10000;
+  max-width: 330px;
+  background: rgba(255, 255, 255, 0.98);
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  border-radius: 11px;
+  padding: 10px 14px;
+  box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.04);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(6px) scale(0.98);
+  transition: opacity 0.12s ease-out, transform 0.12s ease-out;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+#mcconnellTooltip.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.mcTooltipTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.mcTooltipTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: 0.02em;
+}
+
+.mcTooltipShortcut {
+  font-family: var(--mono, monospace);
+  font-size: 9px;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+}
+
+.mcTooltipDesc {
+  font-size: 11px;
+  line-height: 1.45;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.mcTooltipTip {
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: #0369a1;
+  background: #f0f9ff;
+  border-left: 3px solid #0284c7;
+  padding: 4px 8px;
+  border-radius: 0 5px 5px 0;
+}
+
+/* Notification Toast */
+#mcNotificationBubble {
+  position: fixed;
+  bottom: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f172a !important;
+  color: #ffffff !important;
+  padding: 9px 18px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.3) !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  z-index: 2000 !important;
+  pointer-events: none !important;
+  transition: opacity 0.2s, transform 0.2s !important;
 }

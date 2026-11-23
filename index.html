@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="McConnell Meshes">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="stylesheet" href="mcconnell_studio.css">
-<meta name="theme-color" content="#f3f3f4">
+<meta name="theme-color" content="#f8fafc">
 <style>
   @font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url('vendor/font/ibm-plex-mono-400.woff2') format('woff2');}
   @font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:url('vendor/font/ibm-plex-mono-600.woff2') format('woff2');}
@@ -1748,42 +1748,45 @@
     <div id="shoeShell" hidden>
       <div id="shoeRow">
         <div class="lfBar" id="shoePieces">
-        <span class="barMark lfAboutOpen mcconnellBrandBadge" role="button" tabindex="0" aria-label="About McConnell Meshes" title="About McConnell Meshes: Generative 3D Footwear Studio by Keegan McConnell (@keeganrmc)">
-          <img src="assets/logo.jpg" alt="KM" class="kmLogoImg">
-          <div class="kmBrandText">
-            <span class="kmBrandName">McCONNELL</span>
-            <span class="kmBrandSub">MESHES</span>
+          <span class="barMark mcconnellWordmark" role="button" tabindex="0" aria-label="About McConnell Meshes" title="McConnell Meshes — Generative 3D Footwear Design Studio by Keegan McConnell (@keeganrmc)">
+            <b>McCONNELL</b><span class="sub">MESHES</span>
+          </span>
+          <span class="sep"></span>
+          <!-- Shoe Presets: Sneaker, Sandal, Heel, Boot, Dress Shoe -->
+          <div class="mcPresetBar" role="group" aria-label="Shoe Mesh Presets">
+            <button class="mcPresetPill active" data-preset="sneaker" id="presetSneakerBtn" title="Sneaker Preset: Athletic runner profile, flexible upper shell, cushioned midsole, and multi-directional traction tread."><span class="btnIcon">👟</span> Sneaker</button>
+            <button class="mcPresetPill" data-preset="sandal" id="presetSandalBtn" title="Sandal Preset: Open-toe ergonomic slide, contoured arch footbed, and wave grip sipes."><span class="btnIcon">👡</span> Sandal</button>
+            <button class="mcPresetPill" data-preset="heel" id="presetHeelBtn" title="Heel Preset: Sculpted pump with elevated 70mm heel drop, tapered vamp, and sleek dress sole."><span class="btnIcon">👠</span> Heel</button>
+            <button class="mcPresetPill" data-preset="boot" id="presetBootBtn" title="Boot Preset: Rugged high-shaft work boot, heavy-duty 3.5mm wall, and deep mountain lug outsole."><span class="btnIcon">🥾</span> Boot</button>
+            <button class="mcPresetPill" data-preset="dress" id="presetDressBtn" title="Dress Shoe Preset: Classic formal Oxford silhouette, elegant almond toe, brogue perforations, and formal welt sole."><span class="btnIcon">👞</span> Dress Shoe</button>
           </div>
-        </span>
-        <span id="verShoe" role="button" tabindex="0" title="McConnell Meshes v1.0"></span>
-        <span class="sep"></span>
-        <span id="shoeSteps" role="group" aria-label="The shoe, in steps">
-        <button id="rowUpper" data-step="1" data-piece="footie" title="Upper Shell: Shape and sculpt the upper shoe body around the last. Adjust wall thickness, perforations, and collar style."><span class="btnIcon">👟</span> Upper</button>
-        <span class="stepArrow" aria-hidden="true">›</span>
-        <button id="rowMidsole" data-step="2" data-piece="sole" title="Midsole Cushion: Shock-absorbing intermediate structure. Supports cushioning thickness, graded infill, and lattice cores."><span class="btnIcon">👣</span> Midsole</button>
-        <span class="stepArrow" aria-hidden="true">›</span>
-        <button id="rowOutsole" data-step="3" data-piece="outsole" title="Outsole &amp; Tread: Ground contact layer. Carve or raise topographic contours, traction lugs, and flex sipes."><span class="btnIcon">⚡</span> Outsole</button>
-        <span class="stepArrow" id="layerArrow" aria-hidden="true" hidden>›</span>
-        <span id="layerButtonsRow" style="display:inline-flex;gap:4px;"></span>
-        <span class="stepArrow" aria-hidden="true">›</span>
-        <span class="rowKeep"><button id="rowLayer" disabled title="Add Layer: Stack a structural strap, heel counter, mudguard, or tongue reinforcement onto the shoe."><span class="btnIcon">➕</span> Layer</button>
-        <span class="stepArrow" aria-hidden="true">›</span>
-        <button id="rowMake" data-pane="make" title="3D Print Lab &amp; Exports: Slicer-ready 3MF, binary STL, material simulation (TPU/Resin), overhang validation, and production estimates."><span class="btnIcon">🖨️</span> 3D Print Lab</button></span>
-        </span>
-        <span class="sep"></span>
-        <button id="rowLast" title="Foot &amp; Last Fitting: Calibrate foot length, width, girth, arch height, and toe spring. The shoe adapts dynamically to your foot shape."><span class="btnIcon">🦶</span> Foot / Last Fit</button>
         </div>
         <span class="rowGap"></span>
         <div class="lfBar" id="shoeOutputs">
-        <button id="rowFile" class="fileChip" title="File: new, open, save, recent." aria-haspopup="true" aria-expanded="false"><span class="fcName">Untitled shoe</span><span class="fcDot" aria-hidden="true"></span><span class="fcCaret" aria-hidden="true">▾</span></button>
-        <button id="rowPrint" data-pane="print" title="The pieces on the printer’s plate; the estimate; the 3MF.">Print</button>
-        <button id="rowExport" data-pane="output" title="STL, OBJ, .unreason, .3dm, the drawings.">Export</button>
-        <span class="sep"></span>
-        <span class="rowKeep"><button id="rowShow" class="urBtn" title="Show or hide the last, each piece and each layer." aria-label="Show or hide" aria-haspopup="true" aria-expanded="false"><svg class="urIcon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
-        <button id="rowWire" title="Draw the mesh as wireframe."><svg class="wireIcon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M9.2 3.5V20.5M14.8 3.5V20.5M3.5 9.2H20.5M3.5 14.8H20.5"/></svg>Wire</button>
-        <button id="rowUndo" class="urBtn" title="Undo (⌘Z)" aria-label="Undo"><svg class="urIcon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg></button>
-        <button id="rowRedo" class="urBtn" title="Redo (⇧⌘Z)" aria-label="Redo"><svg class="urIcon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></button></span>
+          <button id="rowStudioHub" class="mcStudioTriggerBtn" title="Unified Studio Controls: Wall Thickness, Holes, Topography, Foot Fit, and Material Simulation all together."><span class="btnIcon">⚡</span> Studio Controls</button>
+          <span class="sep"></span>
+          <button id="rowWire" title="Draw the mesh as wireframe to inspect polygon subdivision and density."><svg class="wireIcon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M9.2 3.5V20.5M14.8 3.5V20.5M3.5 9.2H20.5M3.5 14.8H20.5"/></svg>Wire</button>
+          <button id="rowUndo" class="urBtn" title="Undo (⌘Z / Ctrl+Z)" aria-label="Undo"><svg class="urIcon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg></button>
+          <button id="rowRedo" class="urBtn" title="Redo (⇧⌘Z / Ctrl+Y)" aria-label="Redo"><svg class="urIcon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></button>
+          <span class="sep"></span>
+          <button id="quickExportStlBtn" class="mcExportQuickBtn" title="Download production-ready binary STL for slicing in Bambu Studio, PrusaSlicer, or Cura.">⬇️ Export STL</button>
         </div>
+      </div>
+      <!-- Hidden legacy elements for engine backward compatibility -->
+      <div id="legacyElementsBank" style="display:none !important;" aria-hidden="true">
+        <button id="rowUpper" data-step="1" data-piece="footie"></button>
+        <button id="rowMidsole" data-step="2" data-piece="sole"></button>
+        <button id="rowOutsole" data-step="3" data-piece="outsole"></button>
+        <button id="rowLayer"></button>
+        <button id="rowMake" data-pane="make"></button>
+        <button id="rowLast"></button>
+        <button id="rowFile"></button>
+        <button id="rowPrint" data-pane="print"></button>
+        <button id="rowExport" data-pane="output"></button>
+        <button id="rowShow"></button>
+        <span id="verShoe"></span>
+        <span id="layerArrow"></span>
+        <span id="layerButtonsRow"></span>
       </div>
       <div id="showMenu" hidden role="menu" aria-label="Show or hide">
         <div class="showHd">Show</div>
@@ -5616,7 +5619,7 @@ renderer.toneMappingExposure = 0.95;
 viewportEl.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-const LF_BG = new THREE.Color(0x0a0f18);   // McConnell Meshes dark architectural CAD studio environment
+const LF_BG = new THREE.Color(0xf1f5f9);   // McConnell Meshes Scandinavian light architectural studio
 scene.background = LF_BG;
 /* BACKDROP (Pgon's): a picture behind the last, to trace a photo of a last or a shoe. It is the
    viewport's own background, the picture fitted whole over the void and dimmed by Show through.
@@ -16583,12 +16586,14 @@ window.__mcconnellCore = {
   manualOverrides,
   clearOverrides,
   LF_MEAS_OVERRIDES,
+  LF_SHAPE_OVERRIDES,
   buildCurrentLastMesh,
   rebuildMeshObject,
   refreshAll,
   refreshAllKeepManual,
   syncMeasurementUI,
   updateReadouts,
+  shoe,
   lfShoe,
   shoeChange,
   shellSelect,
@@ -16603,6 +16608,12 @@ window.__mcconnellCore = {
   PRINTERS,
   PRINT_MATERIALS,
   ZC,
+  LastType,
+  applyLastType,
+  relayFootie,
+  scheduleShoeRebuild,
+  syncShoeUI,
+  adaptShoeToLast,
 };
 </script>
 <script src="mcconnell_studio.js"></script>

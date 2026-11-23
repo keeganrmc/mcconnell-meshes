@@ -4,8 +4,8 @@
   "description": "Parametric 3D Footwear Design & 3D Print Studio by Keegan McConnell (@keeganrmc)",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#121316",
-  "theme_color": "#00d26a",
+  "background_color": "#f8fafc",
+  "theme_color": "#0284c7",
   "icons": [
     {
       "src": "./assets/icon-192.png",
