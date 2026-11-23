@@ -957,67 +957,107 @@ details[data-key="lastType"],
   font-size: 14px !important;
 }
 
-/* 3. Bottom-Right Sizing, Fit & Specs Card (#shoeTile) */
-#shoeTile {
-  position: absolute !important;
-  right: 16px !important;
-  bottom: 16px !important;
-  z-index: 40 !important;
-  min-width: 280px !important;
-  max-width: 380px !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  -webkit-backdrop-filter: blur(14px) !important;
-  backdrop-filter: blur(14px) !important;
-  border: 1px solid rgba(226, 232, 240, 0.95) !important;
-  border-radius: 12px !important;
-  padding: 10px 14px !important;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04) !important;
-  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif) !important;
-  font-size: 11.5px !important;
-  line-height: 1.5 !important;
-  color: #334155 !important;
-  pointer-events: auto !important;
+/* 3. Completely Hidden Status & Info Cards (#shoeTile, #wayInInfo, etc.) */
+#shoeTile,
+#wayInInfo,
+#footieInfo,
+#shoeInfo,
+#outsoleInfo,
+.shoeTileHead,
+.shoeTileWayIn,
+.shoeTileSpecs,
+.shoeTileStands {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-#shoeTile .shoeTileHead {
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  color: #0f172a !important;
-  margin-bottom: 3px !important;
-  letter-spacing: -0.01em !important;
+/* 4. Hide unwanted legacy preset sections and duplicate styles from left menus & sidebar */
+#persGrid,
+#morphSel,
+#typeGrid,
+#dockLinePresetRow,
+#soleOutlineChips,
+#solePresetChips,
+#upperStyleRow,
+#upperToeRow,
+#upperForm,
+details:has(#typeGrid),
+details:has(#morphSel),
+details:has(#persGrid) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
-#shoeTile .shoeTileHead b {
-  font-weight: 700 !important;
-  color: #0f172a !important;
+/* 5. Simplified & Compact Shoe HUD Styling (Less Scrolling) */
+#shoeHud {
+  max-height: calc(100vh - 120px) !important;
+  padding: 10px 12px !important;
+  width: 310px !important;
+  scrollbar-width: thin;
 }
 
-#shoeTile .shoeTileWayIn {
+#shoeHud .hudSectionHeader {
+  padding: 5px 8px !important;
+  margin-top: 8px !important;
+  margin-bottom: 6px !important;
   font-size: 11px !important;
-  color: #0284c7 !important;
-  font-weight: 500 !important;
-  margin-bottom: 3px !important;
 }
 
-#shoeTile .shoeTileWayIn .red {
-  color: #e11d48 !important;
+#shoeHud .box {
+  margin-bottom: 6px !important;
+  border-radius: 8px !important;
+}
+
+#shoeHud .box summary {
+  padding: 5px 8px !important;
+  font-size: 11px !important;
   font-weight: 600 !important;
 }
 
-#shoeTile .shoeTileSpecs {
-  font-size: 11px !important;
-  color: #475569 !important;
-  line-height: 1.4 !important;
-  margin-top: 2px !important;
+#shoeHud .boxBody {
+  padding: 6px 8px !important;
 }
 
-#shoeTile .shoeTileSpecs b {
-  font-weight: 600 !important;
-  color: #0f172a !important;
-}
-
-#shoeTile .shoeTileStands {
+#shoeHud label {
   font-size: 10.5px !important;
-  color: #64748b !important;
-  margin-top: 2px !important;
+  margin-top: 3px !important;
+  margin-bottom: 1px !important;
+  color: #475569 !important;
+}
+
+#shoeHud input[type="range"] {
+  height: 14px !important;
+  margin-top: 1px !important;
+  margin-bottom: 4px !important;
+}
+
+#shoeHud select {
+  height: 26px !important;
+  padding: 2px 6px !important;
+  font-size: 11px !important;
+  margin-bottom: 3px !important;
+}
+
+#shoeHud .sfRow {
+  margin-bottom: 4px !important;
+}
+
+/* Distinctive Highlight for Foot & Last Sizing */
+#hudSizingSection {
+  background: #f0fdf4 !important;
+  border: 1px solid #bbf7d0 !important;
+  border-left: 3px solid #16a34a !important;
+}
+
+#hudSizingSection summary {
+  color: #15803d !important;
+  font-weight: 700 !important;
 }

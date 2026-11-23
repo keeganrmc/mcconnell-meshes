@@ -228,6 +228,8 @@
     createTooltipDOM();
     setupTooltips();
     wireTopBarPresets();
+    wireHudSizing();
+    syncHudSizing();
     createStudioPanel();
     bindStudioEvents();
     syncUIWithCore();
@@ -381,11 +383,13 @@
 
   // Master 5-Preset Execution Engine
   function selectPreset(type) {
+    if (!core) core = window.__mcconnellCore;
     if (!core) return;
     ensureShoeModeActive();
 
     const m = core.measurements;
     const s = core.shoe;
+    if (!m || !s) return;
 
     // Update active state on top bar preset pills
     document.querySelectorAll('.mcPresetBar .mcPresetPill').forEach(p => {
@@ -394,134 +398,142 @@
 
     if (type === 'sneaker') {
       m.lastType = 'sneaker';
-      if (s) {
-        s.upperForm = 'slipon';
-        s.openBack = false;
-        s.toe = 'closed';
-        s.throat = 0.50;
-        s.back = 60;
-        s.side = 48;
-        s.fWall = 2.0;
-        s.gap = 1.5;
-        s.stack = 60;
-        s.stackToe = 40;
-        s.band = 24;
-        s.tread = 'diamond';
-        s.floorDepth = 6.0;
-        s.fMat = 'tpu95';
-        s.sMat = 'tpu90';
-        s.oMat = 'tpu95';
-        if (s.f) {
-          s.f.perf = 'field';
-          s.f.perfHole = 2.8;
-          s.f.perfPitch = 7.0;
-        }
+      s.upperForm = 'slipon';
+      s.openBack = false;
+      s.toe = 'closed';
+      s.throat = 0.50;
+      s.back = 62;
+      s.side = 48;
+      s.fWall = 2.0;
+      s.gap = 1.5;
+      s.stack = 60;
+      s.stackToe = 40;
+      s.band = 24;
+      s.tread = 'diamond';
+      s.floorDepth = 6.0;
+      s.terrain = 'cross';
+      s.relief = 4.0;
+      s.fMat = 'tpu95';
+      s.sMat = 'tpu90';
+      s.oMat = 'tpu95';
+      if (s.f) {
+        s.f.perf = 'field';
+        s.f.perfHole = 2.8;
+        s.f.perfPitch = 7.0;
       }
-      showNotification('👟 Loaded Sneaker: Athletic Runner with 2.0mm Shell & Field Vents');
+      showNotification('Loaded Sneaker: Athletic runner profile with cushioned sole');
 
     } else if (type === 'sandal') {
       m.lastType = 'sandal';
-      if (s) {
-        s.upperForm = 'mule';
-        s.openBack = true;
-        s.toe = 'open';
-        s.toeMM = 55;
-        s.throat = 0.50;
-        s.back = 20;
-        s.side = 30;
-        s.fWall = 2.8;
-        s.gap = 0.5;
-        s.stack = 28;
-        s.stackToe = 22;
-        s.band = 14;
-        s.tread = 'flex';
-        s.floorDepth = 4.0;
-        s.fMat = 'tpu95';
-        s.sMat = 'tpu85';
-        s.oMat = 'tpu95';
-        if (s.f) {
-          s.f.perf = 'none';
-        }
-      }
-      showNotification('👡 Loaded Sandal: Open-Toe Ergonomic Slide with Wave Flex Sipes');
+      s.upperForm = 'mule';
+      s.openBack = true;
+      s.toe = 'open';
+      s.toeMM = 65;
+      s.throat = 0.50;
+      s.back = 20;
+      s.side = 30;
+      s.fWall = 2.8;
+      s.gap = 0.5;
+      s.stack = 28;
+      s.stackToe = 22;
+      s.band = 12;
+      s.tread = 'flex';
+      s.floorDepth = 3.0;
+      s.terrain = 'none';
+      s.relief = 0;
+      s.fMat = 'tpu95';
+      s.sMat = 'tpu85';
+      s.oMat = 'tpu95';
+      if (s.f) s.f.perf = 'none';
+      showNotification('Loaded Sandal: Open-toe ergonomic slide with flex sipes');
 
     } else if (type === 'heel') {
       m.lastType = 'pump';
-      if (s) {
-        s.upperForm = 'slipon';
-        s.openBack = false;
-        s.toe = 'closed';
-        s.throat = 0.68;
-        s.back = 60;
-        s.side = 40;
-        s.fWall = 1.8;
-        s.gap = 0.6;
-        s.stack = 20;
-        s.stackToe = 12;
-        s.band = 12;
-        s.tread = 'plain';
-        s.floorDepth = 0;
-        s.fMat = 'tpu95';
-        s.sMat = 'resin_hard';
-        s.oMat = 'tpu95';
-        if (s.f) {
-          s.f.perf = 'none';
-        }
-      }
-      showNotification('👠 Loaded Heel: Sculpted High-Heel Pump with 70mm Lift');
+      s.upperForm = 'slipon';
+      s.openBack = false;
+      s.toe = 'closed';
+      s.throat = 0.70;
+      s.back = 60;
+      s.side = 36;
+      s.fWall = 1.8;
+      s.gap = 0.6;
+      s.stack = 20;
+      s.stackToe = 12;
+      s.band = 10;
+      s.tread = 'plain';
+      s.floorDepth = 0;
+      s.terrain = 'none';
+      s.relief = 0;
+      s.fMat = 'tpu95';
+      s.sMat = 'resin_hard';
+      s.oMat = 'tpu95';
+      if (s.f) s.f.perf = 'none';
+      showNotification('Loaded Heel: Sculpted pump with elevated heel lift');
 
     } else if (type === 'boot') {
       m.lastType = 'boot';
-      if (s) {
-        s.upperForm = 'slipon';
-        s.openBack = false;
-        s.toe = 'closed';
-        s.back = 120;
-        s.side = 105;
-        s.throat = 0.42;
-        s.fWall = 3.5;
-        s.gap = 2.0;
-        s.stack = 85;
-        s.stackToe = 60;
-        s.band = 35;
-        s.tread = 'terrain';
-        s.floorDepth = 8.0;
-        s.fMat = 'tpu95';
-        s.sMat = 'tpu95';
-        s.oMat = 'tpu95';
-        if (s.f) {
-          s.f.perf = 'none';
-        }
-      }
-      showNotification('🥾 Loaded Boot: Rugged High-Shaft Boot with 3.5mm Shell');
+      s.upperForm = 'slipon';
+      s.openBack = false;
+      s.toe = 'closed';
+      s.back = 125;
+      s.side = 110;
+      s.throat = 0.38;
+      s.fWall = 3.5;
+      s.gap = 2.0;
+      s.stack = 85;
+      s.stackToe = 60;
+      s.band = 35;
+      s.tread = 'terrain';
+      s.floorDepth = 8.0;
+      s.terrain = 'range';
+      s.relief = 6.0;
+      s.fMat = 'tpu95';
+      s.sMat = 'tpu95';
+      s.oMat = 'tpu95';
+      if (s.f) s.f.perf = 'none';
+      showNotification('Loaded Boot: Rugged high-shaft boot with mountain lug sole');
 
     } else if (type === 'dress') {
       m.lastType = 'oxford';
-      if (s) {
-        s.upperForm = 'slipon';
-        s.openBack = false;
-        s.toe = 'closed';
-        s.back = 65;
-        s.side = 55;
-        s.throat = 0.55;
-        s.fWall = 2.2;
-        s.gap = 1.0;
-        s.stack = 32;
-        s.stackToe = 18;
-        s.band = 18;
-        s.tread = 'cross';
-        s.floorDepth = 3.0;
-        s.fMat = 'tpu95';
-        s.sMat = 'pla';
-        s.oMat = 'tpu95';
-        if (s.f) {
-          s.f.perf = 'brogue';
-          s.f.perfHole = 2.0;
-          s.f.perfPitch = 6.0;
-        }
+      s.upperForm = 'slipon';
+      s.openBack = false;
+      s.toe = 'closed';
+      s.back = 65;
+      s.side = 55;
+      s.throat = 0.55;
+      s.fWall = 2.2;
+      s.gap = 1.0;
+      s.stack = 32;
+      s.stackToe = 18;
+      s.band = 16;
+      s.tread = 'cross';
+      s.floorDepth = 2.5;
+      s.terrain = 'none';
+      s.relief = 0;
+      s.fMat = 'tpu95';
+      s.sMat = 'pla';
+      s.oMat = 'tpu95';
+      if (s.f) {
+        s.f.perf = 'brogue';
+        s.f.perfHole = 2.0;
+        s.f.perfPitch = 6.0;
       }
-      showNotification('👞 Loaded Dress Shoe: Classic Oxford with Brogue Perforations');
+      showNotification('Loaded Dress Shoe: Classic Oxford with formal welt');
     }
+
+    // 0. Disable fitLock & clear dimension shares so presets dictate exact shoe proportions
+    s.fitLock = false;
+    s.stackShare = null;
+    s.stackToeShare = null;
+    s.toeSpringShare = null;
+    s.heelSpringShare = null;
+    s.bandShare = null;
+    s.stepShare = null;
+    s.flareShare = null;
+    s.reachShare = null;
+    s.backShare = null;
+    s.sideShare = null;
+    s.depthShare = null;
 
     // 1. Clear overrides so the chosen last type sets authentic heel, toe spring, and vamp
     if (core.clearOverrides && core.LF_SHAPE_OVERRIDES) {
@@ -531,44 +543,120 @@
     if (core.applyLastType) {
       core.applyLastType(m);
     }
-    // 3. Rebuild the last mesh and refresh measurements
+    // 3. Clear coverage paint caches so chips must regenerate fresh!
+    if (core.layerPaint) core.layerPaint.clear();
+    if (core.lfLaid) core.lfLaid.clear();
+    if (core.lfCageRelief) core.lfCageRelief.clear();
+    // 4. Rebuild the last mesh and refresh measurements
     if (typeof core.refreshAll === 'function') {
       core.refreshAll();
     } else if (typeof core.refreshAllKeepManual === 'function') {
       core.refreshAllKeepManual();
     }
-    // 4. Adapt shoe baseline dimensions to the new last shape
+    // 5. Adapt shoe baseline dimensions to the new last shape
     if (typeof core.adaptShoeToLast === 'function') {
       core.adaptShoeToLast(m);
     }
-    // 5. Force re-laying the upper and sole coverage chips (crucial for open toe / mule / boots)
+    // 6. Force re-laying the upper and sole coverage chips (crucial for open toe / mule / boots)
     if (typeof core.relayFootie === 'function') {
       core.relayFootie(true);
     }
     if (typeof core.relaySole === 'function') {
       core.relaySole(true);
     }
-    // 6. Paint field colors and rebuild the 3D meshes for Three.js
+    // 7. Paint field colors and rebuild the 3D meshes for Three.js
     if (typeof core.paintFieldColors === 'function') {
       core.paintFieldColors();
     }
     if (typeof core.rebuildShoe === 'function') {
       core.rebuildShoe();
     }
-    // 7. Sync all UI panels and readouts
+    // 8. Sync all UI panels and readouts
     if (typeof core.syncShoeUI === 'function') {
       core.syncShoeUI();
     }
     if (typeof core.syncFitUI === 'function') {
       core.syncFitUI();
     }
-    if (typeof core.updateShoeInfo === 'function') {
-      core.updateShoeInfo();
-    }
-    if (typeof core.shellTile === 'function') {
-      core.shellTile();
-    }
+    syncHudSizing();
     syncUIWithCore();
+  }
+
+  // Sync Foot & Last Sizing section in HUD
+  function syncHudSizing() {
+    if (!core || !core.measurements) return;
+    const m = core.measurements;
+    const szVal = document.getElementById('hudSzVal');
+    const szSlider = document.getElementById('hudSzSlider');
+    const flVal = document.getElementById('hudFlVal');
+    const flSlider = document.getElementById('hudFlSlider');
+    const szSys = document.getElementById('hudSzSystem');
+    const szFit = document.getElementById('hudSzFit');
+
+    if (szVal) szVal.textContent = `${m.shoeSize} ${m.shoeSizeSystem}`;
+    if (szSlider) szSlider.value = m.shoeSize;
+    if (flVal) flVal.textContent = `${Math.round(m.footLength)} mm`;
+    if (flSlider) flSlider.value = Math.round(m.footLength);
+    if (szSys) szSys.value = m.shoeSizeSystem;
+    if (szFit) szFit.value = m.fitting != null ? m.fitting : 2;
+  }
+
+  function wireHudSizing() {
+    const szSlider = document.getElementById('hudSzSlider');
+    const flSlider = document.getElementById('hudFlSlider');
+    const szSys = document.getElementById('hudSzSystem');
+    const szFit = document.getElementById('hudSzFit');
+
+    if (szSlider) {
+      szSlider.oninput = () => {
+        if (!core || !core.measurements) return;
+        const v = parseFloat(szSlider.value);
+        core.measurements.shoeSize = v;
+        const szVal = document.getElementById('hudSzVal');
+        if (szVal) szVal.textContent = `${v} ${core.measurements.shoeSizeSystem}`;
+        if (core.clearOverrides && core.LF_MEAS_OVERRIDES) core.clearOverrides(core.LF_MEAS_OVERRIDES);
+        if (typeof core.refreshAll === 'function') core.refreshAll();
+        if (typeof core.adaptShoeToLast === 'function') core.adaptShoeToLast(core.measurements);
+        if (typeof core.rebuildShoe === 'function') core.rebuildShoe();
+        syncHudSizing();
+      };
+    }
+
+    if (flSlider) {
+      flSlider.oninput = () => {
+        if (!core || !core.measurements) return;
+        const v = parseFloat(flSlider.value);
+        core.measurements.footLength = v;
+        const flVal = document.getElementById('hudFlVal');
+        if (flVal) flVal.textContent = `${Math.round(v)} mm`;
+        if (typeof core.refreshAllKeepManual === 'function') core.refreshAllKeepManual();
+        if (typeof core.adaptShoeToLast === 'function') core.adaptShoeToLast(core.measurements);
+        if (typeof core.rebuildShoe === 'function') core.rebuildShoe();
+      };
+    }
+
+    if (szSys) {
+      szSys.onchange = () => {
+        if (!core || !core.measurements) return;
+        core.measurements.shoeSizeSystem = szSys.value;
+        if (core.clearOverrides && core.LF_MEAS_OVERRIDES) core.clearOverrides(core.LF_MEAS_OVERRIDES);
+        if (typeof core.refreshAll === 'function') core.refreshAll();
+        if (typeof core.adaptShoeToLast === 'function') core.adaptShoeToLast(core.measurements);
+        if (typeof core.rebuildShoe === 'function') core.rebuildShoe();
+        syncHudSizing();
+      };
+    }
+
+    if (szFit) {
+      szFit.onchange = () => {
+        if (!core || !core.measurements) return;
+        core.measurements.fitting = parseInt(szFit.value, 10);
+        if (typeof core.refreshAll === 'function') core.refreshAll();
+        if (typeof core.adaptShoeToLast === 'function') core.adaptShoeToLast(core.measurements);
+        if (typeof core.rebuildShoe === 'function') core.rebuildShoe();
+        syncHudSizing();
+      };
+    }
   }
 
   // 3. Build the Bento Studio Controls Panel (Master Dashboard)
