@@ -48,6 +48,11 @@
     },
 
     // Studio Hub & Action Triggers
+    'mcSpecsToggleBtn': {
+      title: '📊 Shoe Specifications & Print Metrics',
+      desc: 'Opens the on-demand technical specifications breakdown: shoe volume, TPU weight, piece counts, and fit clearances.',
+      tip: 'Kept hidden off the main viewport so your 3D shoe design space stays clean and uncluttered.'
+    },
     'rowStudioHub': {
       title: '⚡ Studio Controls Dashboard',
       desc: 'Open the unified master control panel grouping all shoe tools together: Fit, Wall Thickness, Holes, Topography, and 3D Print Lab.',
@@ -227,6 +232,7 @@
 
     createTooltipDOM();
     setupTooltips();
+    createSpecsModalDOM();
     wireTopBarPresets();
     wireHudSizing();
     syncHudSizing();
@@ -378,6 +384,59 @@
     const quickStl = document.getElementById('quickExportStlBtn');
     if (quickStl) {
       quickStl.onclick = () => triggerBinarySTLExport();
+    }
+
+    // Specs Modal trigger (hidden on-demand technical specs in top bar)
+    const hc = document.getElementById('historyControls');
+    let specsBtn = document.getElementById('mcSpecsToggleBtn');
+    if (hc && !specsBtn) {
+      specsBtn = document.createElement('button');
+      specsBtn.id = 'mcSpecsToggleBtn';
+      specsBtn.className = 'mcSpecsBtn';
+      specsBtn.textContent = 'Specs';
+      specsBtn.title = 'View shoe material volume, weight, and fit clearance';
+      specsBtn.onclick = () => toggleSpecsModal(true);
+      const exp = document.getElementById('lastExportBtn');
+      if (exp) hc.insertBefore(specsBtn, exp);
+      else hc.appendChild(specsBtn);
+    }
+  }
+
+  // On-Demand Shoe Technical Specs Modal
+  function createSpecsModalDOM() {
+    if (document.getElementById('mcconnellSpecsModal')) return;
+    const modal = document.createElement('div');
+    modal.id = 'mcconnellSpecsModal';
+    modal.className = 'mcSpecsModal';
+    modal.style.display = 'none';
+    modal.innerHTML = `
+      <div class="mcSpecsBackdrop" id="mcSpecsBackdrop"></div>
+      <div class="mcSpecsContent">
+        <div class="mcSpecsHeader">
+          <h3>Shoe Technical Specifications</h3>
+          <button id="mcSpecsCloseBtn" class="mcSpecsCloseBtn" title="Close Specs">&times;</button>
+        </div>
+        <div id="mcSpecsBody" class="mcSpecsBody"></div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById('mcSpecsCloseBtn').onclick = () => toggleSpecsModal(false);
+    document.getElementById('mcSpecsBackdrop').onclick = () => toggleSpecsModal(false);
+  }
+
+  function toggleSpecsModal(open) {
+    const modal = document.getElementById('mcconnellSpecsModal');
+    if (!modal) return;
+    if (open) {
+      const tile = document.getElementById('shoeTile');
+      const body = document.getElementById('mcSpecsBody');
+      if (body) {
+        body.innerHTML = (tile && tile.innerHTML) ? tile.innerHTML : '<div class="shoeTileHead">Calculating shoe specifications...</div>';
+      }
+      modal.style.display = 'flex';
+    } else {
+      modal.style.display = 'none';
     }
   }
 
