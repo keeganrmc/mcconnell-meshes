@@ -1076,13 +1076,10 @@
 <div id="app">
   <div id="sidebar">
     <div id="sidebarHead">
-      <h1 aria-label="LastFirst" class="lfAboutOpen" tabindex="0" title="About LastFirst"><b>LAST</b><span class="flip" aria-hidden="true">FIRST</span></h1>
-      <h3 id="lastTitle">Last</h3>
+      <h3 id="lastTitle" style="font-size:15px;font-weight:700;color:var(--cream);letter-spacing:0.5px;margin:0;">Foot &amp; Last Tools</h3>
     </div>
-    <div id="sidebarSub">
-      <div id="ver" title="Update to the latest build; clears the cache and reloads."></div>
-    </div>
-    <div class="tagline">the mold they pulled before the shoe existed</div>
+    <div id="sidebarSub" style="display:none;"><div id="ver"></div></div>
+    <div class="tagline" style="margin:4px 0 10px;">Calibrate foot size, anatomical widths, and last morphology</div>
 
     <div class="segRow" id="modeSeg" hidden>
       <button data-mode="last" title="Make and shape the last." class="active">Last</button>
@@ -1803,6 +1800,36 @@
         <span id="verShoe"></span>
         <span id="layerArrow"></span>
         <span id="layerButtonsRow"></span>
+        <select id="solePreset"></select>
+        <select id="soleStance"></select>
+        <select id="panelType"></select>
+        <select id="outsoleTread"></select>
+        <select id="outsoleTreadWhere"></select>
+        <select id="outsoleTreadCurve"></select>
+        <select id="outsoleTreadBorder"></select>
+        <select id="outsoleFinish"></select>
+        <select id="soleSubdiv"></select>
+        <button id="soleViewUnderBtn"></button>
+        <button id="lastNextUpperBtn"></button>
+        <button id="soleAnywhereBtn"></button>
+        <button id="upperSlingBtn"></button>
+        <button id="soleEditOutlineBtn"></button>
+        <button id="soleTerrainReroll"></button>
+        <button id="soleFloorReroll"></button>
+        <button id="nav-persp"></button>
+        <div id="solePlacePicker"></div>
+        <div id="outsoleTreadWhy"></div>
+        <div id="outsoleTreadSwatches"></div>
+        <div id="outsoleTreadRelief"></div>
+        <div id="outsoleTreadSection"></div>
+        <div id="outsoleFinishNote"></div>
+        <div id="soleStanceBadge"></div>
+        <div id="footieInfo"></div>
+        <div id="shoeInfo"></div>
+        <div id="wayInInfo"></div>
+        <input id="layerRadiusSlider" type="range">
+        <input id="layerToeRadiusSlider" type="range">
+        <input id="layerToeRadiusSliderField" type="number">
       </div>
       <div id="showMenu" hidden role="menu" aria-label="Show or hide">
         <div class="showHd">Show</div>
@@ -7826,10 +7853,8 @@ function rebuildShoe(){
    moving the band and never the 0.5 crossing. Shown as vertex colour on the
    last — paint, not grain. */
 const layerPaint = new Map();    // `${layer}@${sculptKey()}` → { coverage: Float32Array, painted: bool }
-/* A piece arrives BLANK: its region is what the person paints, or a premask
-   they press. `lfLaid` names the layers whose region came from a premask;
-   only those are laid again when the last changes under them. */
-const lfLaid = new Set();
+/* A piece arrives pre-laid in McConnell Meshes: Upper and Midsole are active from the first frame. */
+const lfLaid = new Set(['footie', 'sole']);
 let paintLayer = 'footie';       // which piece's region the brush writes
 let paintActive = false, paintStrokeActive = false, paintErase = false;
 let paintRadius = 14, paintHardness = 60;
@@ -12705,7 +12730,7 @@ function relayOutsole(){ const e = layerPaint.get(paintKey('outsole')); if (e) e
     place: { stack: 80, stackToe: 70, skirt: 0.2, band: 40, toeSpring: 10, heelSpring: 4, terrain: 'place:dolomites', relief: 10, scale: 6, stretch: 1, flare: 2, tear: 0, tread: 'place:dolomites', floorDepth: 60, depthShare: 60 / 80, summits: 0.08, treadScale: 6, floorCurve: 1.4, stance: 3 },
   };
   const ps2 = document.getElementById('solePreset');
-  ps2.onchange = () => {
+  if (ps2) ps2.onchange = () => {
     const pr = SOLE_PRESETS[ps2.value]; if (!pr) return;
     shoe.preset = ps2.value;
     for (const [k, v] of Object.entries(pr)) shoe[k] = v;
@@ -12814,7 +12839,8 @@ function relayOutsole(){ const e = layerPaint.get(paintKey('outsole')); if (e) e
     o.value = shoe.tread; o.textContent = `Anywhere · ${name}`; tr.value = shoe.tread;
   }
   window.__lfShowCustomFloor = showCustomFloorOption;
-  document.getElementById('soleAnywhereBtn').onclick = () => { const host = document.getElementById('solePlacePicker'); if (host.hidden) openPlacePicker(); else { host.hidden = true; document.getElementById('soleAnywhereBtn').classList.remove('on'); } };
+  const sab = document.getElementById('soleAnywhereBtn');
+  if (sab) sab.onclick = () => { const host = document.getElementById('solePlacePicker'); if (host.hidden) openPlacePicker(); else { host.hidden = true; sab.classList.remove('on'); } };
   for (const sel of [tk, tr]){
     for (const [k, m] of Object.entries(RELIEF_KINDS)) { const o = document.createElement('option'); o.value = k; o.textContent = (k === 'none' && sel === tr) ? 'None' : m.label; sel.appendChild(o); }
     for (const fam of TERRAIN_FAMILIES){
@@ -12837,7 +12863,7 @@ function relayOutsole(){ const e = layerPaint.get(paintKey('outsole')); if (e) e
     syncShoeUI();
     shoeChange();
   };
-  const stanceSel = document.getElementById('soleStance'); stanceSel.onchange = () => { shoe.stance = stanceSel.value === 'summits' ? 'summits' : Number(stanceSel.value); shoeChange(); };
+  const stanceSel = document.getElementById('soleStance'); if (stanceSel) stanceSel.onchange = () => { shoe.stance = stanceSel.value === 'summits' ? 'summits' : Number(stanceSel.value); shoeChange(); };
   const subdivSel = document.getElementById('soleSubdiv'); if (subdivSel) subdivSel.onchange = () => { shoe.soleSubdiv = subdivSel.value; shoeChange(); };
   fm.onchange = () => { shoe.fMat = fm.value; applyPieceMaterial(footieMaterial, shoe.fMat); updateShoeInfo(); shoeChange(); };
   smat.onchange = () => { shoe.sMat = smat.value; applyPieceMaterial(soleMaterial, shoe.sMat); updateShoeInfo(); shoeChange(); };
@@ -12898,6 +12924,16 @@ function syncScaleRuleUI(){
     b.classList.toggle('active', b.dataset.scale === rule);
   }
 }
+
+/* Hoist declarations for shoe shell to avoid Temporal Dead Zone during startup */
+var SHELL_PIECES = { footie: { row: 'rowUpper', pane: 'footieDrawer', title: 'Upper', onBtn: 'footieOnBtn', onKey: 'footieOn' }, sole: { row: 'rowMidsole', pane: 'soleDrawer', title: 'Midsole', onBtn: 'soleOnBtn', onKey: 'soleOn' }, outsole: { row: 'rowOutsole', pane: 'outsoleDrawer', title: 'Outsole', onBtn: 'outsoleOnBtn', onKey: 'outsoleOn' } };
+var shellPane = 'footie', shellTool = 'orbit', shellHome = new Map();
+var shellShowPiece = false;
+var SHELL_BRUSHES = ['paint', 'erase', 'line', 'gap', 'color'];
+var superbOn = false, superbBuilding = false, superbStale = true;
+var cageEditor = null, cagePiece = 'footie';
+var printMode = false, printStage = null, printEstimateId = 0, lfPrintEstimate = null;
+
 function syncShoeUI(){
   syncScaleRuleUI();
   syncFitUI();
@@ -12940,13 +12976,17 @@ shoeReady = true;
 // every select's value at boot (the defaults), so a restored value no select has can fall back to it (lfSaneSelects);
 // a var, as restore reads it and must never meet a TDZ
 var lfBootSelects = new Map(); for (const el of document.querySelectorAll('select[id]')) if (el.selectedIndex >= 0) lfBootSelects.set(el.id, el.value);
+lfLaid.add('footie');
+lfLaid.add('sole');
+relayFootie(true);
+relaySole(true);
 rebuildShoe();
 
 /* ── Print. The stage (shoe/print.mjs stageGeometry) drawn in the viewport
    when print mode is on: plate, 50 mm grid, the build-volume box, the pieces
    placed as they would print (the last steps aside, it is not printed). The
    estimate runs in a worker; one in flight, a stale answer dropped. ── */
-let printMode = false, printStage = null, printEstimateId = 0, lfPrintEstimate = null;
+printMode = false; printStage = null; printEstimateId = 0; lfPrintEstimate = null;
 const printWorker = new Worker('./shoe/print.worker.js', { type: 'module' });
 /* a piece's name as the screen gives it: Upper, Midsole, Outsole, a layer's own name; a pair's twin says so */
 function lfPieceTitle(name){
@@ -13244,7 +13284,7 @@ printWorker.onmessage = (e) => {
    latest asked. The limit meshes stand in for the pieces while SuperB is on;
    the exports carry the cages, the curves and the last. ── */
 const superbWorker = createSuperBWorker(new URL('./shoe/superb.worker.js', import.meta.url));
-let superbOn = false, superbBuilding = false, superbStale = true;
+superbOn = false; superbBuilding = false; superbStale = true;
 let lfSuperB = { footie: null, sole: null, outsole: null };
 const superbMeshes = { footie: null, sole: null, outsole: null };
 const superbMaterial = new THREE.MeshStandardMaterial({ color: 0xfbec1a, roughness: 0.5, metalness: 0, side: THREE.DoubleSide });
@@ -13279,7 +13319,7 @@ const cageWires = [];
 /* THE CAGE EDITOR (shoe/cageedit.mjs): MASQ's handles on the chosen piece's
    cage. Its relief field is the piece's lfCageRelief entry, live; a change
    rebuilds the plate, and the new cage is handed back to the editor. */
-let cageEditor = null, cagePiece = 'footie';
+cageEditor = null; cagePiece = 'footie';
 function cageEditorInit(){
   cageEditor = createCageEditor({ THREE, scene, camera: () => camera, dom: renderer.domElement,
     getCage: () => { const p = lfShoe[cagePiece]; return p && p.ok ? p.cage : null; },
@@ -15081,10 +15121,10 @@ function lfSavePrefs(){
    the outputs; the rail the tools, acting on the piece in hand; the dock
    the tool's own dials; the HUD the piece in hand and nothing else; the
    tile the shoe as a whole. The sidebar is the last's and steps aside. */
-const SHELL_PIECES = { footie: { row: 'rowUpper', pane: 'footieDrawer', title: 'Upper', onBtn: 'footieOnBtn', onKey: 'footieOn' }, sole: { row: 'rowMidsole', pane: 'soleDrawer', title: 'Midsole', onBtn: 'soleOnBtn', onKey: 'soleOn' }, outsole: { row: 'rowOutsole', pane: 'outsoleDrawer', title: 'Outsole', onBtn: 'outsoleOnBtn', onKey: 'outsoleOn' } };
-let shellPane = 'footie', shellTool = 'orbit', shellHome = new Map();   // where the shared drawers live in Last mode
-let shellShowPiece = false;   // with a brush in hand the piece in hand steps aside so the paint on the last shows; this brings it back
-const SHELL_BRUSHES = ['paint', 'erase', 'line', 'gap', 'color'];
+SHELL_PIECES = { footie: { row: 'rowUpper', pane: 'footieDrawer', title: 'Upper', onBtn: 'footieOnBtn', onKey: 'footieOn' }, sole: { row: 'rowMidsole', pane: 'soleDrawer', title: 'Midsole', onBtn: 'soleOnBtn', onKey: 'soleOn' }, outsole: { row: 'rowOutsole', pane: 'outsoleDrawer', title: 'Outsole', onBtn: 'outsoleOnBtn', onKey: 'outsoleOn' } };
+shellPane = 'footie'; shellTool = 'orbit'; if (!shellHome) shellHome = new Map();   // where the shared drawers live in Last mode
+shellShowPiece = false;   // with a brush in hand the piece in hand steps aside so the paint on the last shows; this brings it back
+SHELL_BRUSHES = ['paint', 'erase', 'line', 'gap', 'color'];
 function shellPieceVisibility(){
   if (!document.body.classList.contains('shoeMode')) return;   // the HUD and the pieces' views are shoe mode's
   const brushing = SHELL_BRUSHES.includes(shellTool), pm = typeof printMode !== 'undefined' && printMode;
@@ -16638,6 +16678,10 @@ window.__lfMeasureState = () => ({
 window.__mcconnellCore = {
   THREE,
   scene,
+  get lastMesh() { return lastMesh; },
+  get footieMesh() { return footieMesh; },
+  get soleMesh() { return soleMesh; },
+  get outsoleMesh() { return outsoleMesh; },
   measurements,
   manualOverrides,
   clearOverrides,
@@ -16679,6 +16723,10 @@ window.__mcconnellCore = {
   lfLaid,
   lfCageRelief,
   paintFieldColors,
+  footieCoverageEntry,
+  layerCoverageEntry,
+  layChip,
+  effectiveBack,
 };
 </script>
 <script src="mcconnell_studio.js"></script>

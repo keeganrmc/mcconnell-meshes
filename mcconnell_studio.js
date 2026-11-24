@@ -545,7 +545,10 @@
     }
     // 3. Clear coverage paint caches so chips must regenerate fresh!
     if (core.layerPaint) core.layerPaint.clear();
-    if (core.lfLaid) core.lfLaid.clear();
+    if (core.lfLaid) {
+      core.lfLaid.add('footie');
+      core.lfLaid.add('sole');
+    }
     if (core.lfCageRelief) core.lfCageRelief.clear();
     // 4. Rebuild the last mesh and refresh measurements
     if (typeof core.refreshAll === 'function') {
@@ -759,15 +762,6 @@
                 </select>
               </div>
 
-              <div class="mcControlRow" style="margin-top:6px;">
-                <div class="mcControlHeader"><span>Personal Fit Profiles</span></div>
-                <div class="mcBtnRow">
-                  <button class="mcPresetBtn" id="mcPresetKeegan">Daily Fit (US 10.5)</button>
-                  <button class="mcPresetBtn" id="mcPresetBarefoot">Natural Barefoot (Wide)</button>
-                  <button class="mcPresetBtn" id="mcPresetAthletic">Athletic Lockdown</button>
-                </div>
-              </div>
-
               <div style="display:flex;gap:8px;margin-top:12px;">
                 <button class="mcActionBtn primary" id="mcApplyFitBtn" style="flex:1;">⚡ Apply Fit to Last &amp; Shoe</button>
               </div>
@@ -810,31 +804,8 @@
                   <button class="mcPresetBtn" data-wall="5.0" data-gap="2.5">5.0mm Heavy Clog</button>
                 </div>
               </div>
-            </div>
 
-            <div class="mcCard">
-              <div class="mcCardTitle">Upper Style &amp; Conformal Shell</div>
-              <div class="mcCardDesc">Select the upper silhouette architecture and toe box opening.</div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Upper Style Architecture</span></div>
-                <div class="mcBtnRow">
-                  <button class="mcPresetBtn active" id="mcStyleSliponBtn" data-style="slipon">Slip-on / Sneaker</button>
-                  <button class="mcPresetBtn" id="mcStyleClogBtn" data-style="clog">Clog (Step-in)</button>
-                  <button class="mcPresetBtn" id="mcStyleMuleBtn" data-style="mule">Mule (Open Quarters)</button>
-                </div>
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Toe Box Opening</span></div>
-                <div class="mcBtnRow">
-                  <button class="mcPresetBtn active" id="mcToeClosedBtn" data-toe="closed">Closed Toe</button>
-                  <button class="mcPresetBtn" id="mcToePeepBtn" data-toe="peep">Peep-Toe Oval</button>
-                  <button class="mcPresetBtn" id="mcToeOpenBtn" data-toe="open">Open Sandal Toe</button>
-                </div>
-              </div>
-
-              <div style="display:flex;gap:8px;margin-top:12px;">
+              <div style="display:flex;gap:8px;margin-top:16px;">
                 <button class="mcActionBtn primary" id="mcApplyThicknessBtn" style="flex:1;">⚡ Rebuild Shell Thickness</button>
               </div>
             </div>
@@ -1129,6 +1100,12 @@
         core.shoe.soleOn = true;
         core.shoe.outsoleOn = true;
       }
+      if (core.lfLaid) {
+        core.lfLaid.add('footie');
+        core.lfLaid.add('sole');
+      }
+      if (typeof core.relayFootie === 'function') core.relayFootie(true);
+      if (typeof core.relaySole === 'function') core.relaySole(true);
       if (typeof core.lfApplyShow === 'function') core.lfApplyShow();
       if (typeof core.rebuildShoe === 'function') core.rebuildShoe();
       if (typeof core.updateShoeInfo === 'function') core.updateShoeInfo();
