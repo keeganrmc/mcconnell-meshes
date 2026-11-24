@@ -389,11 +389,10 @@ html, body {
    Shoe HUD & Right Sidebar
    ========================================================================== */
 #shoeHud, #sidebar {
-  background: var(--glass) !important;
-  border: 1px solid var(--mc-border) !important;
-  border-radius: 16px !important;
-  box-shadow: var(--g-drop), var(--g-rim) !important;
-  color: var(--ink) !important;
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
   -webkit-backdrop-filter: var(--blur) !important;
   backdrop-filter: var(--blur) !important;
 }
@@ -982,8 +981,8 @@ details[data-key="lastType"],
   font-size: 14px !important;
 }
 
-/* 3. Hide bottom-right shoe info card (#shoeTile) from viewport */
-#shoeTile {
+/* 3. Hide bottom-right shoe info card (#shoeTile) and session restore banner from viewport */
+#shoeTile, #restoreNote {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
@@ -1246,4 +1245,135 @@ details:has(#persGrid) {
 #hudSizingSection summary {
   color: #15803d !important;
   font-weight: 700 !important;
+}
+
+/* ==========================================================================
+   Tool Mode Bar (#mcModeBar & .mcModePill)
+   ========================================================================== */
+.mcModeBar {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.mcModePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.mcModePill:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.mcModePill.active {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #0284c7 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35) !important;
+}
+
+/* ==========================================================================
+   Compact 3D Tool Inspector (Right-Side Dock)
+   ========================================================================== */
+#mcToolInspector {
+  position: fixed;
+  top: 56px;
+  right: 14px;
+  width: 320px;
+  max-height: calc(100vh - 72px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 10px 28px -4px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  z-index: 90;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  overflow: hidden;
+}
+
+#mcToolInspector.minimized {
+  transform: translateX(calc(100% + 24px));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mcInspectorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.mcInspectorTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mcInspectorTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.2px;
+}
+
+.mcInspectorBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.mcInspectorBody {
+  padding: 12px 14px;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mcToolSection {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mcToolSection.active {
+  display: flex;
+}
+
+.mcToolHelp {
+  font-size: 11px;
+  line-height: 1.45;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 10px;
 }

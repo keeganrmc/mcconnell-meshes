@@ -3,248 +3,243 @@
  * Created by Keegan McConnell (@keeganrmc)
  * 
  * Features:
- * 1. 5 1-Click Shoe Presets: Sneaker, Sandal, Heel, Boot, Dress Shoe.
- * 2. High-Precision Floating Tooltip Engine: Every tool, preset, button, and slider displays rich footwear & print guidance on hover.
- * 3. Unified Bento Studio Controls: All shoe creation tools grouped together in an scannable, clean dashboard (WANDR UX trends).
- * 4. Shoe-First Architecture: Launches directly with full 3D shoe (Upper shell, Midsole cushion, Outsole tread).
- * 5. Architectural Light Theme: Clean Scandinavian studio palette (#f8fafc, #0f172a, #0284c7).
- * 6. Procedural Wall Thickness (0.8–8.0mm), Holes/Vents, and Topography/Tread Generator.
- * 7. Live 3D Printability Verification (Watertight Manifold, Overhang safety, Min wall check, Material simulation).
+ * 1. 3D Shoe Modeling Architecture: Launches directly with full 3D shoe over a flat standing last.
+ * 2. 3D Interactive Cage Edit: Real-time 24-point control cage with bilateral symmetry for direct silhouette shaping.
+ * 3. Tactile Surface Sculpt: Push, pull, and smooth 3D surface modeling brushes.
+ * 4. Modular Shoe Form Tools: Collar & Openings, Wall Thickness & Gap, Perforations, Sole & Tread Grip, Foot Sizing.
+ * 5. Scandinavian Architectural Light Theme: Clean, high-contrast, zero-emoji UI.
+ * 6. High-Precision Floating Tooltips: Rich footwear and 3D printing guidance on hover.
+ * 7. 1-Click Binary STL Export: Instant export for Bambu Studio, OrcaSlicer, PrusaSlicer, and Cura.
  */
 
 (function () {
   'use strict';
 
   let core = null;
-  let activeTab = 'fit';
+  let activeMode = 'cage';
 
-  // Comprehensive Tooltip Dictionary for Instant Hover Guidance
+  // Comprehensive Tooltip Database (Zero emojis, pure precision guidance)
   const TOOLTIP_DATABASE = {
-    // 5 1-Click Shoe Presets
-    'presetSneakerBtn': {
-      title: 'Sneaker Preset (Athletic Runner)',
-      desc: 'Generates an athletic sneaker geometry with a flexible 2.0mm upper shell, perforated breathability field vents, high-rebound midsole cushion, and knurled traction tread.',
-      tip: 'Optimal for daily wear and running. Slices and 3D prints smoothly in TPU 95A or 90A.'
+    // Top Bar Modeling Tool Modes
+    'toolCageBtn': {
+      title: 'Cage Edit (Move Points)',
+      desc: 'Interactive 3D control handles around the shoe. Click and drag the glowing points to pull, push, and deform the shoe silhouette.',
+      tip: 'Enable Symmetry to shape both lateral and medial sides evenly. Drag with left click; orbit camera outside points.'
     },
-    'presetSandalBtn': {
-      title: 'Sandal Preset (Ergonomic Slide)',
-      desc: 'Generates an open-toe ergonomic slide with contoured arch support, 2.8mm structural cross-straps, peep-toe clearance, and wave flex sipes.',
-      tip: 'Requires zero support material if printed flat sole-down. Recommended for softer TPU 85A.'
+    'toolSculptBtn': {
+      title: 'Surface Sculpt (Push & Pull)',
+      desc: 'Freehand surface sculpting brush. Push outward to inflate, pull inward to indent, or smooth the mesh surface.',
+      tip: 'Great for building custom arch support, toe clearance, or ergonomic relief zones.'
     },
-    'presetHeelBtn': {
-      title: 'Heel Preset (Sculpted Pump)',
-      desc: 'Builds an elegant high-heel pump with a 70mm elevated heel cup, graceful arched shank, sleek 1.8mm shell, low-throat vamp, and smooth dress sole.',
-      tip: 'Features reinforced shank geometry. Best printed in dual-material: rigid heel core with flexible vamp.'
+    'toolCollarBtn': {
+      title: 'Collar & Openings',
+      desc: 'Shape the foot opening topline: heel collar height, ankle dip, throat opening depth, and open-back or peep-toe styles.',
+      tip: 'Ensure collar clearance allows the foot to slide into the shoe without tearing.'
     },
-    'presetBootBtn': {
-      title: 'Boot Preset (Rugged Work Boot)',
-      desc: 'Engineers a heavy-duty boot with 110mm high-shaft ankle collar, rugged 3.5mm thick impact shell, reinforced welt, and deep hexagonal mountain lug outsole.',
-      tip: 'Engineered for high tear resistance and abrasion protection. Print with 3.5mm solid wall.'
+    'toolThicknessBtn': {
+      title: 'Wall Thickness & Gap',
+      desc: 'Calibrate the physical wall thickness of the upper shell and midsole, and set the foot standoff comfort gap.',
+      tip: 'Recommended upper thickness: 1.8mm to 2.4mm for flexible TPU 95A / 90A.'
     },
-    'presetDressBtn': {
-      title: 'Dress Shoe Preset (Classic Oxford)',
-      desc: 'Models a formal Oxford shoe featuring classic almond toe, elegant vamp proportions, decorative brogue perforation accents along the quarters, and low-profile welt.',
-      tip: 'Brogue holes are parametric 2.0mm through-holes that provide both authentic styling and ventilation.'
+    'toolHolesBtn': {
+      title: 'Perforations & Vents',
+      desc: 'Generate parametric airflow ventilation through-holes across the toe box, vamp, or quarter panels.',
+      tip: 'Through-holes print cleanly without support material and dramatically improve shoe breathability.'
+    },
+    'toolSoleBtn': {
+      title: 'Sole & Tread Grip',
+      desc: 'Customize sole cushioning stack heights, sidewall flare, and outsole traction grip (hexagonal, knurled, flex sipes).',
+      tip: 'Heel-to-toe drop and stack height can be balanced for athletic running or casual walking.'
+    },
+    'toolFitBtn': {
+      title: 'Foot Sizing & Last Fit',
+      desc: 'Calibrate foot length, ball width fitting (B, D, EE, 4E), and instep height to ensure an anatomical fit.',
+      tip: 'The base shoe model automatically re-grades and scales around your calibrated foot dimensions.'
     },
 
-    // Studio Hub & Action Triggers
-    'mcSpecsToggleBtn': {
-      title: 'Shoe Specifications & Print Metrics',
-      desc: 'Opens the on-demand technical specifications breakdown: shoe volume, TPU weight, piece counts, and fit clearances.',
-      tip: 'Kept hidden off the main viewport so your 3D shoe design space stays clean and uncluttered.'
-    },
-    'rowStudioHub': {
-      title: 'Studio Controls Dashboard',
-      desc: 'Open the unified master control panel grouping all shoe tools together: Fit, Wall Thickness, Holes, Topography, and 3D Print Lab.',
-      tip: 'Toggle anytime to tweak geometry without losing your 3D view.'
-    },
-    'mcStudioHubBtn': {
-      title: 'Studio Controls Dashboard',
-      desc: 'Open the unified master control panel grouping all shoe tools together: Fit, Wall Thickness, Holes, Topography, and 3D Print Lab.',
-      tip: 'Toggle anytime to tweak geometry without losing your 3D view.'
-    },
+    // Action Triggers & Navigation
     'quickExportStlBtn': {
       title: '1-Click Binary STL Export',
-      desc: 'Instantly exports a clean, watertight binary STL file of the active shoe ready to drag-and-drop into Bambu Studio, OrcaSlicer, PrusaSlicer, or Cura.',
-      tip: 'Universally compatible with all FDM and SLA 3D printers.'
+      desc: 'Exports a watertight, production-ready binary STL file of the shoe ready for Bambu Studio, OrcaSlicer, or Cura.',
+      tip: 'Directly compatible with all FDM, SLA, and SLS 3D printers.'
     },
     'rowWire': {
       title: 'Toggle Wireframe (W)',
-      desc: 'Inspect Catmull-Clark quad topology, polygon density, and subdivision surface smoothness.',
-      tip: 'Higher mesh density in curved regions ensures smooth 3D printed contours.'
+      desc: 'Inspect Catmull-Clark quad topology and mesh subdivision density.',
+      tip: 'Clean quad flow ensures smooth surface curves and accurate slicing.'
     },
     'rowUndo': {
       title: 'Undo (Ctrl+Z)',
-      desc: 'Revert the most recent parametric edit, sculpt stroke, or preset selection.',
+      desc: 'Revert the most recent modeling edit, cage drag, or parameter change.',
       tip: 'Full history stack kept in memory.'
     },
     'rowRedo': {
       title: 'Redo (Ctrl+Y)',
       desc: 'Reapply the previously undone action.',
-      tip: 'Compare design variations with instant redo.'
+      tip: 'Compare design iterations instantly.'
+    },
+    'mcSpecsToggleBtn': {
+      title: 'Shoe Specifications & Metrics',
+      desc: 'Opens the technical specifications: material volume, TPU weight, and fit clearances.',
+      tip: 'Kept tucked away so your 3D canvas stays clean and focused on shoe modeling.'
     },
 
-    // Left CAD Rail
-    'railOrbit': {
-      title: 'Orbit & Camera Navigation',
-      desc: 'Click + drag to rotate 360° around shoe. Right-click or two fingers to pan. Scroll wheel to zoom in/out.',
-      tip: 'Double click on any part of the shoe to focus and center the camera.'
+    // Inspector Controls: Cage Edit
+    'mcCageSymmetryBtn': {
+      title: 'Bilateral Symmetry Toggle',
+      desc: 'When enabled, moving a point on the lateral side mirrors identically to the medial side across the shoe centerline.',
+      tip: 'Turn off for asymmetrical athletic or custom orthopedic designs.'
     },
-    'railSculpt': {
-      title: 'Surface Sculpt (Clay Push/Pull)',
-      desc: 'Sculpt the shoe upper or last freehand. Push outward, pull inward, or smooth contours interactively.',
-      tip: 'Useful for building anatomical reliefs for bunions or extra arch support.'
+    'mcCageRadiusSlider': {
+      title: 'Deformation Influence Radius (mm)',
+      desc: 'Sets how wide the soft radial falloff extends around the dragged cage point.',
+      tip: 'Larger radius yields broad aerodynamic curves; smaller radius yields sharp localized changes.'
     },
-    'railMeasure': {
-      title: 'Precision Calipers & Tape Measure',
-      desc: 'Measure straight-line distance and anatomical tape-wrap girth around the shoe surface.',
-      tip: 'Verify ball girth and instep clearances match physical measurements.'
+    'mcCageStrengthSlider': {
+      title: 'Pull Strength Multiplier',
+      desc: 'Controls how aggressively the underlying shoe mesh vertices follow the control point.',
+      tip: 'Default 1.0x provides a 1:1 proportional drag response.'
     },
-    'railPaint': {
-      title: 'Paint Coverage Region',
-      desc: 'Brush on the surface to define where the upper shell, straps, or sole layers extend.',
-      tip: 'Feathered edge brush creates organic transitions.'
-    },
-    'railErase': {
-      title: 'Erase Cutouts & Windows',
-      desc: 'Erase painted coverage to sculpt ventilation cutouts, peep-toes, or open-back sandal heel straps.',
-      tip: 'Erase quarters to create open mules or summer slides.'
-    },
-    'railLine': {
-      title: 'Vector Rim & Topline Editor',
-      desc: 'Manipulate vector anchor nodes along the collar opening to customize the shoe entry silhouette.',
-      tip: 'Drag collar nodes down for low-cut athletic profiles, or lift for high-top boots.'
-    },
-    'railGap': {
-      title: 'Fit Gap & Standoff Brush',
-      desc: 'Paint localized standoff clearance between the foot and the inner shoe wall.',
-      tip: 'Add +1.5mm in high-friction zones to eliminate blisters.'
-    },
-    'railColor': {
-      title: 'Variable Wall Thickness Brush',
-      desc: 'Paint thickness gradients across the shoe (e.g. 3.5mm toe box bumper, 1.4mm breathable side panels).',
-      tip: 'Graduated thickness optimizes shoe weight while protecting impact areas.'
-    },
-    'railPoints': {
-      title: 'Pattern Focus Points',
-      desc: 'Place focal convergence points where procedural tread sipes, knurling, or holes gather.',
-      tip: 'Align pattern convergence with the metatarsal flex axis for natural walking motion.'
-    },
-    'railCage': {
-      title: 'Subdivision Cage Handles',
-      desc: 'Directly pull low-poly control cage vertices to shape dramatic sweeping footwear silhouettes.',
-      tip: 'Catmull-Clark subdivision keeps the final printable solid fair and continuous.'
+    'mcResetCageBtn': {
+      title: 'Reset Cage Points',
+      desc: 'Restores all control points and deformed vertices back to the baseline shoe shape.',
+      tip: 'Non-destructive: allows you to start shaping from a clean slate.'
     },
 
-    // Studio Modal Controls: Foot Fit
-    'mcFootLengthSlider': {
-      title: 'Foot Length Calibration (mm)',
-      desc: 'True anatomical heel-to-toe length. The last and shoe automatically re-grade and scale to fit.',
-      tip: 'Standard adult lengths range from 220mm (US W 5) to 300mm (US M 13).'
+    // Inspector Controls: Sculpt
+    'mcSculptPushBtn': {
+      title: 'Push Mode (Inflate)',
+      desc: 'Pushes shoe surface outward along local vertex normals to create volume and bumps.',
+      tip: 'Ideal for widening toe room or building custom arch domes.'
     },
-    'mcBallWidthSlider': {
-      title: 'Ball Width & Fitting (mm)',
-      desc: 'Width across the 1st and 5th metatarsal heads (the widest part of the foot).',
-      tip: 'Select B for Narrow, D for Medium/Standard, EE for Wide, 4E for Extra Wide.'
+    'mcSculptPullBtn': {
+      title: 'Pull Mode (Indent)',
+      desc: 'Pulls shoe surface inward to create aerodynamic channels, recesses, or cut lines.',
+      tip: 'Use to carve out flex notches or sleek side recesses.'
     },
-    'mcInstepSlider': {
-      title: 'Instep Volume & Cone Height (mm)',
-      desc: 'Controls vertical girth over the midfoot arch. Crucial for comfortable slip-on shoe entry.',
-      tip: 'Increase for high-volume athletic arches to prevent top-of-foot pressure.'
+    'mcSculptSmoothBtn': {
+      title: 'Smooth Mode',
+      desc: 'Relaxes and evens out surface bumps and irregularities.',
+      tip: 'Smooths transitions after aggressive push or pull strokes.'
     },
-    'mcHeelWidthSlider': {
-      title: 'Heel Seat Width (mm)',
-      desc: 'Calibrates rearfoot cup width for secure lockdown without heel slippage.',
-      tip: 'A snug heel cup ensures positive stability during push-off.'
+    'mcSculptRadiusSlider': {
+      title: 'Sculpt Brush Radius (mm)',
+      desc: 'Diameter of the circular sculpting brush on the shoe surface.',
+      tip: 'Use larger sizes for overall volume, smaller for precision details.'
     },
-    'mcToeSpringSlider': {
-      title: 'Toe Spring Lift (mm)',
-      desc: 'Upward curvature lifting the shoe tip off the floor to promote smooth forward roll-through.',
-      tip: '0–5mm for minimalist barefoot shoes; 15–25mm for rockered athletic runners.'
-    },
-
-    // Studio Modal Controls: Wall Thickness
-    'mcWallMMSlider': {
-      title: 'Master Shell Wall Thickness (mm)',
-      desc: 'Sets the physical solid thickness of the shoe upper for additive manufacturing durability.',
-      tip: '1.2mm = ultralight; 2.0mm = balanced sneaker; 3.5mm = rugged work boot.'
-    },
-    'mcGapMMSlider': {
-      title: 'Footbed Standoff Gap (mm)',
-      desc: 'Internal clearance offset between foot last and inner shoe wall for socks and orthotic insoles.',
-      tip: '1.5mm is standard for athletic socks; 0.0mm for molded skin-fit recovery slides.'
+    'mcSculptStrengthSlider': {
+      title: 'Sculpt Brush Strength',
+      desc: 'Displacement applied to the surface per stroke.',
+      tip: 'Lower values give subtle, organic control.'
     },
 
-    // Studio Modal Controls: Holes & Vents
-    'mcPerfHoleSlider': {
-      title: 'Vent Hole Diameter (mm)',
-      desc: 'Punched diameter of each procedural ventilation hole through the upper shell.',
-      tip: '2.0mm–3.0mm provides optimal airflow while keeping water and debris out.'
+    // Inspector Controls: Collar
+    'mcCollarBackSlider': {
+      title: 'Heel Collar Height (mm)',
+      desc: 'Elevation of the rear Achilles collar above the sole line.',
+      tip: 'Range: 45mm for low-cut athletic sneakers to 80mm for mid-top support.'
     },
-    'mcPerfPitchSlider': {
-      title: 'Hole Spacing / Pitch (mm)',
-      desc: 'Center-to-center distance between adjacent ventilation holes.',
-      tip: 'Tighter pitch (<7mm) gives dense mesh airflow; wider pitch (>10mm) creates classic brogue accents.'
+    'mcCollarSideSlider': {
+      title: 'Lateral Ankle Dip (mm)',
+      desc: 'Height of the collar under the ankle bones (malleoli).',
+      tip: 'A deeper dip prevents collar rubbing against the lateral ankle bone.'
     },
-    'mcPerfBorderSlider': {
-      title: 'Rim Margin Clearance (mm)',
-      desc: 'Solid safety perimeter along collar openings and sole seams where no holes may be punched.',
-      tip: 'Protects collar tear-strength and ensures clean print bed perimeters.'
+    'mcCollarThroatSlider': {
+      title: 'Throat Depth & Opening',
+      desc: 'Controls how far forward the entry opening extends along the shoe instep.',
+      tip: 'A deeper throat makes the shoe easier to slip on and off.'
     },
 
-    // Studio Modal Controls: Topography
+    // Inspector Controls: Thickness
+    'mcUpperWallSlider': {
+      title: 'Upper Shell Wall Thickness (mm)',
+      desc: 'Solid shell thickness of the printable shoe upper.',
+      tip: '2.0mm in TPU 95A provides optimal flex, tear resistance, and breathability.'
+    },
+    'mcMidsoleWallSlider': {
+      title: 'Midsole Wall Thickness (mm)',
+      desc: 'Outer boundary wall thickness for the midsole cushion.',
+      tip: '2.0mm to 2.5mm ensures strong sidewall durability.'
+    },
+    'mcComfortGapSlider': {
+      title: 'Foot Comfort Standoff Gap (mm)',
+      desc: 'Radial air clearance between the foot last and the inner shoe wall.',
+      tip: '1.2mm ensures a snug, blister-free fit with standard athletic socks.'
+    },
+
+    // Inspector Controls: Sole & Tread
+    'mcHeelStackSlider': {
+      title: 'Heel Cushion Stack (mm)',
+      desc: 'Total cushioning height under the heel.',
+      tip: 'Standard athletic range: 18mm to 30mm.'
+    },
+    'mcToeStackSlider': {
+      title: 'Forefoot Cushion Stack (mm)',
+      desc: 'Total cushioning height under the ball of the foot.',
+      tip: 'Maintains a natural, healthy foot stance when balanced with heel stack.'
+    },
+    'mcSidewallFlareSlider': {
+      title: 'Sidewall Flare (mm)',
+      desc: 'Outward widening of the sole base for lateral stability.',
+      tip: 'Flaring the base prevents ankle rollover during lateral cuts.'
+    },
     'mcTreadPatternSelect': {
-      title: 'Outsole Topography Pattern',
-      desc: 'Select procedural tread surface: Elevation Contours, Diamond Knurling, Hex Honeycomb, Flex Sipes, or Mountain Relief.',
-      tip: 'Contours and Diamond Knurl provide multi-directional wet-weather traction.'
+      title: 'Outsole Traction Pattern',
+      desc: 'Geometric tread design carved or extruded onto the bottom ground-contact surface.',
+      tip: 'Hexagonal honeycomb offers multidirectional traction; sipes provide wet flex grip.'
     },
     'mcTreadDepthSlider': {
       title: 'Tread Lug Depth (mm)',
-      desc: 'Depth of carved siping grooves or protrusion height of raised traction lugs.',
-      tip: '1.5mm–2.0mm for road shoes; 3.0mm–4.5mm for aggressive outdoor trail lugs.'
-    },
-
-    // Studio Modal Controls: 3D Print Lab
-    'mcPrintMaterialSelect': {
-      title: 'Manufacturing Material Profile',
-      desc: 'Filament/resin profile: TPU 95A, TPU 90A, TPU 85A, TPU 70A, PLA, or SLA Resins.',
-      tip: 'Overhang limits and minimum wall thickness thresholds automatically validate against this material.'
-    },
-    'mcExportStlBtn': {
-      title: 'Download Binary STL',
-      desc: 'Generates watertight binary STL solid ready for slicing in Bambu Studio, PrusaSlicer, or Cura.',
-      tip: 'Recommended slice setting: 0.2mm layer height, 3 wall perimeters, 15% Gyroid infill.'
-    },
-    'mcExport3mfBtn': {
-      title: 'Download 3MF Production Package',
-      desc: 'Exports 3MF archive with material metadata, print orientation, and bed staging included.',
-      tip: 'Best for Bambu Lab X1/P1/A1 and OrcaSlicer multi-material workflows.'
+      desc: 'Depth of the traction sipes or protruding lugs.',
+      tip: '2.0mm to 3.0mm gives long-lasting road grip without unnecessary weight.'
     }
   };
+
+  // 3D Cage State
+  let cageGroup = null;
+  let cageHandles = [];
+  let cageLines = null;
+  let isDraggingCageHandle = false;
+  let activeCageHandle = null;
+  let dragPlane = null;
+  let dragOffset = null;
+  let cageSymmetry = true;
+  let cageRadius = 50; // mm influence
+  let cageStrength = 1.0;
+  let baseUpperPositions = null;
+  let baseSolePositions = null;
+  let raycaster = null;
+  let mouse = null;
+  let isOrbitTemporarilyLocked = false;
+
+  // 3D Sculpt State
+  let sculptMode = 'push'; // push | pull | smooth
+  let sculptRadius = 24;
+  let sculptStrength = 1.2;
+  let isSculptDragging = false;
 
   // Initialize McConnell Studio
   function initStudio() {
     core = window.__mcconnellCore;
-    if (!core) {
-      setTimeout(initStudio, 120);
+    if (!core || !core.scene || !core.camera) {
+      setTimeout(initStudio, 100);
       return;
     }
 
     createTooltipDOM();
     setupTooltips();
     createSpecsModalDOM();
-    wireTopBarPresets();
-    wireHudSizing();
-    syncHudSizing();
-    createStudioPanel();
-    bindStudioEvents();
+    wireTopBarModeBar();
+    createToolInspector();
+    init3DCageEngine();
+    initSculptEngine();
     syncUIWithCore();
     ensureShoeAndLastVisible();
 
-    console.log('McConnell Meshes Studio Hub initialized & active in Light Theme.');
+    console.log('McConnell Meshes 3D Modeling Studio initialized successfully.');
   }
 
-  // 1. Tooltip DOM & Hover Engine
+  // 1. High-Precision Floating Tooltip Engine
   function createTooltipDOM() {
     if (document.getElementById('mcconnellTooltip')) return;
 
@@ -273,7 +268,7 @@
       const target = e.target.closest('[id], [title], [data-tip], [data-mctitle], button, input, select');
       if (!target) return;
 
-      // Park native title into data-mctitle to completely suppress browser native OS tooltip
+      // Park native title into data-mctitle to completely suppress native browser OS tooltip
       if (target.hasAttribute('title')) {
         target.setAttribute('data-mctitle', target.getAttribute('title'));
         target.removeAttribute('title');
@@ -300,7 +295,7 @@
       tipTimer = setTimeout(() => {
         titleEl.textContent = entry.title;
         descEl.textContent = entry.desc;
-        adviceEl.textContent = entry.tip || 'McConnell Meshes Additive Footwear System';
+        adviceEl.textContent = entry.tip || 'McConnell Meshes Footwear Creation Suite';
 
         if (entry.shortcut) {
           shortcutEl.textContent = entry.shortcut;
@@ -311,7 +306,7 @@
 
         positionTooltip(e.clientX, e.clientY);
         tipEl.classList.add('visible');
-      }, 100);
+      }, 90);
     }, true);
 
     document.addEventListener('mouseout', (e) => {
@@ -338,7 +333,6 @@
     let x = mouseX + pad;
     let y = mouseY + pad;
 
-    const rect = tipEl.getBoundingClientRect();
     if (x + 330 > window.innerWidth) x = mouseX - 330 - pad;
     if (y + 140 > window.innerHeight) y = mouseY - 140 - pad;
 
@@ -346,25 +340,15 @@
     tipEl.style.top = `${Math.max(10, y)}px`;
   }
 
-  // 2. Wire Top Bar 5 Presets & Action Buttons
-  function wireTopBarPresets() {
-    const sneakerBtn = document.getElementById('presetSneakerBtn');
-    const sandalBtn = document.getElementById('presetSandalBtn');
-    const heelBtn = document.getElementById('presetHeelBtn');
-    const bootBtn = document.getElementById('presetBootBtn');
-    const dressBtn = document.getElementById('presetDressBtn');
-
-    if (sneakerBtn) sneakerBtn.onclick = () => selectPreset('sneaker');
-    if (sandalBtn) sandalBtn.onclick = () => selectPreset('sandal');
-    if (heelBtn) heelBtn.onclick = () => selectPreset('heel');
-    if (bootBtn) bootBtn.onclick = () => selectPreset('boot');
-    if (dressBtn) dressBtn.onclick = () => selectPreset('dress');
-
-    // Studio Controls trigger
-    const hubTrigger = document.getElementById('rowStudioHub');
-    if (hubTrigger) {
-      hubTrigger.onclick = () => toggleStudioPanel();
-    }
+  // 2. Wire Top Bar Tool Modes & Action Buttons
+  function wireTopBarModeBar() {
+    const modePills = document.querySelectorAll('.mcModeBar .mcModePill');
+    modePills.forEach(pill => {
+      pill.onclick = () => {
+        const mode = pill.dataset.mode;
+        setToolMode(mode);
+      };
+    });
 
     // Wireframe toggle
     const wireBtn = document.getElementById('rowWire');
@@ -391,13 +375,13 @@
       };
     }
 
-    // Quick Export STL
+    // Quick STL Export
     const quickStl = document.getElementById('quickExportStlBtn');
     if (quickStl) {
       quickStl.onclick = () => triggerBinarySTLExport();
     }
 
-    // Specs Modal trigger (hidden on-demand technical specs in top bar)
+    // Technical Specs Button in Top Bar
     const hc = document.getElementById('historyControls');
     let specsBtn = document.getElementById('mcSpecsToggleBtn');
     if (hc && !specsBtn) {
@@ -413,7 +397,7 @@
     }
   }
 
-  // On-Demand Shoe Technical Specs Modal
+  // 3. Technical Specs Modal (Kept tucked away on demand)
   function createSpecsModalDOM() {
     if (document.getElementById('mcconnellSpecsModal')) return;
     const modal = document.createElement('div');
@@ -451,723 +435,1320 @@
     }
   }
 
-  // Master 5-Preset Execution Engine
-  function selectPreset(type) {
-    if (!core) core = window.__mcconnellCore;
-    if (!core) return;
-    ensureShoeAndLastVisible();
-
-    const m = core.measurements;
-    const s = core.shoe;
-    if (!m || !s) return;
-
-    // Update active state on top bar preset pills
-    document.querySelectorAll('.mcPresetBar .mcPresetPill').forEach(p => {
-      p.classList.toggle('active', p.dataset.preset === type);
-    });
-
-    if (type === 'sneaker') {
-      m.lastType = 'sneaker';
-      s.upperForm = 'slipon';
-      s.openBack = false;
-      s.toe = 'closed';
-      s.throat = 0.50;
-      s.back = 62;
-      s.side = 48;
-      s.fWall = 2.0;
-      s.gap = 1.5;
-      s.stack = 60;
-      s.stackToe = 40;
-      s.band = 24;
-      s.tread = 'diamond';
-      s.floorDepth = 6.0;
-      s.terrain = 'cross';
-      s.relief = 4.0;
-      s.fMat = 'tpu95';
-      s.sMat = 'tpu90';
-      s.oMat = 'tpu95';
-      if (s.f) {
-        s.f.perf = 'field';
-        s.f.perfHole = 2.8;
-        s.f.perfPitch = 7.0;
-      }
-      showNotification('Loaded Sneaker: Athletic runner profile with cushioned sole');
-
-    } else if (type === 'sandal') {
-      m.lastType = 'sandal';
-      s.upperForm = 'mule';
-      s.openBack = true;
-      s.toe = 'open';
-      s.toeMM = 65;
-      s.throat = 0.50;
-      s.back = 20;
-      s.side = 30;
-      s.fWall = 2.8;
-      s.gap = 0.5;
-      s.stack = 28;
-      s.stackToe = 22;
-      s.band = 12;
-      s.tread = 'flex';
-      s.floorDepth = 3.0;
-      s.terrain = 'none';
-      s.relief = 0;
-      s.fMat = 'tpu95';
-      s.sMat = 'tpu85';
-      s.oMat = 'tpu95';
-      if (s.f) s.f.perf = 'none';
-      showNotification('Loaded Sandal: Open-toe ergonomic slide with flex sipes');
-
-    } else if (type === 'heel') {
-      m.lastType = 'pump';
-      s.upperForm = 'slipon';
-      s.openBack = false;
-      s.toe = 'closed';
-      s.throat = 0.70;
-      s.back = 60;
-      s.side = 36;
-      s.fWall = 1.8;
-      s.gap = 0.6;
-      s.stack = 20;
-      s.stackToe = 12;
-      s.band = 10;
-      s.tread = 'plain';
-      s.floorDepth = 0;
-      s.terrain = 'none';
-      s.relief = 0;
-      s.fMat = 'tpu95';
-      s.sMat = 'resin_hard';
-      s.oMat = 'tpu95';
-      if (s.f) s.f.perf = 'none';
-      showNotification('Loaded Heel: Sculpted pump with elevated heel lift');
-
-    } else if (type === 'boot') {
-      m.lastType = 'boot';
-      s.upperForm = 'slipon';
-      s.openBack = false;
-      s.toe = 'closed';
-      s.back = 125;
-      s.side = 110;
-      s.throat = 0.38;
-      s.fWall = 3.5;
-      s.gap = 2.0;
-      s.stack = 85;
-      s.stackToe = 60;
-      s.band = 35;
-      s.tread = 'terrain';
-      s.floorDepth = 8.0;
-      s.terrain = 'range';
-      s.relief = 6.0;
-      s.fMat = 'tpu95';
-      s.sMat = 'tpu95';
-      s.oMat = 'tpu95';
-      if (s.f) s.f.perf = 'none';
-      showNotification('Loaded Boot: Rugged high-shaft boot with mountain lug sole');
-
-    } else if (type === 'dress') {
-      m.lastType = 'oxford';
-      s.upperForm = 'slipon';
-      s.openBack = false;
-      s.toe = 'closed';
-      s.back = 65;
-      s.side = 55;
-      s.throat = 0.55;
-      s.fWall = 2.2;
-      s.gap = 1.0;
-      s.stack = 32;
-      s.stackToe = 18;
-      s.band = 16;
-      s.tread = 'cross';
-      s.floorDepth = 2.5;
-      s.terrain = 'none';
-      s.relief = 0;
-      s.fMat = 'tpu95';
-      s.sMat = 'pla';
-      s.oMat = 'tpu95';
-      if (s.f) {
-        s.f.perf = 'brogue';
-        s.f.perfHole = 2.0;
-        s.f.perfPitch = 6.0;
-      }
-      showNotification('Loaded Dress Shoe: Classic Oxford with formal welt');
-    }
-
-    // 0. Disable fitLock & clear dimension shares so presets dictate exact shoe proportions
-    s.fitLock = false;
-    s.stackShare = null;
-    s.stackToeShare = null;
-    s.toeSpringShare = null;
-    s.heelSpringShare = null;
-    s.bandShare = null;
-    s.stepShare = null;
-    s.flareShare = null;
-    s.reachShare = null;
-    s.backShare = null;
-    s.sideShare = null;
-    s.depthShare = null;
-
-    // 1. Clear overrides so the chosen last type sets authentic heel, toe spring, and vamp
-    if (core.clearOverrides && core.LF_SHAPE_OVERRIDES) {
-      core.clearOverrides(core.LF_SHAPE_OVERRIDES);
-    }
-    // 2. Apply last type parameters to the last
-    if (core.applyLastType) {
-      core.applyLastType(m);
-    }
-    // 3. Clear coverage paint caches so chips must regenerate fresh!
-    if (core.layerPaint) core.layerPaint.clear();
-    if (core.lfLaid) {
-      core.lfLaid.add('footie');
-      core.lfLaid.add('sole');
-    }
-    if (core.lfCageRelief) core.lfCageRelief.clear();
-    // 4. Rebuild the last mesh and refresh measurements
-    if (typeof core.refreshAll === 'function') {
-      core.refreshAll();
-    } else if (typeof core.refreshAllKeepManual === 'function') {
-      core.refreshAllKeepManual();
-    }
-    // 5. Adapt shoe baseline dimensions to the new last shape
-    if (typeof core.adaptShoeToLast === 'function') {
-      core.adaptShoeToLast(m);
-    }
-    // 6. Force re-laying the upper and sole coverage chips (crucial for open toe / mule / boots)
-    if (typeof core.relayFootie === 'function') {
-      core.relayFootie(true);
-    }
-    if (typeof core.relaySole === 'function') {
-      core.relaySole(true);
-    }
-    // 7. Paint field colors and rebuild the 3D meshes for Three.js
-    if (typeof core.paintFieldColors === 'function') {
-      core.paintFieldColors();
-    }
-    if (typeof core.rebuildShoe === 'function') {
-      core.rebuildShoe();
-    }
-    // 8. Sync all UI panels and readouts
-    if (typeof core.syncShoeUI === 'function') {
-      core.syncShoeUI();
-    }
-    if (typeof core.syncFitUI === 'function') {
-      core.syncFitUI();
-    }
-    if (typeof core.updateShoeInfo === 'function') {
-      core.updateShoeInfo();
-    }
-    syncHudSizing();
-    syncUIWithCore();
-  }
-
-  // Sync Foot & Last Sizing section in HUD
-  function syncHudSizing() {
-    if (!core || !core.measurements) return;
-    const m = core.measurements;
-    const szVal = document.getElementById('hudSzVal');
-    const szSlider = document.getElementById('hudSzSlider');
-    const flVal = document.getElementById('hudFlVal');
-    const flSlider = document.getElementById('hudFlSlider');
-    const szSys = document.getElementById('hudSzSystem');
-    const szFit = document.getElementById('hudSzFit');
-
-    if (szVal) szVal.textContent = `${m.shoeSize} ${m.shoeSizeSystem}`;
-    if (szSlider) szSlider.value = m.shoeSize;
-    if (flVal) flVal.textContent = `${Math.round(m.footLength)} mm`;
-    if (flSlider) flSlider.value = Math.round(m.footLength);
-    if (szSys) szSys.value = m.shoeSizeSystem;
-    if (szFit) szFit.value = m.fitting != null ? m.fitting : 2;
-  }
-
-  function wireHudSizing() {
-    const szSlider = document.getElementById('hudSzSlider');
-    const flSlider = document.getElementById('hudFlSlider');
-    const szSys = document.getElementById('hudSzSystem');
-    const szFit = document.getElementById('hudSzFit');
-
-    let sizingDebounce = null;
-    function scheduleSizingUpdate(delay = 50) {
-      clearTimeout(sizingDebounce);
-      sizingDebounce = setTimeout(() => {
-        if (!core || !core.measurements) return;
-        if (core.clearOverrides && core.LF_MEAS_OVERRIDES) core.clearOverrides(core.LF_MEAS_OVERRIDES);
-        if (typeof core.refreshAll === 'function') core.refreshAll();
-        if (typeof core.adaptShoeToLast === 'function') core.adaptShoeToLast(core.measurements);
-        if (typeof core.rebuildShoe === 'function') core.rebuildShoe();
-        syncHudSizing();
-      }, delay);
-    }
-
-    if (szSlider) {
-      szSlider.oninput = () => {
-        if (!core || !core.measurements) return;
-        const v = parseFloat(szSlider.value);
-        core.measurements.shoeSize = v;
-        const szVal = document.getElementById('hudSzVal');
-        if (szVal) szVal.textContent = `${v} ${core.measurements.shoeSizeSystem}`;
-        scheduleSizingUpdate(50);
-      };
-      szSlider.onchange = () => {
-        scheduleSizingUpdate(0);
-      };
-    }
-
-    if (flSlider) {
-      flSlider.oninput = () => {
-        if (!core || !core.measurements) return;
-        const v = parseFloat(flSlider.value);
-        core.measurements.footLength = v;
-        const flVal = document.getElementById('hudFlVal');
-        if (flVal) flVal.textContent = `${Math.round(v)} mm`;
-        scheduleSizingUpdate(50);
-      };
-      flSlider.onchange = () => {
-        scheduleSizingUpdate(0);
-      };
-    }
-
-    if (szSys) {
-      szSys.onchange = () => {
-        if (!core || !core.measurements) return;
-        core.measurements.shoeSizeSystem = szSys.value;
-        if (core.clearOverrides && core.LF_MEAS_OVERRIDES) core.clearOverrides(core.LF_MEAS_OVERRIDES);
-        if (typeof core.refreshAll === 'function') core.refreshAll();
-        if (typeof core.adaptShoeToLast === 'function') core.adaptShoeToLast(core.measurements);
-        if (typeof core.rebuildShoe === 'function') core.rebuildShoe();
-        syncHudSizing();
-      };
-    }
-
-    if (szFit) {
-      szFit.onchange = () => {
-        if (!core || !core.measurements) return;
-        core.measurements.fitting = parseInt(szFit.value, 10);
-        if (typeof core.refreshAll === 'function') core.refreshAll();
-        if (typeof core.adaptShoeToLast === 'function') core.adaptShoeToLast(core.measurements);
-        if (typeof core.rebuildShoe === 'function') core.rebuildShoe();
-        syncHudSizing();
-      };
-    }
-  }
-
-  // 3. Build the Bento Studio Controls Panel (Master Dashboard)
-  function createStudioPanel() {
-    if (document.getElementById('mcconnellStudioPanel')) return;
+  // 4. Compact 3D Tool Inspector (Right Dock)
+  function createToolInspector() {
+    if (document.getElementById('mcToolInspector')) return;
 
     const panel = document.createElement('div');
-    panel.id = 'mcconnellStudioPanel';
-    panel.className = 'minimized';
+    panel.id = 'mcToolInspector';
+    panel.className = '';
 
     panel.innerHTML = `
-      <div class="mcStudioHd">
-        <div class="mcStudioLogoGroup">
-          <div class="mcStudioLogoText">
-            <b>McCONNELL MESHES</b>
-            <span>STUDIO CONTROLS &middot; PARAMETRIC 3D FOOTWEAR &middot; @KEEGANRMC</span>
-          </div>
+      <div class="mcInspectorHeader">
+        <div class="mcInspectorTitleGroup">
+          <span class="mcInspectorTitle" id="mcInspectorTitle">Cage Edit</span>
+          <span class="mcInspectorBadge" id="mcInspectorBadge">3D Control</span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <button class="mcCloseBtn" id="mcStudioCloseBtn" title="Close Studio Controls">&times;</button>
-        </div>
+        <button id="mcInspectorToggleBtn" class="mcCloseBtn" title="Toggle Inspector">&minus;</button>
       </div>
 
-      <div class="mcStudioTabs" role="tablist">
-        <button class="mcStudioTab active" data-tab="fit">Foot &amp; Last Fit</button>
-        <button class="mcStudioTab" data-tab="thickness">Wall Thickness &amp; Gap</button>
-        <button class="mcStudioTab" data-tab="holes">Holes &amp; Vents</button>
-        <button class="mcStudioTab" data-tab="topography">Topography &amp; Tread</button>
-        <button class="mcStudioTab" data-tab="print">3D Print Lab &amp; Materials</button>
-      </div>
+      <div class="mcInspectorBody">
+        <!-- MODE 1: CAGE EDIT -->
+        <div class="mcToolSection active" id="mcSecCage">
+          <div class="mcToolHelp">
+            Click and drag the 3D handles around the shoe to stretch and deform the silhouette. Orbit freely by dragging outside points.
+          </div>
+          
+          <div class="mcControlRow">
+            <div class="mcControlHeader"><span>Mirror Symmetry</span></div>
+            <button class="mcPresetBtn active" id="mcCageSymmetryBtn" style="width:100%;">Symmetry: ON (Mirrored Sides)</button>
+          </div>
 
-      <div class="mcStudioBody">
-        <!-- TAB 1: FOOT & LAST CALIBRATION -->
-        <div class="mcTabContent active" id="mcTabFit">
-          <div class="mcGrid2">
-            <div class="mcCard">
-              <div class="mcCardTitle">
-                <span>Personal Foot Sizing</span>
-                <span id="mcFootSizeBadge" class="mcBadge">US M 10.5</span>
-              </div>
-              <div class="mcCardDesc">Calibrate the anatomical foot last dimensions. The shoe upper, midsole, and outsole automatically conform around this volume.</div>
-              
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Foot Length (Heel to Toe)</span>
-                  <span class="val" id="mcFootLengthVal">270.0 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcFootLengthSlider" min="210" max="320" step="0.5" value="270">
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Ball Width &amp; Fitting</span>
-                  <span class="val" id="mcBallWidthVal">98.5 mm (D - Medium)</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcBallWidthSlider" min="75" max="125" step="0.5" value="98.5">
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Instep Girth &amp; Height</span>
-                  <span class="val" id="mcInstepVal">255.0 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcInstepSlider" min="200" max="310" step="0.5" value="255">
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Heel Seat Width</span>
-                  <span class="val" id="mcHeelWidthVal">68.0 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcHeelWidthSlider" min="45" max="90" step="0.5" value="68">
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Toe Spring Lift</span>
-                  <span class="val" id="mcToeSpringVal">12 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcToeSpringSlider" min="0" max="35" step="1" value="12">
-              </div>
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Influence Radius</span>
+              <span class="val" id="mcCageRadiusVal">50 mm</span>
             </div>
+            <input type="range" class="mcSlider" id="mcCageRadiusSlider" min="20" max="90" step="2" value="50">
+          </div>
 
-            <div class="mcCard">
-              <div class="mcCardTitle">Foot Morphology &amp; Quick Profiles</div>
-              <div class="mcCardDesc">Apply saved physiological foot profiles to quickly adapt shoe shape for different foot types.</div>
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Pull Strength</span>
+              <span class="val" id="mcCageStrengthVal">1.0x</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcCageStrengthSlider" min="0.4" max="2.4" step="0.1" value="1.0">
+          </div>
 
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Foot Morphology Archetype</span></div>
-                <select class="mcSelect" id="mcMorphologySelect">
-                  <option value="standard">Standard Anatomical</option>
-                  <option value="wide_forefoot">Wide Forefoot (Natural Barefoot splay)</option>
-                  <option value="high_arch">High Arch &amp; High Instep</option>
-                  <option value="flat_foot">Low Arch / Flat Foot Support</option>
-                  <option value="greek">Greek Foot (Morton's Toe: 2nd toe dominant)</option>
-                  <option value="egyptian">Egyptian Foot (Slanted Big Toe dominant)</option>
-                </select>
-              </div>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <button class="mcActionBtn secondary" id="mcResetCageBtn" style="flex:1;">Reset Cage Points</button>
+          </div>
+        </div>
 
-              <div style="display:flex;gap:8px;margin-top:12px;">
-                <button class="mcActionBtn primary" id="mcApplyFitBtn" style="flex:1;">Apply Fit to Last &amp; Shoe</button>
-              </div>
+        <!-- MODE 2: SCULPT -->
+        <div class="mcToolSection" id="mcSecSculpt">
+          <div class="mcToolHelp">
+            Freehand surface sculpting. Drag directly on the shoe surface to push outward or pull inward. Drag background to orbit.
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader"><span>Brush Mode</span></div>
+            <div class="mcBtnRow">
+              <button class="mcPresetBtn active" id="mcSculptPushBtn">Push</button>
+              <button class="mcPresetBtn" id="mcSculptPullBtn">Pull</button>
+              <button class="mcPresetBtn" id="mcSculptSmoothBtn">Smooth</button>
+            </div>
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Brush Radius</span>
+              <span class="val" id="mcSculptRadiusVal">24 mm</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcSculptRadiusSlider" min="10" max="60" step="2" value="24">
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Brush Strength</span>
+              <span class="val" id="mcSculptStrengthVal">1.2 mm</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcSculptStrengthSlider" min="0.4" max="4.0" step="0.2" value="1.2">
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <button class="mcActionBtn secondary" id="mcClearSculptBtn" style="flex:1;">Clear Sculpt</button>
+          </div>
+        </div>
+
+        <!-- MODE 3: COLLAR & OPENINGS -->
+        <div class="mcToolSection" id="mcSecCollar">
+          <div class="mcToolHelp">
+            Define entry collar proportions, Achilles collar lift, side dips, and toe style.
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Heel Collar Height</span>
+              <span class="val" id="mcCollarBackVal">58 mm</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcCollarBackSlider" min="40" max="85" step="1" value="58">
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Lateral Collar Dip</span>
+              <span class="val" id="mcCollarSideVal">46 mm</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcCollarSideSlider" min="30" max="65" step="1" value="46">
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Throat Opening Depth</span>
+              <span class="val" id="mcCollarThroatVal">0.52</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcCollarThroatSlider" min="0.35" max="0.75" step="0.01" value="0.52">
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader"><span>Upper Form</span></div>
+            <div class="mcBtnRow">
+              <button class="mcPresetBtn active" id="mcFormSliponBtn">Slip-on</button>
+              <button class="mcPresetBtn" id="mcFormClogBtn">Clog</button>
+              <button class="mcPresetBtn" id="mcFormMuleBtn">Mule</button>
+            </div>
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader"><span>Toe Style</span></div>
+            <div class="mcBtnRow">
+              <button class="mcPresetBtn active" id="mcToeClosedBtn">Closed</button>
+              <button class="mcPresetBtn" id="mcToePeepBtn">Peep</button>
+              <button class="mcPresetBtn" id="mcToeOpenBtn">Open</button>
             </div>
           </div>
         </div>
 
-        <!-- TAB 2: WALL THICKNESS & GAP -->
-        <div class="mcTabContent" id="mcTabThickness">
-          <div class="mcGrid2">
-            <div class="mcCard">
-              <div class="mcCardTitle">
-                <span>Wall Thickness Engine</span>
-                <span class="mcBadge" id="mcThicknessBadge">2.0 mm</span>
-              </div>
-              <div class="mcCardDesc">Controls the physical shell wall thickness for 3D printing. Thinner walls give flexibility; thicker walls provide structural support.</div>
+        <!-- MODE 4: WALL THICKNESS & GAP -->
+        <div class="mcToolSection" id="mcSecThickness">
+          <div class="mcToolHelp">
+            Parametric wall thickness optimization for 3D printing and comfort standoff gap.
+          </div>
 
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Upper Shell Wall Thickness</span>
-                  <span class="val" id="mcWallMMVal">2.0 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcWallMMSlider" min="0.8" max="8.0" step="0.1" value="2.0">
-              </div>
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Upper Wall Thickness</span>
+              <span class="val" id="mcUpperWallVal">2.0 mm</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcUpperWallSlider" min="1.0" max="5.5" step="0.1" value="2.0">
+          </div>
 
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Footbed Standoff Gap (Socks / Insole)</span>
-                  <span class="val" id="mcGapMMVal">1.5 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcGapMMSlider" min="0.0" max="5.0" step="0.1" value="1.5">
-              </div>
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Midsole Wall Thickness</span>
+              <span class="val" id="mcMidsoleWallVal">2.0 mm</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcMidsoleWallSlider" min="1.5" max="5.0" step="0.1" value="2.0">
+          </div>
 
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Thickness Presets</span></div>
-                <div class="mcBtnRow">
-                  <button class="mcPresetBtn" data-wall="1.2" data-gap="0.8">1.2mm Ultralight</button>
-                  <button class="mcPresetBtn active" data-wall="2.0" data-gap="1.5">2.0mm Performance</button>
-                  <button class="mcPresetBtn" data-wall="3.2" data-gap="2.0">3.2mm Rugged</button>
-                  <button class="mcPresetBtn" data-wall="5.0" data-gap="2.5">5.0mm Heavy Clog</button>
-                </div>
-              </div>
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Foot Comfort Standoff Gap</span>
+              <span class="val" id="mcComfortGapVal">1.2 mm</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcComfortGapSlider" min="0.5" max="3.0" step="0.1" value="1.2">
+          </div>
 
-              <div style="display:flex;gap:8px;margin-top:16px;">
-                <button class="mcActionBtn primary" id="mcApplyThicknessBtn" style="flex:1;">Rebuild Shell Thickness</button>
-              </div>
+          <div class="mcPrintCheckItem" style="margin-top:6px;">
+            <span class="mcDot pass"></span>
+            <div>
+              <div style="font-weight:700;font-size:11.5px;color:#0f172a;">Printability Check</div>
+              <div style="font-size:10.5px;color:#64748b;" id="mcThicknessEstimateText">Optimized for TPU 95A / 90A (~95g estimated)</div>
             </div>
           </div>
         </div>
 
-        <!-- TAB 3: HOLES & PERFORATIONS -->
-        <div class="mcTabContent" id="mcTabHoles">
-          <div class="mcGrid2">
-            <div class="mcCard">
-              <div class="mcCardTitle">
-                <span>Perforation &amp; Vent Puncher</span>
-                <span class="mcBadge" id="mcPerfBadge">Field Vents</span>
-              </div>
-              <div class="mcCardDesc">Punches parametric ventilation through-holes across the shoe upper for active airflow, cooling, and localized flexibility.</div>
+        <!-- MODE 5: PERFORATIONS -->
+        <div class="mcToolSection" id="mcSecHoles">
+          <div class="mcToolHelp">
+            Punches parametric ventilation through-holes across the shoe upper for active airflow.
+          </div>
 
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Perforation Pattern</span></div>
-                <div class="mcBtnRow">
-                  <button class="mcPresetBtn active" id="mcPerfFieldBtn" data-perf="field">Field Vents</button>
-                  <button class="mcPresetBtn" id="mcPerfBrogueBtn" data-perf="brogue">Brogue Accent Row</button>
-                  <button class="mcPresetBtn" id="mcPerfNoneBtn" data-perf="none">Solid (No Holes)</button>
-                </div>
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Hole Diameter</span>
-                  <span class="val" id="mcPerfHoleVal">2.8 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcPerfHoleSlider" min="1.0" max="8.0" step="0.2" value="2.8">
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Hole Spacing / Pitch</span>
-                  <span class="val" id="mcPerfPitchVal">7.0 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcPerfPitchSlider" min="3.0" max="25.0" step="0.5" value="7.0">
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Rim Margin Border</span>
-                  <span class="val" id="mcPerfBorderVal">8.0 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcPerfBorderSlider" min="2.0" max="20.0" step="0.5" value="8.0">
-              </div>
-
-              <div style="display:flex;gap:8px;margin-top:10px;">
-                <button class="mcActionBtn secondary" id="mcPerfRerollBtn" style="flex:1;">Reroll Distribution</button>
-                <button class="mcActionBtn primary" id="mcApplyPerfBtn" style="flex:1;">Punch Perforations</button>
-              </div>
+          <div class="mcControlRow">
+            <div class="mcControlHeader"><span>Vent Pattern</span></div>
+            <div class="mcBtnRow">
+              <button class="mcPresetBtn active" id="mcHolesFieldBtn">Field Vents</button>
+              <button class="mcPresetBtn" id="mcHolesBrogueBtn">Brogue Accent</button>
+              <button class="mcPresetBtn" id="mcHolesNoneBtn">Solid</button>
             </div>
+          </div>
 
-            <div class="mcCard">
-              <div class="mcCardTitle">Breathability &amp; Placement</div>
-              <div class="mcCardDesc">Target ventilation to specific zones or configure lacing eyelet rows.</div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Target Placement</span></div>
-                <select class="mcSelect" id="mcPerfWhereSelect">
-                  <option value="all">Everywhere Across Upper</option>
-                  <option value="c1">Vamp &amp; Toe Box Only</option>
-                  <option value="c2">Lateral &amp; Medial Quarters</option>
-                  <option value="c3">Arch Flank &amp; Collar</option>
-                </select>
-              </div>
-
-              <div class="mcPrintStatus" style="margin-top:10px;">
-                <div class="mcPrintCheckItem">
-                  <span class="mcDot pass"></span>
-                  <div>
-                    <div style="font-weight:700;font-size:11.5px;color:#0f172a;">Punched Holes Status</div>
-                    <div style="font-size:10px;color:#64748b;" id="mcPerfStatusText">Estimated ~180-320 clean through-holes active</div>
-                  </div>
-                </div>
-              </div>
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Hole Diameter</span>
+              <span class="val" id="mcHolesSizeVal">2.6 mm</span>
             </div>
+            <input type="range" class="mcSlider" id="mcHolesSizeSlider" min="1.2" max="5.0" step="0.2" value="2.6">
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Hole Spacing / Pitch</span>
+              <span class="val" id="mcHolesPitchVal">7.0 mm</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcHolesPitchSlider" min="4.0" max="16.0" step="0.5" value="7.0">
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <button class="mcActionBtn primary" id="mcApplyHolesBtn" style="flex:1;">Punch Perforations</button>
           </div>
         </div>
 
-        <!-- TAB 4: TOPOGRAPHY & TREAD -->
-        <div class="mcTabContent" id="mcTabTopography">
-          <div class="mcGrid2">
-            <div class="mcCard">
-              <div class="mcCardTitle">
-                <span>Outsole Topography &amp; Tread</span>
-                <span class="mcBadge" id="mcTreadBadge">Contours</span>
-              </div>
-              <div class="mcCardDesc">Carve or raise sipes, lugs, and organic contours for traction and aesthetics.</div>
+        <!-- MODE 6: SOLE & TREAD GRIP -->
+        <div class="mcToolSection" id="mcSecSole">
+          <div class="mcToolHelp">
+            Cushioning stack height, sidewall flare, and outsole traction grip geometry.
+          </div>
 
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Topography Pattern</span></div>
-                <select class="mcSelect" id="mcTreadPatternSelect">
-                  <option value="contour">Topographic Elevation Contours</option>
-                  <option value="diamond">Diamond Knurling Grip</option>
-                  <option value="hex">Geometric Hex Honeycomb</option>
-                  <option value="flex">Ergonomic Flex Grooves</option>
-                  <option value="voronoi">Nature Voronoi Traction Lugs</option>
-                  <option value="cross">Cross Hatch Grid</option>
-                  <option value="terrain">Mountain Elevation Relief</option>
-                </select>
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Relief Direction</span></div>
-                <div class="mcBtnRow">
-                  <button class="mcPresetBtn active" id="mcReliefCarvedBtn" data-relief="carved">Carved (Siped Grooves)</button>
-                  <button class="mcPresetBtn" id="mcReliefRaisedBtn" data-relief="raised">Raised (Protruding Lugs)</button>
-                </div>
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Tread Depth / Height</span>
-                  <span class="val" id="mcTreadDepthVal">2.2 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcTreadDepthSlider" min="0.5" max="6.0" step="0.1" value="2.2">
-              </div>
-
-              <div style="display:flex;gap:8px;margin-top:10px;">
-                <button class="mcActionBtn green" id="mcApplyTreadBtn" style="flex:1;">Apply Outsole Topography</button>
-              </div>
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Heel Cushion Stack</span>
+              <span class="val" id="mcHeelStackVal">22 mm</span>
             </div>
+            <input type="range" class="mcSlider" id="mcHeelStackSlider" min="14" max="40" step="1" value="22">
+          </div>
 
-            <div class="mcCard">
-              <div class="mcCardTitle">Forefoot Flex &amp; Sipes</div>
-              <div class="mcCardDesc">Configure forefoot flex sipes to allow natural biomechanical foot roll.</div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Flex Sipe Width</span>
-                  <span class="val" id="mcFlexWidthVal">2.5 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcFlexWidthSlider" min="1.0" max="6.0" step="0.2" value="2.5">
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader">
-                  <span>Boundary Fade Margin</span>
-                  <span class="val" id="mcSoftEdgeVal">4.0 mm</span>
-                </div>
-                <input type="range" class="mcSlider" id="mcSoftEdgeSlider" min="0" max="15.0" step="1" value="4.0">
-              </div>
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Forefoot Cushion Stack</span>
+              <span class="val" id="mcToeStackVal">16 mm</span>
             </div>
+            <input type="range" class="mcSlider" id="mcToeStackSlider" min="10" max="28" step="1" value="16">
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Sidewall Flare</span>
+              <span class="val" id="mcSidewallFlareVal">1.0 mm</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcSidewallFlareSlider" min="-3" max="16" step="0.5" value="1.0">
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader"><span>Outsole Traction Pattern</span></div>
+            <select class="mcSelect" id="mcTreadPatternSelect">
+              <option value="hex">Hexagonal Honeycomb Grip</option>
+              <option value="diamond">Diamond Knurl Traction</option>
+              <option value="flex">Biomechanical Flex Sipes</option>
+              <option value="wave">Wave Wet-Traction Sipes</option>
+              <option value="none">Flat Smooth Welt</option>
+            </select>
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Tread Depth</span>
+              <span class="val" id="mcTreadDepthVal">2.0 mm</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcTreadDepthSlider" min="0.8" max="4.5" step="0.1" value="2.0">
           </div>
         </div>
 
-        <!-- TAB 5: 3D PRINTABILITY & MATERIALS LAB -->
-        <div class="mcTabContent" id="mcTabPrint">
-          <div class="mcGrid2">
-            <div class="mcCard">
-              <div class="mcCardTitle">
-                <span>Material &amp; Printer Matrix</span>
-                <span class="mcBadge" id="mcMaterialBadge">TPU 95A</span>
-              </div>
-              <div class="mcCardDesc">Select your target production material. Overhang angles and wall thresholds automatically calibrate.</div>
+        <!-- MODE 7: FOOT SIZING -->
+        <div class="mcToolSection" id="mcSecFit">
+          <div class="mcToolHelp">
+            Anatomical last calibration. The base shoe automatically re-grades around your foot measurements.
+          </div>
 
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Production Material</span></div>
-                <select class="mcSelect" id="mcPrintMaterialSelect">
-                  <option value="tpu95">TPU 95A (Standard Footwear - High Durability, 45° overhang, 1.5mm min wall)</option>
-                  <option value="tpu90">TPU 90A (Softer Performance - Bambu HF, 45° overhang, 2.0mm min wall)</option>
-                  <option value="tpu85">TPU 85A (Ultra-flexible Cushioning - NinjaFlex, 40° overhang, 2.0mm min wall)</option>
-                  <option value="tpu70">TPU 70A (Super Soft Foam-like - Filaflex, 40° overhang, 2.0mm min wall)</option>
-                  <option value="pla">PLA Basic (Rigid Fitting Prototype, 45° overhang, 1.0mm min wall)</option>
-                  <option value="resin_elastomer">Elastomeric Resin (Formlabs 50A/80A SLA Flexible, 0° overhang)</option>
-                  <option value="resin_hard">Tough Resin (SLA Rigid Model, 10° overhang, 1.0mm min wall)</option>
-                </select>
-              </div>
-
-              <div class="mcControlRow">
-                <div class="mcControlHeader"><span>Target 3D Printer</span></div>
-                <select class="mcSelect" id="mcPrinterSelect">
-                  <option value="bambu_x1c">Bambu Lab X1-Carbon / P1S (256 &times; 256 &times; 256 mm)</option>
-                  <option value="kobra_s1_max">Anycubic Kobra S1 Max (350 &times; 350 &times; 350 mm)</option>
-                  <option value="form4">Formlabs Form 4 (200 &times; 125 &times; 210 mm)</option>
-                  <option value="custom">Custom Footwear 3D Printer (400 &times; 400 &times; 400 mm)</option>
-                </select>
-              </div>
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Shoe Size</span>
+              <span class="val" id="mcShoeSizeVal">EU 42.0 (US M 9.0)</span>
             </div>
+            <input type="range" class="mcSlider" id="mcShoeSizeSlider" min="36" max="48" step="0.5" value="42">
+          </div>
 
-            <div class="mcCard">
-              <div class="mcCardTitle">Live Printability Verification</div>
-              <div class="mcCardDesc">Real-time geometric checks ensuring clean slicing and bed adhesion without print failures.</div>
-
-              <div class="mcPrintStatus">
-                <div class="mcPrintCheckItem">
-                  <span class="mcDot pass"></span>
-                  <div>
-                    <div style="font-weight:700;font-size:11.5px;color:#0f172a;">Watertight Solid Check</div>
-                    <div style="font-size:10px;color:#64748b;">Manifold Mesh &middot; 0 Naked Edges &middot; Closed Solid</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mcPrintStatus">
-                <div class="mcPrintCheckItem">
-                  <span class="mcDot pass"></span>
-                  <div>
-                    <div style="font-weight:700;font-size:11.5px;color:#0f172a;">Overhang Safety Analysis</div>
-                    <div style="font-size:10px;color:#64748b;">Within 45&deg; self-supporting threshold for TPU</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mcPrintStatus">
-                <div class="mcPrintCheckItem">
-                  <span class="mcDot pass"></span>
-                  <div>
-                    <div style="font-weight:700;font-size:11.5px;color:#0f172a;">Minimum Wall Thickness Check</div>
-                    <div style="font-size:10px;color:#64748b;">All regions &ge; 1.5mm material limit</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Production Readouts -->
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px;">
-                <div style="background:#f8fafc;padding:8px 10px;border-radius:8px;border:1px solid #e2e8f0;">
-                  <div class="mcMetricLabel">Est. Time</div>
-                  <div class="mcMetricValue" id="mcEstTimeVal">6h 40m</div>
-                </div>
-                <div style="background:#f8fafc;padding:8px 10px;border-radius:8px;border:1px solid #e2e8f0;">
-                  <div class="mcMetricLabel">Filament Mass</div>
-                  <div class="mcMetricValue" id="mcEstWeightVal">285 g</div>
-                </div>
-                <div style="background:#f8fafc;padding:8px 10px;border-radius:8px;border:1px solid #e2e8f0;">
-                  <div class="mcMetricLabel">Est. Cost</div>
-                  <div class="mcMetricValue" id="mcEstCostVal" style="color:var(--mc-cyan);">$9.12</div>
-                </div>
-              </div>
-
-              <!-- Export Actions -->
-              <div style="display:flex;gap:8px;margin-top:10px;">
-                <button class="mcActionBtn green" id="mcExportStlBtn" style="flex:1;">Download STL</button>
-                <button class="mcActionBtn primary" id="mcExport3mfBtn" style="flex:1;">Download 3MF</button>
-                <button class="mcActionBtn secondary" id="mcExportObjBtn" style="flex:1;">Download OBJ</button>
-              </div>
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Foot Length</span>
+              <span class="val" id="mcFootLengthVal">267 mm</span>
             </div>
+            <input type="range" class="mcSlider" id="mcFootLengthSlider" min="220" max="310" step="1" value="267">
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader"><span>Fitting Width</span></div>
+            <div class="mcBtnRow">
+              <button class="mcPresetBtn" id="mcFitBBtn" data-fit="1">B (Narrow)</button>
+              <button class="mcPresetBtn active" id="mcFitDBtn" data-fit="3">D (Standard)</button>
+              <button class="mcPresetBtn" id="mcFitEEBtn" data-fit="5">EE (Wide)</button>
+              <button class="mcPresetBtn" id="mcFit4EBtn" data-fit="6">4E (Extra Wide)</button>
+            </div>
+          </div>
+
+          <div class="mcControlRow">
+            <div class="mcControlHeader">
+              <span>Instep Girth</span>
+              <span class="val" id="mcInstepGirthVal">257 mm</span>
+            </div>
+            <input type="range" class="mcSlider" id="mcInstepGirthSlider" min="210" max="310" step="1" value="257">
           </div>
         </div>
       </div>
     `;
 
     document.body.appendChild(panel);
+
+    // Inspector toggle minimize button
+    const toggleBtn = document.getElementById('mcInspectorToggleBtn');
+    if (toggleBtn) {
+      toggleBtn.onclick = () => {
+        panel.classList.toggle('minimized');
+        toggleBtn.textContent = panel.classList.contains('minimized') ? '+' : '−';
+      };
+    }
+
+    bindToolInspectorEvents();
   }
 
-  // 4. Panel Toggling & Tab Navigation
-  function toggleStudioPanel(open) {
-    const panel = document.getElementById('mcconnellStudioPanel');
-    const trigger = document.getElementById('rowStudioHub');
-    if (!panel) return;
+  // 5. Tool Mode Switching Logic
+  function setToolMode(mode) {
+    activeMode = mode;
 
-    const willOpen = open !== undefined ? open : panel.classList.contains('minimized');
-    panel.classList.toggle('minimized', !willOpen);
-    if (trigger) trigger.classList.toggle('active', willOpen);
+    // Update active top bar mode pill
+    document.querySelectorAll('.mcModeBar .mcModePill').forEach(p => {
+      p.classList.toggle('active', p.dataset.mode === mode);
+    });
 
-    if (willOpen) {
-      syncUIWithCore();
-      ensureShoeAndLastVisible();
+    // Make sure inspector is visible
+    const inspector = document.getElementById('mcToolInspector');
+    if (inspector) inspector.classList.remove('minimized');
+
+    // Update inspector sections
+    document.querySelectorAll('.mcToolSection').forEach(sec => {
+      sec.classList.remove('active');
+    });
+
+    const activeSec = document.getElementById(`mcSec${capitalize(mode)}`);
+    if (activeSec) activeSec.classList.add('active');
+
+    // Update inspector title & badge
+    const titleEl = document.getElementById('mcInspectorTitle');
+    const badgeEl = document.getElementById('mcInspectorBadge');
+    const titles = {
+      'cage': { title: 'Cage Edit', badge: '3D Points Active' },
+      'sculpt': { title: 'Surface Sculpt', badge: 'Push / Pull' },
+      'collar': { title: 'Collar & Openings', badge: 'Silhouette' },
+      'thickness': { title: 'Wall Thickness', badge: 'Solid Offsets' },
+      'holes': { title: 'Perforations', badge: 'Airflow Vents' },
+      'sole': { title: 'Sole & Tread', badge: 'Cushion & Grip' },
+      'fit': { title: 'Foot Sizing', badge: 'Flat Last Fit' }
+    };
+
+    if (titles[mode]) {
+      if (titleEl) titleEl.textContent = titles[mode].title;
+      if (badgeEl) badgeEl.textContent = titles[mode].badge;
+    }
+
+    // Toggle 3D Cage visibility
+    showCage(mode === 'cage');
+
+    showNotification(`Active Tool: ${titles[mode] ? titles[mode].title : capitalize(mode)}`);
+  }
+
+  // 6. Interactive 3D Control Cage Engine
+  function init3DCageEngine() {
+    if (!core || !core.scene || !core.camera) return;
+
+    const THREE = core.THREE;
+    cageGroup = new THREE.Group();
+    cageGroup.name = 'mcCageGroup';
+    core.scene.add(cageGroup);
+
+    raycaster = new THREE.Raycaster();
+    mouse = new THREE.Vector2();
+
+    buildCageHandles();
+
+    const dom = core.renderer.domElement;
+
+    dom.addEventListener('pointermove', onCagePointerMove, false);
+    dom.addEventListener('pointerdown', onCagePointerDown, true);
+    window.addEventListener('pointerup', onCagePointerUp, true);
+  }
+
+  function buildCageHandles() {
+    if (!core) return;
+    const THREE = core.THREE;
+
+    // Clear existing handles
+    while (cageGroup.children.length > 0) {
+      cageGroup.remove(cageGroup.children[0]);
+    }
+    cageHandles = [];
+
+    // Base coordinate reference for EU42 base shoe:
+    // Length (X): ~ -105mm (Heel) to +110mm (Toe)
+    // Height (Y): ~ 10mm (Ground/Sole interface) to 75mm (Collar/Instep)
+    // Width (Z): ~ -44mm (Lateral) to +44mm (Medial)
+    const stations = [
+      { x: 92,  yMid: 24, rx: 18, ry: 15, rz: 32 },  // Toe Box
+      { x: 38,  yMid: 32, rx: 24, ry: 22, rz: 46 },  // Forefoot / Ball
+      { x: -28, yMid: 42, rx: 28, ry: 26, rz: 40 },  // Instep / Arch
+      { x: -94, yMid: 48, rx: 28, ry: 30, rz: 36 }   // Heel / Collar
+    ];
+
+    const sphereGeo = new THREE.SphereGeometry(3.6, 16, 16);
+    const handleMat = new THREE.MeshStandardMaterial({
+      color: 0x0284c7,
+      roughness: 0.25,
+      metalness: 0.1,
+      emissive: 0x0284c7,
+      emissiveIntensity: 0.35
+    });
+
+    let index = 0;
+    stations.forEach((st, sIdx) => {
+      // 6 radial control nodes per station:
+      // 0: Top, 1: High Medial, 2: Low Medial, 3: Bottom Sole, 4: Low Lateral, 5: High Lateral
+      const nodes = [
+        { dy: st.ry, dz: 0 },                        // 0: Top Dorsum (Z=0)
+        { dy: st.ry * 0.65, dz: st.rz * 0.85 },       // 1: High Medial
+        { dy: -st.ry * 0.5, dz: st.rz * 0.95 },      // 2: Low Medial
+        { dy: -st.ry * 0.85, dz: 0 },                 // 3: Bottom Sole (Z=0)
+        { dy: -st.ry * 0.5, dz: -st.rz * 0.95 },     // 4: Low Lateral
+        { dy: st.ry * 0.65, dz: -st.rz * 0.85 }      // 5: High Lateral
+      ];
+
+      nodes.forEach((n, nIdx) => {
+        const mesh = new THREE.Mesh(sphereGeo, handleMat.clone());
+        const pos = new THREE.Vector3(st.x, st.yMid + n.dy, n.dz);
+        mesh.position.copy(pos);
+
+        // Determine symmetry pairing:
+        // 0 pairs with 0, 3 pairs with 3
+        // 1 pairs with 5, 2 pairs with 4
+        let pairLocalIdx = nIdx;
+        if (nIdx === 1) pairLocalIdx = 5;
+        else if (nIdx === 5) pairLocalIdx = 1;
+        else if (nIdx === 2) pairLocalIdx = 4;
+        else if (nIdx === 4) pairLocalIdx = 2;
+
+        mesh.userData = {
+          handleIndex: index,
+          stationIdx: sIdx,
+          nodeIdx: nIdx,
+          pairIndex: sIdx * 6 + pairLocalIdx,
+          basePos: pos.clone(),
+          startDragPos: pos.clone()
+        };
+
+        cageGroup.add(mesh);
+        cageHandles.push(mesh);
+        index++;
+      });
+    });
+
+    updateCageLines();
+    showCage(activeMode === 'cage');
+  }
+
+  function updateCageLines() {
+    if (!core) return;
+    const THREE = core.THREE;
+
+    if (cageLines) {
+      cageGroup.remove(cageLines);
+      cageLines.geometry.dispose();
+      cageLines = null;
+    }
+
+    const linePoints = [];
+
+    // Connect rings at each station
+    for (let s = 0; s < 4; s++) {
+      const base = s * 6;
+      for (let i = 0; i < 6; i++) {
+        const p1 = cageHandles[base + i].position;
+        const p2 = cageHandles[base + ((i + 1) % 6)].position;
+        linePoints.push(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
+      }
+    }
+
+    // Connect stations longitudinally
+    for (let s = 0; s < 3; s++) {
+      const b1 = s * 6;
+      const b2 = (s + 1) * 6;
+      for (let i = 0; i < 6; i++) {
+        const p1 = cageHandles[b1 + i].position;
+        const p2 = cageHandles[b2 + i].position;
+        linePoints.push(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
+      }
+    }
+
+    const lineGeo = new THREE.BufferGeometry();
+    lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePoints, 3));
+    const lineMat = new THREE.LineBasicMaterial({
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0.4
+    });
+
+    cageLines = new THREE.LineSegments(lineGeo, lineMat);
+    cageGroup.add(cageLines);
+  }
+
+  function showCage(visible) {
+    if (cageGroup) {
+      cageGroup.visible = !!visible;
     }
   }
 
-  function switchTab(tabId) {
-    activeTab = tabId;
-    document.querySelectorAll('.mcStudioTab').forEach(tab => {
-      tab.classList.toggle('active', tab.dataset.tab === tabId);
-    });
+  function onCagePointerMove(e) {
+    if (activeMode !== 'cage' || !core) return;
+    const rect = core.renderer.domElement.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
-    document.querySelectorAll('.mcTabContent').forEach(content => {
-      content.classList.toggle('active', content.id === `mcTab${capitalize(tabId)}`);
-    });
+    if (isDraggingCageHandle && activeCageHandle) {
+      // Dragging active handle in 3D
+      raycaster.setFromCamera(mouse, core.camera);
+      const intersectPoint = new THREE.Vector3();
+      if (raycaster.ray.intersectPlane(dragPlane, intersectPoint)) {
+        const delta = new THREE.Vector3().subVectors(intersectPoint, dragOffset);
 
-    ensureShoeAndLastVisible();
+        activeCageHandle.position.copy(activeCageHandle.userData.startDragPos).add(delta);
+
+        // Apply symmetry if enabled
+        if (cageSymmetry) {
+          const pairHandle = cageHandles[activeCageHandle.userData.pairIndex];
+          if (pairHandle && pairHandle !== activeCageHandle) {
+            pairHandle.position.set(
+              pairHandle.userData.startDragPos.x + delta.x,
+              pairHandle.userData.startDragPos.y + delta.y,
+              pairHandle.userData.startDragPos.z - delta.z
+            );
+          }
+        }
+
+        updateCageLines();
+        applyCageDeformation(activeCageHandle, delta);
+      }
+      return;
+    }
+
+    // Hover state over handles
+    raycaster.setFromCamera(mouse, core.camera);
+    const intersects = raycaster.intersectObjects(cageHandles);
+    if (intersects.length > 0) {
+      core.renderer.domElement.style.cursor = 'grab';
+      cageHandles.forEach(h => {
+        h.material.emissiveIntensity = 0.35;
+        h.scale.set(1, 1, 1);
+      });
+      const topHandle = intersects[0].object;
+      topHandle.material.emissiveIntensity = 0.95;
+      topHandle.scale.set(1.35, 1.35, 1.35);
+
+      if (cageSymmetry) {
+        const pairHandle = cageHandles[topHandle.userData.pairIndex];
+        if (pairHandle && pairHandle !== topHandle) {
+          pairHandle.material.emissiveIntensity = 0.8;
+          pairHandle.scale.set(1.2, 1.2, 1.2);
+        }
+      }
+    } else {
+      core.renderer.domElement.style.cursor = 'default';
+      cageHandles.forEach(h => {
+        h.material.emissiveIntensity = 0.35;
+        h.scale.set(1, 1, 1);
+      });
+    }
   }
 
-  function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+  function onCagePointerDown(e) {
+    if (activeMode !== 'cage' || !core || e.button !== 0) return;
+    const rect = core.renderer.domElement.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, core.camera);
+    const intersects = raycaster.intersectObjects(cageHandles);
+
+    if (intersects.length > 0) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      isDraggingCageHandle = true;
+      activeCageHandle = intersects[0].object;
+      core.renderer.domElement.style.cursor = 'grabbing';
+
+      // Capture base vertex positions for smooth deformation delta
+      captureBaseMeshPositions();
+
+      // Setup drag plane perpendicular to camera ray
+      const THREE = core.THREE;
+      const camDir = new THREE.Vector3();
+      core.camera.getWorldDirection(camDir);
+      camDir.negate();
+      dragPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(camDir, activeCageHandle.position);
+
+      const intersectPoint = new THREE.Vector3();
+      raycaster.ray.intersectPlane(dragPlane, intersectPoint);
+      dragOffset = intersectPoint.clone();
+
+      cageHandles.forEach(h => {
+        h.userData.startDragPos = h.position.clone();
+      });
+    }
+  }
+
+  function onCagePointerUp() {
+    if (isDraggingCageHandle) {
+      isDraggingCageHandle = false;
+      activeCageHandle = null;
+      if (core) core.renderer.domElement.style.cursor = 'default';
+      showNotification('Shoe mesh deformed smoothly with 3D Cage Edit');
+    }
+  }
+
+  function captureBaseMeshPositions() {
+    if (!core) return;
+    if (core.footieMesh && core.footieMesh.geometry && !baseUpperPositions) {
+      baseUpperPositions = core.footieMesh.geometry.attributes.position.array.slice();
+    }
+    if (core.soleMesh && core.soleMesh.geometry && !baseSolePositions) {
+      baseSolePositions = core.soleMesh.geometry.attributes.position.array.slice();
+    }
+  }
+
+  function applyCageDeformation(handle, delta) {
+    if (!core || !baseUpperPositions) return;
+
+    const R = cageRadius;
+    const R2 = R * R;
+    const strength = cageStrength;
+
+    // Deform Upper Shell Mesh
+    if (core.footieMesh && core.footieMesh.geometry) {
+      const posAttr = core.footieMesh.geometry.attributes.position;
+      const arr = posAttr.array;
+      const count = posAttr.count;
+      const h0 = handle.userData.basePos;
+      const mirrorDeltaX = delta.x;
+      const mirrorDeltaY = delta.y;
+      const mirrorDeltaZ = -delta.z;
+
+      let pairH0 = null;
+      if (cageSymmetry) {
+        const pair = cageHandles[handle.userData.pairIndex];
+        if (pair && pair !== handle) pairH0 = pair.userData.basePos;
+      }
+
+      for (let i = 0; i < count; i++) {
+        const i3 = i * 3;
+        const bx = baseUpperPositions[i3];
+        const by = baseUpperPositions[i3 + 1];
+        const bz = baseUpperPositions[i3 + 2];
+
+        // Primary handle influence
+        const dx = bx - h0.x;
+        const dy = by - h0.y;
+        const dz = bz - h0.z;
+        const d2 = dx * dx + dy * dy + dz * dz;
+
+        let totalDispX = 0;
+        let totalDispY = 0;
+        let totalDispZ = 0;
+
+        if (d2 < R2) {
+          const t = 1 - d2 / R2;
+          const w = t * t * strength;
+          totalDispX += delta.x * w;
+          totalDispY += delta.y * w;
+          totalDispZ += delta.z * w;
+        }
+
+        // Symmetrical handle influence
+        if (pairH0) {
+          const pdx = bx - pairH0.x;
+          const pdy = by - pairH0.y;
+          const pdz = bz - pairH0.z;
+          const pd2 = pdx * pdx + pdy * pdy + pdz * pdz;
+          if (pd2 < R2) {
+            const pt = 1 - pd2 / R2;
+            const pw = pt * pt * strength;
+            totalDispX += mirrorDeltaX * pw;
+            totalDispY += mirrorDeltaY * pw;
+            totalDispZ += mirrorDeltaZ * pw;
+          }
+        }
+
+        arr[i3] = bx + totalDispX;
+        arr[i3 + 1] = by + totalDispY;
+        arr[i3 + 2] = bz + totalDispZ;
+      }
+
+      posAttr.needsUpdate = true;
+      core.footieMesh.geometry.computeVertexNormals();
+    }
+
+    // Deform Midsole Mesh if present
+    if (core.soleMesh && core.soleMesh.geometry && baseSolePositions) {
+      const posAttr = core.soleMesh.geometry.attributes.position;
+      const arr = posAttr.array;
+      const count = posAttr.count;
+      const h0 = handle.userData.basePos;
+
+      for (let i = 0; i < count; i++) {
+        const i3 = i * 3;
+        const bx = baseSolePositions[i3];
+        const by = baseSolePositions[i3 + 1];
+        const bz = baseSolePositions[i3 + 2];
+
+        const dx = bx - h0.x;
+        const dy = by - h0.y;
+        const dz = bz - h0.z;
+        const d2 = dx * dx + dy * dy + dz * dz;
+
+        if (d2 < R2) {
+          const t = 1 - d2 / R2;
+          const w = t * t * strength * 0.85;
+          arr[i3] = bx + delta.x * w;
+          arr[i3 + 1] = by + delta.y * w;
+          arr[i3 + 2] = bz + delta.z * w;
+        }
+      }
+
+      posAttr.needsUpdate = true;
+      core.soleMesh.geometry.computeVertexNormals();
+    }
+  }
+
+  function resetCagePoints() {
+    cageHandles.forEach(h => {
+      h.position.copy(h.userData.basePos);
+    });
+    updateCageLines();
+
+    // Restore base vertex positions
+    if (core && core.footieMesh && core.footieMesh.geometry && baseUpperPositions) {
+      core.footieMesh.geometry.attributes.position.array.set(baseUpperPositions);
+      core.footieMesh.geometry.attributes.position.needsUpdate = true;
+      core.footieMesh.geometry.computeVertexNormals();
+    }
+    if (core && core.soleMesh && core.soleMesh.geometry && baseSolePositions) {
+      core.soleMesh.geometry.attributes.position.array.set(baseSolePositions);
+      core.soleMesh.geometry.attributes.position.needsUpdate = true;
+      core.soleMesh.geometry.computeVertexNormals();
+    }
+
+    baseUpperPositions = null;
+    baseSolePositions = null;
+    showNotification('Cage points and shoe mesh reset to base shape.');
+  }
+
+  // 7. Surface Sculpt Engine
+  function initSculptEngine() {
+    if (!core) return;
+    const dom = core.renderer.domElement;
+
+    dom.addEventListener('pointerdown', (e) => {
+      if (activeMode !== 'sculpt' || e.button !== 0 || e.shiftKey) return;
+      const targetMesh = core.footieMesh || core.soleMesh;
+      if (!targetMesh) return;
+
+      const rect = dom.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, core.camera);
+      const hits = raycaster.intersectObject(targetMesh);
+      if (hits.length > 0) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        isSculptDragging = true;
+        applySculptStroke(hits[0]);
+      }
+    }, true);
+
+    dom.addEventListener('pointermove', (e) => {
+      if (activeMode !== 'sculpt' || !isSculptDragging) return;
+      const targetMesh = core.footieMesh || core.soleMesh;
+      if (!targetMesh) return;
+
+      const rect = dom.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, core.camera);
+      const hits = raycaster.intersectObject(targetMesh);
+      if (hits.length > 0) {
+        applySculptStroke(hits[0]);
+      }
+    }, true);
+
+    window.addEventListener('pointerup', () => {
+      if (isSculptDragging) {
+        isSculptDragging = false;
+        showNotification('Surface sculpt stroke applied.');
+      }
+    }, true);
+  }
+
+  function applySculptStroke(hit) {
+    const mesh = hit.object;
+    if (!mesh || !mesh.geometry) return;
+
+    captureBaseMeshPositions();
+
+    const pAttr = mesh.geometry.attributes.position;
+    const arr = pAttr.array;
+    const count = pAttr.count;
+    const hitPoint = hit.point;
+    const normal = hit.face ? hit.face.normal : new core.THREE.Vector3(0, 1, 0);
+
+    const R = sculptRadius;
+    const R2 = R * R;
+    const sign = sculptMode === 'pull' ? -1 : 1;
+    const disp = sculptStrength * sign;
+
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      const vx = arr[i3];
+      const vy = arr[i3 + 1];
+      const vz = arr[i3 + 2];
+
+      const dx = vx - hitPoint.x;
+      const dy = vy - hitPoint.y;
+      const dz = vz - hitPoint.z;
+      const d2 = dx * dx + dy * dy + dz * dz;
+
+      if (d2 < R2) {
+        const t = 1 - d2 / R2;
+        const w = t * t;
+        arr[i3] += normal.x * disp * w;
+        arr[i3 + 1] += normal.y * disp * w;
+        arr[i3 + 2] += normal.z * disp * w;
+      }
+    }
+
+    pAttr.needsUpdate = true;
+    mesh.geometry.computeVertexNormals();
+  }
+
+  // 8. Bind Tool Inspector Controls & Parameter Inputs
+  function bindToolInspectorEvents() {
+    // Mode 1: Cage Edit
+    const symBtn = document.getElementById('mcCageSymmetryBtn');
+    if (symBtn) {
+      symBtn.onclick = () => {
+        cageSymmetry = !cageSymmetry;
+        symBtn.classList.toggle('active', cageSymmetry);
+        symBtn.textContent = cageSymmetry ? 'Symmetry: ON (Mirrored Sides)' : 'Symmetry: OFF (Unilateral)';
+        showNotification(cageSymmetry ? 'Bilateral symmetry enabled.' : 'Unilateral editing enabled.');
+      };
+    }
+
+    const radSlider = document.getElementById('mcCageRadiusSlider');
+    const radVal = document.getElementById('mcCageRadiusVal');
+    if (radSlider && radVal) {
+      radSlider.oninput = () => {
+        cageRadius = parseFloat(radSlider.value);
+        radVal.textContent = `${cageRadius} mm`;
+      };
+    }
+
+    const strSlider = document.getElementById('mcCageStrengthSlider');
+    const strVal = document.getElementById('mcCageStrengthVal');
+    if (strSlider && strVal) {
+      strSlider.oninput = () => {
+        cageStrength = parseFloat(strSlider.value);
+        strVal.textContent = `${cageStrength.toFixed(1)}x`;
+      };
+    }
+
+    const resetCageBtn = document.getElementById('mcResetCageBtn');
+    if (resetCageBtn) {
+      resetCageBtn.onclick = resetCagePoints;
+    }
+
+    // Mode 2: Sculpt
+    const pushBtn = document.getElementById('mcSculptPushBtn');
+    const pullBtn = document.getElementById('mcSculptPullBtn');
+    const smoothBtn = document.getElementById('mcSculptSmoothBtn');
+    if (pushBtn && pullBtn && smoothBtn) {
+      pushBtn.onclick = () => {
+        sculptMode = 'push';
+        pushBtn.classList.add('active'); pullBtn.classList.remove('active'); smoothBtn.classList.remove('active');
+      };
+      pullBtn.onclick = () => {
+        sculptMode = 'pull';
+        pullBtn.classList.add('active'); pushBtn.classList.remove('active'); smoothBtn.classList.remove('active');
+      };
+      smoothBtn.onclick = () => {
+        sculptMode = 'smooth';
+        smoothBtn.classList.add('active'); pushBtn.classList.remove('active'); pullBtn.classList.remove('active');
+      };
+    }
+
+    const scRad = document.getElementById('mcSculptRadiusSlider');
+    const scRadVal = document.getElementById('mcSculptRadiusVal');
+    if (scRad && scRadVal) {
+      scRad.oninput = () => {
+        sculptRadius = parseFloat(scRad.value);
+        scRadVal.textContent = `${sculptRadius} mm`;
+      };
+    }
+
+    const scStr = document.getElementById('mcSculptStrengthSlider');
+    const scStrVal = document.getElementById('mcSculptStrengthVal');
+    if (scStr && scStrVal) {
+      scStr.oninput = () => {
+        sculptStrength = parseFloat(scStr.value);
+        scStrVal.textContent = `${sculptStrength.toFixed(1)} mm`;
+      };
+    }
+
+    const clearSculptBtn = document.getElementById('mcClearSculptBtn');
+    if (clearSculptBtn) {
+      clearSculptBtn.onclick = resetCagePoints;
+    }
+
+    // Mode 3: Collar & Openings
+    const backSlider = document.getElementById('mcCollarBackSlider');
+    const backVal = document.getElementById('mcCollarBackVal');
+    if (backSlider && backVal) {
+      backSlider.oninput = () => {
+        const v = parseFloat(backSlider.value);
+        backVal.textContent = `${v} mm`;
+        if (core && core.shoe) {
+          core.shoe.back = v;
+          core.shoe.backShare = v / 281.8;
+          triggerShoeChange();
+        }
+      };
+    }
+
+    const sideSlider = document.getElementById('mcCollarSideSlider');
+    const sideVal = document.getElementById('mcCollarSideVal');
+    if (sideSlider && sideVal) {
+      sideSlider.oninput = () => {
+        const v = parseFloat(sideSlider.value);
+        sideVal.textContent = `${v} mm`;
+        if (core && core.shoe) {
+          core.shoe.side = v;
+          core.shoe.sideShare = v / 281.8;
+          triggerShoeChange();
+        }
+      };
+    }
+
+    const throatSlider = document.getElementById('mcCollarThroatSlider');
+    const throatVal = document.getElementById('mcCollarThroatVal');
+    if (throatSlider && throatVal) {
+      throatSlider.oninput = () => {
+        const v = parseFloat(throatSlider.value);
+        throatVal.textContent = v.toFixed(2);
+        if (core && core.shoe) {
+          core.shoe.throat = v;
+          triggerShoeChange();
+        }
+      };
+    }
+
+    const fSlipon = document.getElementById('mcFormSliponBtn');
+    const fClog = document.getElementById('mcFormClogBtn');
+    const fMule = document.getElementById('mcFormMuleBtn');
+    if (fSlipon && fClog && fMule) {
+      fSlipon.onclick = () => {
+        setUpperForm('slipon', false);
+        fSlipon.classList.add('active'); fClog.classList.remove('active'); fMule.classList.remove('active');
+      };
+      fClog.onclick = () => {
+        setUpperForm('clog', true);
+        fClog.classList.add('active'); fSlipon.classList.remove('active'); fMule.classList.remove('active');
+      };
+      fMule.onclick = () => {
+        setUpperForm('mule', true);
+        fMule.classList.add('active'); fSlipon.classList.remove('active'); fClog.classList.remove('active');
+      };
+    }
+
+    const tClosed = document.getElementById('mcToeClosedBtn');
+    const tPeep = document.getElementById('mcToePeepBtn');
+    const tOpen = document.getElementById('mcToeOpenBtn');
+    if (tClosed && tPeep && tOpen) {
+      tClosed.onclick = () => {
+        setToeStyle('closed', 50);
+        tClosed.classList.add('active'); tPeep.classList.remove('active'); tOpen.classList.remove('active');
+      };
+      tPeep.onclick = () => {
+        setToeStyle('peep', 35);
+        tPeep.classList.add('active'); tClosed.classList.remove('active'); tOpen.classList.remove('active');
+      };
+      tOpen.onclick = () => {
+        setToeStyle('open', 65);
+        tOpen.classList.add('active'); tClosed.classList.remove('active'); tPeep.classList.remove('active');
+      };
+    }
+
+    // Mode 4: Wall Thickness & Gap
+    const upWall = document.getElementById('mcUpperWallSlider');
+    const upWallVal = document.getElementById('mcUpperWallVal');
+    if (upWall && upWallVal) {
+      upWall.oninput = () => {
+        const v = parseFloat(upWall.value);
+        upWallVal.textContent = `${v.toFixed(1)} mm`;
+        if (core && core.shoe) {
+          core.shoe.fWall = v;
+          triggerShoeChange();
+        }
+      };
+    }
+
+    const midWall = document.getElementById('mcMidsoleWallSlider');
+    const midWallVal = document.getElementById('mcMidsoleWallVal');
+    if (midWall && midWallVal) {
+      midWall.oninput = () => {
+        const v = parseFloat(midWall.value);
+        midWallVal.textContent = `${v.toFixed(1)} mm`;
+        if (core && core.shoe) {
+          core.shoe.sWall = v;
+          triggerShoeChange();
+        }
+      };
+    }
+
+    const gapSlider = document.getElementById('mcComfortGapSlider');
+    const gapVal = document.getElementById('mcComfortGapVal');
+    if (gapSlider && gapVal) {
+      gapSlider.oninput = () => {
+        const v = parseFloat(gapSlider.value);
+        gapVal.textContent = `${v.toFixed(1)} mm`;
+        if (core && core.shoe) {
+          core.shoe.gap = v;
+          triggerShoeChange();
+        }
+      };
+    }
+
+    // Mode 5: Perforations
+    const hField = document.getElementById('mcHolesFieldBtn');
+    const hBrogue = document.getElementById('mcHolesBrogueBtn');
+    const hNone = document.getElementById('mcHolesNoneBtn');
+    if (hField && hBrogue && hNone) {
+      hField.onclick = () => {
+        setHolesPattern('flow');
+        hField.classList.add('active'); hBrogue.classList.remove('active'); hNone.classList.remove('active');
+      };
+      hBrogue.onclick = () => {
+        setHolesPattern('accent');
+        hBrogue.classList.add('active'); hField.classList.remove('active'); hNone.classList.remove('active');
+      };
+      hNone.onclick = () => {
+        setHolesPattern('none');
+        hNone.classList.add('active'); hField.classList.remove('active'); hBrogue.classList.remove('active');
+      };
+    }
+
+    const hSize = document.getElementById('mcHolesSizeSlider');
+    const hSizeVal = document.getElementById('mcHolesSizeVal');
+    if (hSize && hSizeVal) {
+      hSize.oninput = () => {
+        const v = parseFloat(hSize.value);
+        hSizeVal.textContent = `${v.toFixed(1)} mm`;
+        if (core && core.shoe && core.shoe.f) {
+          core.shoe.f.openCell = v * 5;
+          core.shoe.f.perfHole = v;
+          triggerShoeChange();
+        }
+      };
+    }
+
+    const hPitch = document.getElementById('mcHolesPitchSlider');
+    const hPitchVal = document.getElementById('mcHolesPitchVal');
+    if (hPitch && hPitchVal) {
+      hPitch.oninput = () => {
+        const v = parseFloat(hPitch.value);
+        hPitchVal.textContent = `${v.toFixed(1)} mm`;
+        if (core && core.shoe && core.shoe.f) {
+          core.shoe.f.openStrap = v;
+          core.shoe.f.perfPitch = v;
+          triggerShoeChange();
+        }
+      };
+    }
+
+    const applyHolesBtn = document.getElementById('mcApplyHolesBtn');
+    if (applyHolesBtn) {
+      applyHolesBtn.onclick = () => {
+        triggerShoeChange();
+        showNotification('Perforations punched across upper.');
+      };
+    }
+
+    // Mode 6: Sole & Tread Grip
+    const heelStack = document.getElementById('mcHeelStackSlider');
+    const heelStackVal = document.getElementById('mcHeelStackVal');
+    if (heelStack && heelStackVal) {
+      heelStack.oninput = () => {
+        const v = parseFloat(heelStack.value);
+        heelStackVal.textContent = `${v} mm`;
+        if (core && core.shoe) {
+          core.shoe.stack = v;
+          core.shoe.stackShare = v / 281.8;
+          triggerShoeChange();
+        }
+      };
+    }
+
+    const toeStack = document.getElementById('mcToeStackSlider');
+    const toeStackVal = document.getElementById('mcToeStackVal');
+    if (toeStack && toeStackVal) {
+      toeStack.oninput = () => {
+        const v = parseFloat(toeStack.value);
+        toeStackVal.textContent = `${v} mm`;
+        if (core && core.shoe) {
+          core.shoe.stackToe = v;
+          core.shoe.stackToeShare = v / 281.8;
+          triggerShoeChange();
+        }
+      };
+    }
+
+    const flareSlider = document.getElementById('mcSidewallFlareSlider');
+    const flareVal = document.getElementById('mcSidewallFlareVal');
+    if (flareSlider && flareVal) {
+      flareSlider.oninput = () => {
+        const v = parseFloat(flareSlider.value);
+        flareVal.textContent = `${v.toFixed(1)} mm`;
+        if (core && core.shoe) {
+          core.shoe.flare = v;
+          core.shoe.flareShare = v / 98.5;
+          triggerShoeChange();
+        }
+      };
+    }
+
+    const treadSelect = document.getElementById('mcTreadPatternSelect');
+    if (treadSelect) {
+      treadSelect.onchange = () => {
+        if (core && core.shoe) {
+          core.shoe.tread = treadSelect.value;
+          core.shoe.terrain = 'none';
+          core.shoe.relief = 0;
+          triggerShoeChange();
+          showNotification(`Applied Outsole Tread: ${treadSelect.options[treadSelect.selectedIndex].text}`);
+        }
+      };
+    }
+
+    const treadDepth = document.getElementById('mcTreadDepthSlider');
+    const treadDepthVal = document.getElementById('mcTreadDepthVal');
+    if (treadDepth && treadDepthVal) {
+      treadDepth.oninput = () => {
+        const v = parseFloat(treadDepth.value);
+        treadDepthVal.textContent = `${v.toFixed(1)} mm`;
+        if (core && core.shoe) {
+          core.shoe.floorDepth = v * 5;
+          triggerShoeChange();
+        }
+      };
+    }
+
+    // Mode 7: Foot Sizing
+    const shoeSize = document.getElementById('mcShoeSizeSlider');
+    const shoeSizeVal = document.getElementById('mcShoeSizeVal');
+    if (shoeSize && shoeSizeVal) {
+      shoeSize.oninput = () => {
+        const v = parseFloat(shoeSize.value);
+        const usM = (v - 33).toFixed(1);
+        shoeSizeVal.textContent = `EU ${v.toFixed(1)} (US M ${usM})`;
+        if (core && core.measurements) {
+          core.measurements.shoeSize = v;
+          const fl = 210 + (v - 35) * 6.67;
+          core.measurements.footLength = Math.round(fl);
+          const flSlider = document.getElementById('mcFootLengthSlider');
+          const flVal = document.getElementById('mcFootLengthVal');
+          if (flSlider) flSlider.value = Math.round(fl);
+          if (flVal) flVal.textContent = `${Math.round(fl)} mm`;
+          triggerMeasurementChange();
+        }
+      };
+    }
+
+    const flSlider = document.getElementById('mcFootLengthSlider');
+    const flVal = document.getElementById('mcFootLengthVal');
+    if (flSlider && flVal) {
+      flSlider.oninput = () => {
+        const v = parseFloat(flSlider.value);
+        flVal.textContent = `${v} mm`;
+        if (core && core.measurements) {
+          core.measurements.footLength = v;
+          triggerMeasurementChange();
+        }
+      };
+    }
+
+    ['mcFitBBtn', 'mcFitDBtn', 'mcFitEEBtn', 'mcFit4EBtn'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.onclick = () => {
+          ['mcFitBBtn', 'mcFitDBtn', 'mcFitEEBtn', 'mcFit4EBtn'].forEach(x => {
+            const el = document.getElementById(x);
+            if (el) el.classList.remove('active');
+          });
+          btn.classList.add('active');
+          if (core && core.measurements) {
+            core.measurements.fitting = parseInt(btn.dataset.fit);
+            triggerMeasurementChange();
+          }
+        };
+      }
+    });
+
+    const instepSlider = document.getElementById('mcInstepGirthSlider');
+    const instepVal = document.getElementById('mcInstepGirthVal');
+    if (instepSlider && instepVal) {
+      instepSlider.oninput = () => {
+        const v = parseFloat(instepSlider.value);
+        instepVal.textContent = `${v} mm`;
+        if (core && core.measurements) {
+          core.measurements.instepGirth = v;
+          triggerMeasurementChange();
+        }
+      };
+    }
+  }
+
+  function setUpperForm(form, openBack) {
+    if (!core || !core.shoe) return;
+    core.shoe.upperForm = form;
+    core.shoe.openBack = !!openBack;
+    triggerShoeChange();
+  }
+
+  function setToeStyle(style, toeMM) {
+    if (!core || !core.shoe) return;
+    core.shoe.toe = style;
+    core.shoe.toeMM = toeMM;
+    triggerShoeChange();
+  }
+
+  function setHolesPattern(pat) {
+    if (!core || !core.shoe) return;
+    if (!core.shoe.f) core.shoe.f = {};
+    core.shoe.f.open = pat;
+    triggerShoeChange();
+  }
+
+  function triggerShoeChange() {
+    if (core && typeof core.shoeChange === 'function') {
+      core.shoeChange();
+    }
+  }
+
+  function triggerMeasurementChange() {
+    if (core) {
+      if (typeof core.refreshAll === 'function') core.refreshAll();
+      else if (typeof core.rebuildMeshObject === 'function') core.rebuildMeshObject();
+    }
+  }
+
+  // 9. Sync UI with Core State
+  function syncUIWithCore() {
+    if (!core) return;
+    const s = core.shoe;
+    const m = core.measurements;
+
+    if (s) {
+      const bSlider = document.getElementById('mcCollarBackSlider');
+      const bVal = document.getElementById('mcCollarBackVal');
+      if (bSlider) bSlider.value = s.back;
+      if (bVal) bVal.textContent = `${s.back} mm`;
+
+      const sSlider = document.getElementById('mcCollarSideSlider');
+      const sVal = document.getElementById('mcCollarSideVal');
+      if (sSlider) sSlider.value = s.side;
+      if (sVal) sVal.textContent = `${s.side} mm`;
+
+      const thSlider = document.getElementById('mcCollarThroatSlider');
+      const thVal = document.getElementById('mcCollarThroatVal');
+      if (thSlider) thSlider.value = s.throat;
+      if (thVal) thVal.textContent = s.throat.toFixed(2);
+
+      const wSlider = document.getElementById('mcUpperWallSlider');
+      const wVal = document.getElementById('mcUpperWallVal');
+      if (wSlider) wSlider.value = s.fWall;
+      if (wVal) wVal.textContent = `${s.fWall.toFixed(1)} mm`;
+
+      const hsSlider = document.getElementById('mcHeelStackSlider');
+      const hsVal = document.getElementById('mcHeelStackVal');
+      if (hsSlider) hsSlider.value = s.stack;
+      if (hsVal) hsVal.textContent = `${s.stack} mm`;
+
+      const tsSlider = document.getElementById('mcToeStackSlider');
+      const tsVal = document.getElementById('mcToeStackVal');
+      if (tsSlider) tsSlider.value = s.stackToe;
+      if (tsVal) tsVal.textContent = `${s.stackToe} mm`;
+    }
+
+    if (m) {
+      const szSlider = document.getElementById('mcShoeSizeSlider');
+      const szVal = document.getElementById('mcShoeSizeVal');
+      if (szSlider) szSlider.value = m.shoeSize;
+      if (szVal) {
+        const usM = (m.shoeSize - 33).toFixed(1);
+        szVal.textContent = `EU ${m.shoeSize.toFixed(1)} (US M ${usM})`;
+      }
+
+      const flSlider = document.getElementById('mcFootLengthSlider');
+      const flVal = document.getElementById('mcFootLengthVal');
+      if (flSlider) flSlider.value = m.footLength;
+      if (flVal) flVal.textContent = `${m.footLength} mm`;
+    }
   }
 
   function ensureShoeAndLastVisible() {
@@ -1195,433 +1776,78 @@
     }
   }
 
-  // 5. Bind Studio Panel Events
-  function bindStudioEvents() {
-    // Close button
-    const closeBtn = document.getElementById('mcStudioCloseBtn');
-    if (closeBtn) closeBtn.onclick = () => toggleStudioPanel(false);
-
-    // Tab buttons
-    document.querySelectorAll('.mcStudioTab').forEach(tab => {
-      tab.onclick = () => switchTab(tab.dataset.tab);
-    });
-
-
-
-    // --- TAB 1: FOOT SIZING ---
-    const flSlider = document.getElementById('mcFootLengthSlider');
-    const bwSlider = document.getElementById('mcBallWidthSlider');
-    const instepSlider = document.getElementById('mcInstepSlider');
-    const heelSlider = document.getElementById('mcHeelWidthSlider');
-    const toeSlider = document.getElementById('mcToeSpringSlider');
-
-    if (flSlider) {
-      flSlider.oninput = () => {
-        const val = parseFloat(flSlider.value);
-        document.getElementById('mcFootLengthVal').textContent = `${val.toFixed(1)} mm`;
-        updateShoeSizeBadge(val);
-      };
-    }
-    if (bwSlider) {
-      bwSlider.oninput = () => {
-        document.getElementById('mcBallWidthVal').textContent = `${parseFloat(bwSlider.value).toFixed(1)} mm`;
-      };
-    }
-    if (instepSlider) {
-      instepSlider.oninput = () => {
-        document.getElementById('mcInstepVal').textContent = `${parseFloat(instepSlider.value).toFixed(1)} mm`;
-      };
-    }
-    if (heelSlider) {
-      heelSlider.oninput = () => {
-        document.getElementById('mcHeelWidthVal').textContent = `${parseFloat(heelSlider.value).toFixed(1)} mm`;
-      };
-    }
-    if (toeSlider) {
-      toeSlider.oninput = () => {
-        document.getElementById('mcToeSpringVal').textContent = `${parseFloat(toeSlider.value).toFixed(0)} mm`;
-      };
-    }
-
-    // Apply Fit Button
-    const applyFitBtn = document.getElementById('mcApplyFitBtn');
-    if (applyFitBtn) {
-      applyFitBtn.onclick = () => {
-        if (!core) return;
-        const m = core.measurements;
-        const fl = parseFloat(flSlider.value);
-        const bw = parseFloat(bwSlider.value);
-        const instep = parseFloat(instepSlider.value);
-        const heel = parseFloat(heelSlider.value);
-        const toe = parseFloat(toeSlider.value);
-
-        m.footLength = fl;
-        m.ballWidth = bw;
-        m.instepGirth = instep;
-        m.heelWidth = heel;
-        m.toeSpringHeight = toe;
-
-        if (core.manualOverrides) {
-          core.manualOverrides.set('footLength', fl);
-          core.manualOverrides.set('ballWidth', bw);
-          core.manualOverrides.set('instepGirth', instep);
-          core.manualOverrides.set('heelWidth', heel);
-          core.manualOverrides.set('toeSpringHeight', toe);
-        }
-
-        if (typeof core.refreshAll === 'function') core.refreshAll();
-        else if (typeof core.refreshAllKeepManual === 'function') core.refreshAllKeepManual();
-
-        showNotification('Foot Fit calibrated and applied to Last.');
-      };
-    }
-
-    // Quick Fit Profiles
-    const keeganBtn = document.getElementById('mcPresetKeegan');
-    if (keeganBtn) {
-      keeganBtn.onclick = () => {
-        flSlider.value = 272.5;
-        bwSlider.value = 100.0;
-        instepSlider.value = 258.0;
-        heelSlider.value = 69.0;
-        toeSlider.value = 14;
-        triggerInputs([flSlider, bwSlider, instepSlider, heelSlider, toeSlider]);
-        applyFitBtn.click();
-      };
-    }
-
-    const barefootBtn = document.getElementById('mcPresetBarefoot');
-    if (barefootBtn) {
-      barefootBtn.onclick = () => {
-        flSlider.value = 270.0;
-        bwSlider.value = 108.0;
-        instepSlider.value = 252.0;
-        heelSlider.value = 66.0;
-        toeSlider.value = 5;
-        triggerInputs([flSlider, bwSlider, instepSlider, heelSlider, toeSlider]);
-        applyFitBtn.click();
-      };
-    }
-
-    const athleticBtn = document.getElementById('mcPresetAthletic');
-    if (athleticBtn) {
-      athleticBtn.onclick = () => {
-        flSlider.value = 270.0;
-        bwSlider.value = 96.0;
-        instepSlider.value = 250.0;
-        heelSlider.value = 67.0;
-        toeSlider.value = 20;
-        triggerInputs([flSlider, bwSlider, instepSlider, heelSlider, toeSlider]);
-        applyFitBtn.click();
-      };
-    }
-
-    // --- TAB 2: WALL THICKNESS & GAP ---
-    const wallSlider = document.getElementById('mcWallMMSlider');
-    const gapSlider = document.getElementById('mcGapMMSlider');
-
-    if (wallSlider) {
-      wallSlider.oninput = () => {
-        const v = parseFloat(wallSlider.value);
-        document.getElementById('mcWallMMVal').textContent = `${v.toFixed(1)} mm`;
-        document.getElementById('mcThicknessBadge').textContent = `${v.toFixed(1)} mm`;
-      };
-    }
-    if (gapSlider) {
-      gapSlider.oninput = () => {
-        document.getElementById('mcGapMMVal').textContent = `${parseFloat(gapSlider.value).toFixed(1)} mm`;
-      };
-    }
-
-    document.querySelectorAll('#mcTabThickness [data-wall]').forEach(btn => {
-      btn.onclick = () => {
-        wallSlider.value = btn.dataset.wall;
-        gapSlider.value = btn.dataset.gap;
-        triggerInputs([wallSlider, gapSlider]);
-        document.querySelectorAll('#mcTabThickness [data-wall]').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('mcApplyThicknessBtn').click();
-      };
-    });
-
-    const applyThickBtn = document.getElementById('mcApplyThicknessBtn');
-    if (applyThickBtn) {
-      applyThickBtn.onclick = () => {
-        if (!core) return;
-        const wallVal = parseFloat(wallSlider.value);
-        const gapVal = parseFloat(gapSlider.value);
-
-        if (core.shoe) {
-          core.shoe.fWall = wallVal;
-          core.shoe.gap = gapVal;
-        }
-        if (core.lfShoe && core.lfShoe.footie) {
-          core.lfShoe.footie.wallMM = wallVal;
-          core.lfShoe.footie.gapMM = gapVal;
-        }
-
-        if (typeof core.shoeChange === 'function') core.shoeChange();
-        showNotification(`Shell thickness updated to ${wallVal}mm.`);
-      };
-    }
-
-    // Upper Styles
-    document.querySelectorAll('#mcTabThickness [data-style]').forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll('#mcTabThickness [data-style]').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        if (core && core.shoe) {
-          core.shoe.upperForm = btn.dataset.style;
-          if (typeof core.shoeChange === 'function') core.shoeChange();
-        }
-        showNotification(`Style changed to: ${btn.textContent}`);
-      };
-    });
-
-    // --- TAB 3: HOLES & PERFORATIONS ---
-    const holeSlider = document.getElementById('mcPerfHoleSlider');
-    const pitchSlider = document.getElementById('mcPerfPitchSlider');
-    const borderSlider = document.getElementById('mcPerfBorderSlider');
-
-    if (holeSlider) {
-      holeSlider.oninput = () => {
-        document.getElementById('mcPerfHoleVal').textContent = `${parseFloat(holeSlider.value).toFixed(1)} mm`;
-      };
-    }
-    if (pitchSlider) {
-      pitchSlider.oninput = () => {
-        document.getElementById('mcPerfPitchVal').textContent = `${parseFloat(pitchSlider.value).toFixed(1)} mm`;
-      };
-    }
-    if (borderSlider) {
-      borderSlider.oninput = () => {
-        document.getElementById('mcPerfBorderVal').textContent = `${parseFloat(borderSlider.value).toFixed(1)} mm`;
-      };
-    }
-
-    let selectedPerf = 'field';
-    document.querySelectorAll('#mcTabHoles [data-perf]').forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll('#mcTabHoles [data-perf]').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedPerf = btn.dataset.perf;
-        document.getElementById('mcPerfBadge').textContent = btn.textContent;
-      };
-    });
-
-    const rerollBtn = document.getElementById('mcPerfRerollBtn');
-    if (rerollBtn) {
-      rerollBtn.onclick = () => {
-        if (!core || !core.shoe || !core.shoe.f) return;
-        core.shoe.f.perfSeed = ((core.shoe.f.perfSeed || 1) % 99) + 1;
-        document.getElementById('mcApplyPerfBtn').click();
-      };
-    }
-
-    const applyPerfBtn = document.getElementById('mcApplyPerfBtn');
-    if (applyPerfBtn) {
-      applyPerfBtn.onclick = () => {
-        if (!core) return;
-        const hVal = parseFloat(holeSlider.value);
-        const pVal = parseFloat(pitchSlider.value);
-        const bVal = parseFloat(borderSlider.value);
-        const whereVal = document.getElementById('mcPerfWhereSelect').value;
-
-        if (core.shoe && core.shoe.f) {
-          core.shoe.f.perf = selectedPerf;
-          core.shoe.f.perfHole = hVal;
-          core.shoe.f.perfPitch = pVal;
-          core.shoe.f.perfBorder = bVal;
-          core.shoe.f.perfWhere = whereVal;
-        }
-
-        if (typeof core.shoeChange === 'function') core.shoeChange();
-        showNotification(`Perforations: ${selectedPerf === 'none' ? 'Solid shell' : hVal + 'mm holes'}`);
-      };
-    }
-
-    // --- TAB 4: TOPOGRAPHY & TREAD ---
-    const depthSlider = document.getElementById('mcTreadDepthSlider');
-    if (depthSlider) {
-      depthSlider.oninput = () => {
-        document.getElementById('mcTreadDepthVal').textContent = `${parseFloat(depthSlider.value).toFixed(1)} mm`;
-      };
-    }
-
-    let selectedRelief = 'carved';
-    document.querySelectorAll('#mcTabTopography [data-relief]').forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll('#mcTabTopography [data-relief]').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedRelief = btn.dataset.relief;
-      };
-    });
-
-    const applyTreadBtn = document.getElementById('mcApplyTreadBtn');
-    if (applyTreadBtn) {
-      applyTreadBtn.onclick = () => {
-        if (!core || !core.shoe) return;
-        const pat = document.getElementById('mcTreadPatternSelect').value;
-        const depth = parseFloat(depthSlider.value);
-
-        core.shoe.tread = pat;
-        core.shoe.treadScale = depth;
-
-        if (typeof core.shoeChange === 'function') core.shoeChange();
-        showNotification(`Outsole topography applied: ${pat}`);
-      };
-    }
-
-    // --- TAB 5: 3D PRINT & EXPORT ---
-    const matSelect = document.getElementById('mcPrintMaterialSelect');
-    if (matSelect) {
-      matSelect.onchange = (e) => {
-        const mat = e.target.value;
-        const badge = document.getElementById('mcMaterialBadge');
-        const matText = e.target.options[e.target.selectedIndex].text.split('(')[0].trim();
-        badge.textContent = matText;
-        updatePrintEstimates(mat);
-        if (core && core.shoe) {
-          core.shoe.fMat = mat;
-          if (typeof core.shoeChange === 'function') core.shoeChange();
-        }
-      };
-    }
-
-    const expStl = document.getElementById('mcExportStlBtn');
-    if (expStl) {
-      expStl.onclick = () => triggerBinarySTLExport();
-    }
-
-    const exp3mf = document.getElementById('mcExport3mfBtn');
-    if (exp3mf) {
-      exp3mf.onclick = () => {
-        const rowPrint = document.getElementById('rowPrint');
-        if (rowPrint) rowPrint.click();
-        else showNotification('Slicer 3MF Exported.');
-      };
-    }
-
-    const expObj = document.getElementById('mcExportObjBtn');
-    if (expObj) {
-      expObj.onclick = () => {
-        const origBtn = document.getElementById('exportObjBtn');
-        if (origBtn) origBtn.click();
-        else showNotification('Downloading OBJ Mesh...');
-      };
-    }
-  }
-
-  // 6. 1-Click Binary STL Exporter
+  // 10. Binary STL Exporter
   function triggerBinarySTLExport() {
-    showNotification('Preparing watertight Binary STL...');
-
-    if (core && typeof core.buildSTLBinary === 'function' && typeof core.downloadBlob === 'function') {
-      try {
-        const fn = (core.exportFilenameBase ? core.exportFilenameBase() : 'McConnell_Meshes_Shoe') + '.stl';
-        const blob = core.buildSTLBinary();
-        if (blob) {
-          core.downloadBlob(blob, fn);
-          showNotification('Downloaded Binary STL for 3D Printing.');
-          return;
-        }
-      } catch (err) {
-        console.warn('Native STL build caught error, falling back to export button', err);
-      }
-    }
-
-    // Fallback: click native export button if present
-    const origBtn = document.getElementById('exportStlBtn') || document.getElementById('lastExportBtn');
-    if (origBtn) origBtn.click();
-    else showNotification('3D Model sent to export queue.');
-  }
-
-  function triggerInputs(arr) {
-    arr.forEach(el => {
-      if (el) el.dispatchEvent(new Event('input'));
-    });
-  }
-
-  // 7. Sync State with Core
-  function syncUIWithCore() {
     if (!core) return;
-    const m = core.measurements;
-    if (m) {
-      if (m.footLength) {
-        const fl = document.getElementById('mcFootLengthSlider');
-        if (fl) { fl.value = m.footLength; fl.dispatchEvent(new Event('input')); }
+    try {
+      showNotification('Compiling watertight binary STL for 3D printing...');
+      let blob = null;
+      if (typeof core.buildSTLBinary === 'function') {
+        blob = core.buildSTLBinary();
+      } else if (typeof core.exportFootMesh === 'function') {
+        blob = core.exportFootMesh('stl');
       }
-      if (m.ballWidth) {
-        const bw = document.getElementById('mcBallWidthSlider');
-        if (bw) { bw.value = m.ballWidth; bw.dispatchEvent(new Event('input')); }
-      }
-      if (m.instepGirth) {
-        const ig = document.getElementById('mcInstepSlider');
-        if (ig) { ig.value = m.instepGirth; ig.dispatchEvent(new Event('input')); }
-      }
-      if (m.toeSpringHeight != null) {
-        const ts = document.getElementById('mcToeSpringSlider');
-        if (ts) { ts.value = m.toeSpringHeight; ts.dispatchEvent(new Event('input')); }
-      }
-    }
 
-    if (core.shoe) {
-      if (core.shoe.fWall) {
-        const w = document.getElementById('mcWallMMSlider');
-        if (w) { w.value = core.shoe.fWall; w.dispatchEvent(new Event('input')); }
+      if (blob && typeof core.downloadBlob === 'function') {
+        const name = (typeof core.exportFilenameBase === 'function') ? `${core.exportFilenameBase()}.stl` : 'mcconnell_shoe.stl';
+        core.downloadBlob(blob, name);
+        showNotification(`Exported: ${name}`);
+      } else {
+        const exportBtn = document.getElementById('lastExportBtn');
+        if (exportBtn) exportBtn.click();
       }
+    } catch (err) {
+      console.warn('Direct STL export fallback:', err);
+      const exportBtn = document.getElementById('lastExportBtn');
+      if (exportBtn) exportBtn.click();
     }
   }
 
-  function updateShoeSizeBadge(lengthMM) {
-    const usMen = Math.max(4, Math.round(((lengthMM / 25.4) * 3 - 22) * 2) / 2);
-    const eu = Math.round((lengthMM + 15) / 6.67);
-    const badge = document.getElementById('mcFootSizeBadge');
-    if (badge) badge.textContent = `US M ${usMen} / EU ${eu}`;
-  }
-
-  function updatePrintEstimates(matKey) {
-    const timeEl = document.getElementById('mcEstTimeVal');
-    const wtEl = document.getElementById('mcEstWeightVal');
-    const costEl = document.getElementById('mcEstCostVal');
-    if (!timeEl || !wtEl || !costEl) return;
-
-    if (matKey.startsWith('tpu')) {
-      timeEl.textContent = '6h 40m';
-      wtEl.textContent = '285 g';
-      costEl.textContent = '$9.12';
-    } else if (matKey === 'pla') {
-      timeEl.textContent = '4h 15m';
-      wtEl.textContent = '295 g';
-      costEl.textContent = '$5.90';
-    } else {
-      timeEl.textContent = '8h 20m';
-      wtEl.textContent = '310 g';
-      costEl.textContent = '$28.50';
-    }
+  function capitalize(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
   function showNotification(msg) {
-    let note = document.getElementById('mcNotificationBubble');
+    let note = document.getElementById('mcNotification');
     if (!note) {
       note = document.createElement('div');
-      note.id = 'mcNotificationBubble';
+      note.id = 'mcNotification';
+      note.style.cssText = `
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #0f172a;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 9px 18px;
+        border-radius: 999px;
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.35);
+        z-index: 10000;
+        pointer-events: none;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+        opacity: 0;
+      `;
       document.body.appendChild(note);
     }
+
     note.textContent = msg;
     note.style.opacity = '1';
     note.style.transform = 'translateX(-50%) translateY(0)';
-    clearTimeout(note.__timer);
-    note.__timer = setTimeout(() => {
+
+    clearTimeout(note._timer);
+    note._timer = setTimeout(() => {
       note.style.opacity = '0';
       note.style.transform = 'translateX(-50%) translateY(8px)';
     }, 2800);
   }
 
-  // Auto-init on load
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initStudio);
   } else {
     initStudio();
   }
+
 })();
