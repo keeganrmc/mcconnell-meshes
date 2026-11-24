@@ -990,6 +990,26 @@ details[data-key="lastType"],
   pointer-events: none !important;
 }
 
+/* Suppress intrusive load banners, dimming, and legacy hint bubbles */
+#buildBanner {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+#viewport.building canvas {
+  filter: none !important;
+}
+#lfHintBubble {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+#sbToggle {
+  display: none !important;
+}
+
 /* ==========================================================================
    Shoe Technical Specs Modal (Hidden on-demand, opened via Specs button)
    ========================================================================== */

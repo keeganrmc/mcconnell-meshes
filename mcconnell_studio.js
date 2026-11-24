@@ -22,49 +22,49 @@
   const TOOLTIP_DATABASE = {
     // 5 1-Click Shoe Presets
     'presetSneakerBtn': {
-      title: '👟 Sneaker Preset (Athletic Runner)',
+      title: 'Sneaker Preset (Athletic Runner)',
       desc: 'Generates an athletic sneaker geometry with a flexible 2.0mm upper shell, perforated breathability field vents, high-rebound midsole cushion, and knurled traction tread.',
       tip: 'Optimal for daily wear and running. Slices and 3D prints smoothly in TPU 95A or 90A.'
     },
     'presetSandalBtn': {
-      title: '👡 Sandal Preset (Ergonomic Slide)',
+      title: 'Sandal Preset (Ergonomic Slide)',
       desc: 'Generates an open-toe ergonomic slide with contoured arch support, 2.8mm structural cross-straps, peep-toe clearance, and wave flex sipes.',
       tip: 'Requires zero support material if printed flat sole-down. Recommended for softer TPU 85A.'
     },
     'presetHeelBtn': {
-      title: '👠 Heel Preset (Sculpted Pump)',
+      title: 'Heel Preset (Sculpted Pump)',
       desc: 'Builds an elegant high-heel pump with a 70mm elevated heel cup, graceful arched shank, sleek 1.8mm shell, low-throat vamp, and smooth dress sole.',
       tip: 'Features reinforced shank geometry. Best printed in dual-material: rigid heel core with flexible vamp.'
     },
     'presetBootBtn': {
-      title: '🥾 Boot Preset (Rugged Work Boot)',
+      title: 'Boot Preset (Rugged Work Boot)',
       desc: 'Engineers a heavy-duty boot with 110mm high-shaft ankle collar, rugged 3.5mm thick impact shell, reinforced welt, and deep hexagonal mountain lug outsole.',
       tip: 'Engineered for high tear resistance and abrasion protection. Print with 3.5mm solid wall.'
     },
     'presetDressBtn': {
-      title: '👞 Dress Shoe Preset (Classic Oxford)',
+      title: 'Dress Shoe Preset (Classic Oxford)',
       desc: 'Models a formal Oxford shoe featuring classic almond toe, elegant vamp proportions, decorative brogue perforation accents along the quarters, and low-profile welt.',
       tip: 'Brogue holes are parametric 2.0mm through-holes that provide both authentic styling and ventilation.'
     },
 
     // Studio Hub & Action Triggers
     'mcSpecsToggleBtn': {
-      title: '📊 Shoe Specifications & Print Metrics',
+      title: 'Shoe Specifications & Print Metrics',
       desc: 'Opens the on-demand technical specifications breakdown: shoe volume, TPU weight, piece counts, and fit clearances.',
       tip: 'Kept hidden off the main viewport so your 3D shoe design space stays clean and uncluttered.'
     },
     'rowStudioHub': {
-      title: '⚡ Studio Controls Dashboard',
+      title: 'Studio Controls Dashboard',
       desc: 'Open the unified master control panel grouping all shoe tools together: Fit, Wall Thickness, Holes, Topography, and 3D Print Lab.',
       tip: 'Toggle anytime to tweak geometry without losing your 3D view.'
     },
     'mcStudioHubBtn': {
-      title: '⚡ Studio Controls Dashboard',
+      title: 'Studio Controls Dashboard',
       desc: 'Open the unified master control panel grouping all shoe tools together: Fit, Wall Thickness, Holes, Topography, and 3D Print Lab.',
       tip: 'Toggle anytime to tweak geometry without losing your 3D view.'
     },
     'quickExportStlBtn': {
-      title: '⬇️ 1-Click Binary STL Export',
+      title: '1-Click Binary STL Export',
       desc: 'Instantly exports a clean, watertight binary STL file of the active shoe ready to drag-and-drop into Bambu Studio, OrcaSlicer, PrusaSlicer, or Cura.',
       tip: 'Universally compatible with all FDM and SLA 3D printers.'
     },
@@ -74,12 +74,12 @@
       tip: 'Higher mesh density in curved regions ensures smooth 3D printed contours.'
     },
     'rowUndo': {
-      title: 'Undo (⌘Z / Ctrl+Z)',
+      title: 'Undo (Ctrl+Z)',
       desc: 'Revert the most recent parametric edit, sculpt stroke, or preset selection.',
       tip: 'Full history stack kept in memory.'
     },
     'rowRedo': {
-      title: 'Redo (⇧⌘Z / Ctrl+Y)',
+      title: 'Redo (Ctrl+Y)',
       desc: 'Reapply the previously undone action.',
       tip: 'Compare design variations with instant redo.'
     },
@@ -241,7 +241,7 @@
     syncUIWithCore();
     ensureShoeAndLastVisible();
 
-    console.log('⚡ McConnell Meshes Studio Hub initialized & active in Light Theme.');
+    console.log('McConnell Meshes Studio Hub initialized & active in Light Theme.');
   }
 
   // 1. Tooltip DOM & Hover Engine
@@ -270,11 +270,17 @@
     const shortcutEl = document.getElementById('mcTipShortcut');
 
     document.addEventListener('mouseover', (e) => {
-      const target = e.target.closest('[id], [title], [data-tip], button, input, select');
+      const target = e.target.closest('[id], [title], [data-tip], [data-mctitle], button, input, select');
       if (!target) return;
 
+      // Park native title into data-mctitle to completely suppress browser native OS tooltip
+      if (target.hasAttribute('title')) {
+        target.setAttribute('data-mctitle', target.getAttribute('title'));
+        target.removeAttribute('title');
+      }
+
       const id = target.id;
-      const titleAttr = target.getAttribute('title');
+      const titleAttr = target.getAttribute('data-mctitle') || target.getAttribute('title');
       const dataTip = target.getAttribute('data-tip');
 
       let entry = TOOLTIP_DATABASE[id];
@@ -305,12 +311,17 @@
 
         positionTooltip(e.clientX, e.clientY);
         tipEl.classList.add('visible');
-      }, 140); // 140ms hover delay
+      }, 100);
     }, true);
 
-    document.addEventListener('mouseout', () => {
+    document.addEventListener('mouseout', (e) => {
       clearTimeout(tipTimer);
       if (tipEl) tipEl.classList.remove('visible');
+      const target = e.target.closest('[data-mctitle]');
+      if (target) {
+        target.setAttribute('title', target.getAttribute('data-mctitle'));
+        target.removeAttribute('data-mctitle');
+      }
     }, true);
 
     document.addEventListener('mousedown', () => {
@@ -672,6 +683,19 @@
     const szSys = document.getElementById('hudSzSystem');
     const szFit = document.getElementById('hudSzFit');
 
+    let sizingDebounce = null;
+    function scheduleSizingUpdate(delay = 50) {
+      clearTimeout(sizingDebounce);
+      sizingDebounce = setTimeout(() => {
+        if (!core || !core.measurements) return;
+        if (core.clearOverrides && core.LF_MEAS_OVERRIDES) core.clearOverrides(core.LF_MEAS_OVERRIDES);
+        if (typeof core.refreshAll === 'function') core.refreshAll();
+        if (typeof core.adaptShoeToLast === 'function') core.adaptShoeToLast(core.measurements);
+        if (typeof core.rebuildShoe === 'function') core.rebuildShoe();
+        syncHudSizing();
+      }, delay);
+    }
+
     if (szSlider) {
       szSlider.oninput = () => {
         if (!core || !core.measurements) return;
@@ -679,11 +703,10 @@
         core.measurements.shoeSize = v;
         const szVal = document.getElementById('hudSzVal');
         if (szVal) szVal.textContent = `${v} ${core.measurements.shoeSizeSystem}`;
-        if (core.clearOverrides && core.LF_MEAS_OVERRIDES) core.clearOverrides(core.LF_MEAS_OVERRIDES);
-        if (typeof core.refreshAll === 'function') core.refreshAll();
-        if (typeof core.adaptShoeToLast === 'function') core.adaptShoeToLast(core.measurements);
-        if (typeof core.rebuildShoe === 'function') core.rebuildShoe();
-        syncHudSizing();
+        scheduleSizingUpdate(50);
+      };
+      szSlider.onchange = () => {
+        scheduleSizingUpdate(0);
       };
     }
 
@@ -694,9 +717,10 @@
         core.measurements.footLength = v;
         const flVal = document.getElementById('hudFlVal');
         if (flVal) flVal.textContent = `${Math.round(v)} mm`;
-        if (typeof core.refreshAllKeepManual === 'function') core.refreshAllKeepManual();
-        if (typeof core.adaptShoeToLast === 'function') core.adaptShoeToLast(core.measurements);
-        if (typeof core.rebuildShoe === 'function') core.rebuildShoe();
+        scheduleSizingUpdate(50);
+      };
+      flSlider.onchange = () => {
+        scheduleSizingUpdate(0);
       };
     }
 
@@ -746,11 +770,11 @@
       </div>
 
       <div class="mcStudioTabs" role="tablist">
-        <button class="mcStudioTab active" data-tab="fit"><span class="icon">👟</span> Foot &amp; Last Fit</button>
-        <button class="mcStudioTab" data-tab="thickness"><span class="icon">📏</span> Wall Thickness &amp; Gap</button>
-        <button class="mcStudioTab" data-tab="holes"><span class="icon">🕳️</span> Holes &amp; Vents</button>
-        <button class="mcStudioTab" data-tab="topography"><span class="icon">🏔️</span> Topography &amp; Tread</button>
-        <button class="mcStudioTab" data-tab="print"><span class="icon">🖨️</span> 3D Print Lab &amp; Materials</button>
+        <button class="mcStudioTab active" data-tab="fit">Foot &amp; Last Fit</button>
+        <button class="mcStudioTab" data-tab="thickness">Wall Thickness &amp; Gap</button>
+        <button class="mcStudioTab" data-tab="holes">Holes &amp; Vents</button>
+        <button class="mcStudioTab" data-tab="topography">Topography &amp; Tread</button>
+        <button class="mcStudioTab" data-tab="print">3D Print Lab &amp; Materials</button>
       </div>
 
       <div class="mcStudioBody">
@@ -822,7 +846,7 @@
               </div>
 
               <div style="display:flex;gap:8px;margin-top:12px;">
-                <button class="mcActionBtn primary" id="mcApplyFitBtn" style="flex:1;">⚡ Apply Fit to Last &amp; Shoe</button>
+                <button class="mcActionBtn primary" id="mcApplyFitBtn" style="flex:1;">Apply Fit to Last &amp; Shoe</button>
               </div>
             </div>
           </div>
@@ -865,7 +889,7 @@
               </div>
 
               <div style="display:flex;gap:8px;margin-top:16px;">
-                <button class="mcActionBtn primary" id="mcApplyThicknessBtn" style="flex:1;">⚡ Rebuild Shell Thickness</button>
+                <button class="mcActionBtn primary" id="mcApplyThicknessBtn" style="flex:1;">Rebuild Shell Thickness</button>
               </div>
             </div>
           </div>
@@ -915,8 +939,8 @@
               </div>
 
               <div style="display:flex;gap:8px;margin-top:10px;">
-                <button class="mcActionBtn secondary" id="mcPerfRerollBtn" style="flex:1;">🎲 Reroll Distribution</button>
-                <button class="mcActionBtn primary" id="mcApplyPerfBtn" style="flex:1;">⚡ Punch Perforations</button>
+                <button class="mcActionBtn secondary" id="mcPerfRerollBtn" style="flex:1;">Reroll Distribution</button>
+                <button class="mcActionBtn primary" id="mcApplyPerfBtn" style="flex:1;">Punch Perforations</button>
               </div>
             </div>
 
@@ -987,7 +1011,7 @@
               </div>
 
               <div style="display:flex;gap:8px;margin-top:10px;">
-                <button class="mcActionBtn green" id="mcApplyTreadBtn" style="flex:1;">⚡ Apply Outsole Topography</button>
+                <button class="mcActionBtn green" id="mcApplyTreadBtn" style="flex:1;">Apply Outsole Topography</button>
               </div>
             </div>
 
@@ -1100,9 +1124,9 @@
 
               <!-- Export Actions -->
               <div style="display:flex;gap:8px;margin-top:10px;">
-                <button class="mcActionBtn green" id="mcExportStlBtn" style="flex:1;">⬇️ Download STL</button>
-                <button class="mcActionBtn primary" id="mcExport3mfBtn" style="flex:1;">⬇️ Download 3MF</button>
-                <button class="mcActionBtn secondary" id="mcExportObjBtn" style="flex:1;">⬇️ Download OBJ</button>
+                <button class="mcActionBtn green" id="mcExportStlBtn" style="flex:1;">Download STL</button>
+                <button class="mcActionBtn primary" id="mcExport3mfBtn" style="flex:1;">Download 3MF</button>
+                <button class="mcActionBtn secondary" id="mcExportObjBtn" style="flex:1;">Download OBJ</button>
               </div>
             </div>
           </div>
@@ -1248,7 +1272,7 @@
         if (typeof core.refreshAll === 'function') core.refreshAll();
         else if (typeof core.refreshAllKeepManual === 'function') core.refreshAllKeepManual();
 
-        showNotification('✅ Foot Fit calibrated & applied to Last!');
+        showNotification('Foot Fit calibrated and applied to Last.');
       };
     }
 
@@ -1337,7 +1361,7 @@
         }
 
         if (typeof core.shoeChange === 'function') core.shoeChange();
-        showNotification(`✅ Shell thickness updated to ${wallVal}mm!`);
+        showNotification(`Shell thickness updated to ${wallVal}mm.`);
       };
     }
 
@@ -1350,7 +1374,7 @@
           core.shoe.upperForm = btn.dataset.style;
           if (typeof core.shoeChange === 'function') core.shoeChange();
         }
-        showNotification(`✅ Style changed to: ${btn.textContent}`);
+        showNotification(`Style changed to: ${btn.textContent}`);
       };
     });
 
@@ -1412,7 +1436,7 @@
         }
 
         if (typeof core.shoeChange === 'function') core.shoeChange();
-        showNotification(`✅ Perforations: ${selectedPerf === 'none' ? 'Solid shell' : hVal + 'mm holes'}`);
+        showNotification(`Perforations: ${selectedPerf === 'none' ? 'Solid shell' : hVal + 'mm holes'}`);
       };
     }
 
@@ -1444,7 +1468,7 @@
         core.shoe.treadScale = depth;
 
         if (typeof core.shoeChange === 'function') core.shoeChange();
-        showNotification(`✅ Outsole topography applied: ${pat}`);
+        showNotification(`Outsole topography applied: ${pat}`);
       };
     }
 
@@ -1474,7 +1498,7 @@
       exp3mf.onclick = () => {
         const rowPrint = document.getElementById('rowPrint');
         if (rowPrint) rowPrint.click();
-        else showNotification('⬇️ Slicer 3MF Exported!');
+        else showNotification('Slicer 3MF Exported.');
       };
     }
 
@@ -1483,14 +1507,14 @@
       expObj.onclick = () => {
         const origBtn = document.getElementById('exportObjBtn');
         if (origBtn) origBtn.click();
-        else showNotification('⬇️ Downloading OBJ Mesh...');
+        else showNotification('Downloading OBJ Mesh...');
       };
     }
   }
 
   // 6. 1-Click Binary STL Exporter
   function triggerBinarySTLExport() {
-    showNotification('⬇️ Preparing watertight Binary STL...');
+    showNotification('Preparing watertight Binary STL...');
 
     if (core && typeof core.buildSTLBinary === 'function' && typeof core.downloadBlob === 'function') {
       try {
@@ -1498,7 +1522,7 @@
         const blob = core.buildSTLBinary();
         if (blob) {
           core.downloadBlob(blob, fn);
-          showNotification('✅ Downloaded Binary STL for 3D Printing!');
+          showNotification('Downloaded Binary STL for 3D Printing.');
           return;
         }
       } catch (err) {
@@ -1509,7 +1533,7 @@
     // Fallback: click native export button if present
     const origBtn = document.getElementById('exportStlBtn') || document.getElementById('lastExportBtn');
     if (origBtn) origBtn.click();
-    else showNotification('✅ 3D Model sent to export queue.');
+    else showNotification('3D Model sent to export queue.');
   }
 
   function triggerInputs(arr) {
