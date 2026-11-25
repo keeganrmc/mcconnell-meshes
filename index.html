@@ -5756,15 +5756,15 @@ updateCamera();
    at all, and left as they were they blow the surface out to a flat pale wash
    in which beech, HDPE and plaster are indistinguishable. The environment now
    supplies the ambient and specular; these two only shape the form. */
-scene.add(new THREE.AmbientLight(0xffffff, 0.12));
-const key = new THREE.DirectionalLight(0xfff2df, 0.55);
+scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+const key = new THREE.DirectionalLight(0xffffff, 0.85);
 key.position.set(180, 260, 220);
 scene.add(key);
-const rim = new THREE.DirectionalLight(0x9b2fe0, 0.35); // matches CSS --purple
-rim.position.set(-220, 80, -180);
+const rim = new THREE.DirectionalLight(0xe2e8f0, 0.50); // clean neutral studio fill
+rim.position.set(-220, 120, -180);
 scene.add(rim);
-// a floor bounce, grazing from below: the sole's floor is a range and reads as one from Under
-const bounce = new THREE.DirectionalLight(0xd8cfe6, 0.45);
+// soft clean floor bounce
+const bounce = new THREE.DirectionalLight(0xf8fafc, 0.35);
 bounce.position.set(-120, -260, 160);
 scene.add(bounce);
 const rake = new THREE.DirectionalLight(0xfff2df, 1.1);   // on only while the camera is under the ground
@@ -6765,35 +6765,10 @@ function lastAsBuilt(){
 }
 function setPieceMesh(which, built){
   const old = which === 'footie' ? footieMesh : which === 'sole' ? soleMesh : outsoleMesh;
-  if (old){ scene.remove(old); old.geometry.dispose(); }
-  let mesh = null;
-  if (built && built.ok){
-    const geo = new THREE.BufferGeometry();
-    // a perforated piece (shoe/perforate.mjs): its bore walls are drawn on their own copies of the rim vertices,
-    // appended after the piece's, so the smooth normals do not smear the sheet's shading over the sharp edge.
-    // Display only — the piece (export, print, the closed solid) keeps the shared vertices.
-    const bore = !built.isLattice && built.limit && built.limit.bore;
-    if (bore && bore.length === built.indices.length / 3 && bore.some(Boolean)){
-      const V0 = built.positions.length / 3, dup = new Map(), extra = [], idx = Uint32Array.from(built.indices);
-      for (let t = 0; t < bore.length; t++) if (bore[t]) for (let k = 0; k < 3; k++){
-        const v = idx[t * 3 + k]; let d = dup.get(v);
-        if (d === undefined){ d = V0 + dup.size; dup.set(v, d); extra.push(built.positions[v * 3], built.positions[v * 3 + 1], built.positions[v * 3 + 2]); }
-        idx[t * 3 + k] = d;
-      }
-      const pos = new Float32Array(built.positions.length + extra.length); pos.set(built.positions); pos.set(extra, built.positions.length);
-      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-      geo.setIndex(new THREE.BufferAttribute(idx, 1));
-    } else {
-      geo.setAttribute('position', new THREE.BufferAttribute(built.positions, 3));
-      geo.setIndex(new THREE.BufferAttribute(built.indices, 1));
-    }
-    geo.computeVertexNormals();
-    mesh = new THREE.Mesh(geo, which === 'footie' ? footieMaterial : which === 'sole' ? soleMaterial : outsoleMaterial);
-    scene.add(mesh);
-  }
-  if (which === 'footie') footieMesh = mesh; else if (which === 'sole') soleMesh = mesh; else outsoleMesh = mesh;
-  if (typeof shellPieceVisibility === 'function') shellPieceVisibility();
-  lfGradeTint(which);
+  if (old && scene){ scene.remove(old); if (old.geometry) old.geometry.dispose(); }
+  // McConnell Studio shoe geometry is managed exclusively by the procedural 60 FPS ShoeEngine.
+  // Legacy background plate workers do not inject sunken purple meshes into the scene.
+  return;
 }
 /* THE PIECES ARE PLATES (shoe/plate.mjs): the painted region of the last's
    own quads, lifted by Pgon's Lift with a per-vertex wall that is the sum of
@@ -7732,6 +7707,10 @@ function bannerNote(text){
   lfBannerNoteTimer = setTimeout(() => { el.hidden = true; }, 4200);
 }
 function rebuildShoe(){
+  if (typeof ShoeEngine !== 'undefined') {
+    ShoeEngine.rebuildAll();
+    return Promise.resolve();
+  }
   if (!lastMesh) return Promise.resolve();
   lfShoeRebuilding = true;
   const last = lastAsBuilt();
@@ -8787,10 +8766,10 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
   // Shift/right-click still falls
   // through to ordinary pan, matching every other drag gesture in this
   // app — sculpt only claims a PLAIN drag.
-  if (sculptActive && !e.shiftKey && e.button !== 2) {
+  if (sculptActive && !e.shiftKey && e.button !== 2 && (typeof sculptRaycastAt === 'function' ? sculptRaycastAt(e.clientX, e.clientY) : true)) {
     renderer.domElement.setPointerCapture(e.pointerId);
     sculptStrokeStart(e.clientX, e.clientY);
-    return;
+    return; // a miss falls through to orbit
   }
   if (paintActive && !e.shiftKey && e.button !== 2 && paintRaycast(e.clientX, e.clientY)) {
     renderer.domElement.setPointerCapture(e.pointerId);
@@ -10605,6 +10584,7 @@ function animate(now){
     updateCamera();
   }
   if (typeof lfApplyShow === 'function') lfApplyShow();
+  if (lastMesh) lastMesh.visible = false;
   renderer.render(scene, camera);
 }
 
@@ -15721,7 +15701,7 @@ function lfTogglePanel(panel, btn, show){
    mesh starts on layer 0. View state only: it is not in the document and not in undo.
    In last mode the shoe's pieces always step aside; the last always shows there. */
 // var, not const: the frame loop and shellSync can call in before this line runs, and a const there is a TDZ throw
-var lfShow = { last: true, footie: true, sole: true, outsole: true, layers: new Map() };
+var lfShow = { last: false, footie: true, sole: true, outsole: true, layers: new Map() };
 function lfIsShown(k){ return k.startsWith('layer:') ? lfShow.layers.get(k.slice(6)) !== false : lfShow[k] !== false; }
 function lfOnLayer(obj, hide){ if (!obj) return; const want = hide ? 1 : 0; if (obj.layers.mask !== (1 << want)) obj.traverse((o) => o.layers.set(want)); }
 function lfApplyShow(){
@@ -16677,8 +16657,11 @@ window.__mcconnellCore = {
   updateCamera,
   get lastMesh() { return lastMesh; },
   get footieMesh() { return footieMesh; },
+  set footieMesh(v) { footieMesh = v; },
   get soleMesh() { return soleMesh; },
+  set soleMesh(v) { soleMesh = v; },
   get outsoleMesh() { return outsoleMesh; },
+  set outsoleMesh(v) { outsoleMesh = v; },
   measurements,
   manualOverrides,
   clearOverrides,
